@@ -1,34 +1,73 @@
-🌾 <strong>Final Year Project Guide</strong></br>
-  <strong> “Smart Agricultural Market Management System for Sri Lankan Farmers” </strong>
-  (Case Study: Dambulla Economic Centre)
+# React + TypeScript + Vite
 
-🧩 <strong> 1. Problem Background </strong>
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-  🇱🇰 The Situation in Sri Lanka
-  Farmers bring vegetables and fruits to economic centres like Dambulla, but prices change daily based on supply and demand.</br>
-  There’s no digital system for farmers to predict prices, plan harvests, or directly connect with buyers.</br>
-  Middlemen often control pricing → farmers get unfair value for their produce.</br>
-  Wastage occurs due to poor coordination — produce rots before sale.</br>
+Currently, two official plugins are available:
 
-🎯  <strong>2. Project Goal </strong></br>
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-To design and develop a web-based Agricultural Market Management System that:</br>
-Digitizes the connection between farmers, buyers, and market officials.</br>
-Provides real-time price information and forecasting.</br>
-Helps reduce post-harvest losses and improves income predictability.</br>
+## React Compiler
 
-🧠  <strong>3. System Overview </strong>
-👨‍🌾 Stakeholders:</br>
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-Farmers – Register, publish expected harvests, view market price trends.</br>
-Buyers / Wholesalers – View available produce, place pre-orders, negotiate prices.</br>
-Market Admin / Officials – Monitor stock, verify farmers, manage prices and data.</br>
+## Expanding the ESLint configuration
 
-🖥️  <strong>4. System Features </strong></br></br>
-Module	Features</br>
-Farmer Module	Register/Login, Add crop details (type, quantity, expected harvest date), View current market prices, Receive buyer offers</br>
-Buyer Module	Register/Login, Search crops by type/date, Make purchase offers, Chat with farmer</br>
-Admin (Market Officer)	Manage users, Approve farmer entries, Update daily prices, Generate reports</br>
-Data & Analytics	Price fluctuation charts, Surplus/shortage alerts, Export reports</br>
-Localization	Sinhala and Tamil interfaces for accessibility</br>
-Notifications	SMS or email updates on market trends and offers</br>
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```

@@ -16,14 +16,14 @@ export default function Navbar() {
       }`}
     >
       <div className="w-11/12 mx-auto flex items-center justify-between py-4">
-        {/* Left Side Title */}
+        
         <div>
           <h1 className="text-xl font-bold leading-5">
             Smart Agriculture Market <br /> Management System
           </h1>
         </div>
 
-        {/* Center Links */}
+       
         <nav>
           <ul className="flex items-center gap-10 text-sm font-medium">
             <li><a href="#" className="hover:text-green-700">Home</a></li>
@@ -32,9 +32,9 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        {/* Right Side Buttons */}
+       
         <div className="flex items-center gap-4">
-          <button className="px-6 py-2 rounded-md bg-green-900 text-white hover:bg-green-800 shadow-md">
+          <button className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md">
             Login
           </button>
           <button className="px-6 py-2 rounded-md border border-gray-400 hover:bg-gray-200">

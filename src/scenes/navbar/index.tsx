@@ -45,7 +45,7 @@ export default function Navbar() {
             
 
                   <li className="relative group cursor-pointer">
-                      <button className="inline-flex items-center gap-1 font-medium hover:text-green-700 focus:outline-none focus:ring-0">
+                      <button className="inline-flex items-center gap-1 font-medium hover:text-green-700  ">
                        {t('Pages')}
                         <svg
                           className="w-4 h-4"
@@ -61,9 +61,9 @@ export default function Navbar() {
 
         {/* Dropdown Menu */}
                 <div className="absolute hidden group-hover:flex flex-col bg-white shadow-md rounded-md w-40 right-0 top-full pt-2">
-                  <a href="#" className="px-4 py-2 hover:bg-gray-100">Farmer</a>
-                  <a href="#" className="px-4 py-2 hover:bg-gray-100">Buyer</a>
-                  <a href="#" className="px-4 py-2 hover:bg-gray-100">Admin</a>
+                  <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Farmer</a>
+                  <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Buyer</a>
+                  <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Admin</a>
                 </div>
       </li>
 

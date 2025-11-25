@@ -27,14 +27,14 @@ export default function Home() {
     <div className="w-screen overflow-x-hidden font-sans text-gray-900">
       <section className="h-[80vh] md:h-[90vh] relative">
         <Swiper
-  modules={[Navigation, Pagination, Autoplay, EffectFade]}
-  effect="fade"
-  slidesPerView={1}
-  loop={true}
-  autoplay={{ delay: 5000, disableOnInteraction: false }}
-  pagination={{ clickable: true }}
-  className="h-full"
->
+            modules={[Navigation, Pagination, Autoplay, EffectFade]}
+            effect="fade"
+            slidesPerView={1}
+            loop={true}
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            className="h-full"
+          >
           {[
             {
               img: slide,

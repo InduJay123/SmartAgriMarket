@@ -17,6 +17,7 @@ import img4 from './../../assets/carbage.png';
 import {useTranslation} from 'react-i18next';
 import i18next from "i18next";
 import { footer } from "framer-motion/client";
+import { Link } from "react-router-dom";
 
 // Animation variants
 const fadeUp = {
@@ -201,7 +202,7 @@ const isSinhala = i18n.language === "si";
             slidesPerView={1}
             spaceBetween={25}
             loop={true}
-            centeredSlides={true}
+            centeredSlides={false}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
             pagination={{ clickable: true }}
             navigation={true}
@@ -265,7 +266,7 @@ const isSinhala = i18n.language === "si";
             <p className="mt-3 text-white/90">{t('Innovative tools and insights to reduce waste and increase yields.')}</p>
             <div className="mt-4 flex gap-3">
               <button className="bg-custom-green px-5 py-2 rounded text-white">{t('learnMore')}</button>
-              <button className="border border-white px-5 py-2 rounded text-white hover:bg-white hover:text-[#0f6b53]">{t('Contact Us')}</button>
+              <button className="border border-white px-5 py-2 rounded text-white hover:bg-white hover:text-[#0f6b53]"><Link to="/contactus" className="hover:text-green-700">{t('Contact Us')}</Link></button>
             </div>
           </div>
         </div>

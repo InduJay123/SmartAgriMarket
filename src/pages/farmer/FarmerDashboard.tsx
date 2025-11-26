@@ -6,9 +6,8 @@ import Header from "../../components/farmer/Header";
 import TopCard from "../../components/farmer/TopCard";
 import EditCrop from "../../components/farmer/EditCrop";
 
-
 interface Crop {
-    id: number;
+    market_id: number;
     crop_name: string;
     quantity: number;
     predicted_date: number;
@@ -20,24 +19,6 @@ interface Crop {
 }
 
 const FarmerDashboard: React.FC = () => {
-
-    const navigate = useNavigate();
-    const [crops, setCrops] = useState<Crop[]>([])
-    const [selectedCrop, setSelectedCrop] = useState(null);
-
-    useEffect(() => {
-        const fetchCrops = async () => {
-            try{
-                const response = await axios.get("http://127.0.0.1:8000/api/marketplace/", );
-                console.log("Crop fetched", response.data);
-                setCrops(response.data);
-            }catch(error){
-                console.error("Error fetching crops:", error);
-            }
-        };
-        fetchCrops();
-    }, []);
-
     const stats = [
         {
             title: "Market Price",
@@ -98,6 +79,24 @@ const FarmerDashboard: React.FC = () => {
         "Onion":  "🧅"
     };
 
+    const navigate = useNavigate();
+    const [crops, setCrops] = useState<Crop[]>([])
+    const [selectedCrop, setSelectedCrop] = useState(null);
+
+    useEffect(() => {
+        const fetchCrops = async () => {
+            try{
+                const response = await axios.get("http://127.0.0.1:8000/api/marketplace/" );
+                console.log("Crop fetched", response.data);
+                setCrops(response.data);
+            }catch(error){
+                console.error("Error fetching crops:", error);
+            }
+        };
+        fetchCrops();
+    }, []);
+
+    
     const getCropEmoji = (name: string | undefined) => {
         if (!name) return "🌾"; // fallback
 
@@ -127,19 +126,19 @@ const FarmerDashboard: React.FC = () => {
         }
     };
 
-    const handleDeleteCrop = async (cropId: number) => {
-        if (!window.confirm("Are you sure you want to delete this crop?")) return;
+    
+    const handleDeleteCrop = async (marketId: number) => {
+    if (!window.confirm("Are you sure you want to delete this crop?")) return;
 
-        try {
-            await axios.delete(`http://127.0.0.1:8000/api/marketplace/${cropId}/`);
-            // Remove from frontend state
-            setCrops(prev => prev.filter(crop => crop.id !== cropId));
-            alert("Crop deleted successfully!");
-        } catch (error) {
-            console.error("Error deleting crop:", error);
-            alert("Failed to delete crop");
-        }
-    };
+    try {
+        await axios.delete(`http://127.0.0.1:8000/api/marketplace/${marketId}/`);
+        setCrops(prev => prev.filter(crop => crop.market_id !== marketId));
+        alert("Crop deleted successfully!");
+    } catch (error) {
+        console.error("Error deleting crop:", error);
+        alert("Failed to delete crop");
+    }
+};
 
 
     return(
@@ -175,7 +174,7 @@ const FarmerDashboard: React.FC = () => {
 
             {crops.map((crop, index) => (
                 <div
-                key={crop.id || index}
+                key={crop.market_id || index}
                 className="bg-white shadow-md rounded-lg p-4 mb-4 border sm:hidden"
                 >
                 <div className="flex justify-between items-center mb-3">
@@ -185,11 +184,15 @@ const FarmerDashboard: React.FC = () => {
                     </div>
 
                     <div className="flex gap-2">
-                    <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200">
-                        <Edit className="w-4 h-4" />
+                    <button 
+                        onClick={() => handleEditCrop(crop)}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200">
+                            <Edit className="w-4 h-4" />
                     </button>
-                    <button className="w-8 h-8 flex items-center justify-center rounded-lg text-red-600 hover:bg-red-100">
-                        <Trash2 className="w-4 h-4" />
+                    <button 
+                        onClick={() => handleDeleteCrop(crop.market_id)}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-red-600 hover:bg-red-100">
+                            <Trash2 className="w-4 h-4" />
                     </button>
                     </div>
                 </div>
@@ -218,7 +221,7 @@ const FarmerDashboard: React.FC = () => {
                         </thead>  
                         <tbody>
                             {crops.map((crop,index) => (
-                                <tr key={crop.id || index} className="border-t  hover:bg-gray-100 font-semibold text-gray-800">
+                                <tr key={crop.market_id || index} className="border-t  hover:bg-gray-100 font-semibold text-gray-800">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <span className="text-2xl"> {getCropEmoji(crop.crop_name)} </span>
@@ -239,7 +242,7 @@ const FarmerDashboard: React.FC = () => {
                                         </button>
                                         
                                         <button 
-                                            onClick={() => handleDeleteCrop(crop.id)}
+                                            onClick={() => handleDeleteCrop(crop.market_id)}
                                             className="w-8 h-8 p-2 rounded-lg text-red-700 hover:bg-red-100">
                                             <Trash2 className="w-4 h-4 hover:text-white" />
                                         </button>
@@ -251,7 +254,7 @@ const FarmerDashboard: React.FC = () => {
                     </table>                   
                 </div>
                 {selectedCrop && (
-                    <EditCrop crop={selectedCrop} onClose={() => {setSelectedCrop(null); refreshCrops();}}/>                     
+                    <EditCrop crop={selectedCrop} onClose={() => {setSelectedCrop(null); refreshCrops();} }/>                     
                 )}
             </div>
             

@@ -11,6 +11,10 @@ export default {
         'custom-green': '#004432',
         //secondary: '#81C784',
       },
+
+      fontFamily: {
+        sinhala: ["Abhaya Libre", "serif"],
+      },
     },
   },
   plugins: [],

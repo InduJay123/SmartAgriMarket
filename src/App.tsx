@@ -2,6 +2,7 @@ import React from 'react'
 import './App.css'
 import Home from './scenes/home'
 import Navbar from './scenes/navbar'
+import Admin from './pages/Admin';
 
 
 
@@ -29,6 +30,7 @@ function App() {
     <Navbar></Navbar>
 
     <Home></Home>
+    <Admin/>
     </div>
  
 

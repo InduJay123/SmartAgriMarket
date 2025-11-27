@@ -2,6 +2,8 @@ import React from 'react'
 import './App.css'
 import Home from './scenes/home'
 import Navbar from './scenes/navbar'
+import ContactUs from './scenes/contactus/contactus'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 
 
@@ -26,9 +28,17 @@ function App() {
   return (
     <div>
     
-    <Navbar></Navbar>
+    <BrowserRouter>
+      {/* Navbar always visible */}
+      <Navbar />
 
-    <Home></Home>
+      {/* Page Routing */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/contactus" element={<ContactUs />} />
+      </Routes>
+    </BrowserRouter>
+
     </div>
  
 

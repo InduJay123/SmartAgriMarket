@@ -6,7 +6,7 @@ export default function ContactUs() {
     <section className="relative w-screen min-h-screen py-20 md:py-28 overflow-hidden">
 
      
-      <video
+       <video
         autoPlay
         loop
         muted

@@ -1,11 +1,15 @@
 import React from 'react'
 import './App.css'
 import Home from './scenes/home'
-import Navbar from './scenes/navbar'
 import ContactUs from './scenes/contactus/contactus'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import SidebarLayout from './layout/SidebarLayout';
+import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import AiInsights from './pages/farmer/AiInsights';
+import AddCrops from './pages/farmer/AddCrops';
+import Settings from './pages/farmer/Settings';
+import PublicLayout from './layout/PublicLayout'
 
 function App() {
 
@@ -25,24 +29,23 @@ function App() {
   }, [] 
   );
 
-  return (
-    <div>
-    
+  return (    
     <BrowserRouter>
-      {/* Navbar always visible */}
-      <Navbar />
-
-      {/* Page Routing */}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/contactus" element={<ContactUs />} />
+        <Route element={<PublicLayout/>}>
+          <Route path="/" element={<Home />} />
+          <Route path="/contactus" element={<ContactUs />} />
+        </Route>
+            
+        <Route path='/farmer' element = {<SidebarLayout/>} >
+          <Route path='dashboard' element = {<FarmerDashboard/>}/>
+          <Route path='analytics' element={<AiInsights/>} />
+          <Route path='addcrops' element={<AddCrops/>}/>
+          <Route path='settings' element={<Settings/>}/>
+        </Route>
       </Routes>
-    </BrowserRouter>
-
-    </div>
- 
-
+   </BrowserRouter> 
   )
 }
 
-export default App
+export default App;

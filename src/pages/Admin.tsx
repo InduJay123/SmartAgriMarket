@@ -2,13 +2,14 @@ import { Settings } from 'lucide-react';
 import { useState } from 'react';
 import Header from '../components/admin/Header';
 import AIModel from './AIModel';
-import Dashboard from './Dashboard';
+import Dashboard from './AdminDashboard';
 import ManageBuyers from './ManageBuyers';
 import ManageCrops from './ManageCrops';
 import ManageFarmers from './ManageFarmers';
 import Reports from './Reports';
 import UploadPrice from './UploadPrice';
 import Sidebar from '../components/admin/Sidebar';
+import AdminDashboard from './AdminDashboard';
 
 
 const Admin:React.FC = () => {
@@ -22,7 +23,7 @@ const Admin:React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard />;
+        return <AdminDashboard />;
       case 'farmers':
         return <ManageFarmers />;
       case 'buyers':

@@ -24,16 +24,8 @@ function App() {
   }, [] 
   );
 
-  return (
-    <div>
-    
-    <Navbar></Navbar>
-
-    <Home></Home>
+  return ( 
     <Admin/>
-    </div>
- 
-
   )
 }
 

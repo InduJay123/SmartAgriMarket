@@ -121,10 +121,11 @@ const AddCrops: React.FC = () => {
 
     return(
         <div className="bg-gray-50 p-4 w-full">
-            <div className="inline-flex bg-gray-200 w-16 h-16 items-center justify-center rounded-full"><Sprout size={32} className="text-green-600  items-center"/></div>
-            <h2 className="text-3xl font-extrabold mb-2">Add Your Crop</h2>
-            <p className="text-sm text-gray-500 mb-8">Share ypur harvest with buyers across Sri Lanka</p>
-
+            <div className="flex flex-col items-center justify-center">
+                <div className="inline-flex bg-gray-200 w-16 h-16 items-center justify-center rounded-full"><Sprout size={32} className="text-green-600  items-center"/></div>
+                <h2 className="text-3xl font-extrabold mb-2">Add Your Crop</h2>
+                <p className="text-sm text-gray-500 mb-8">Share ypur harvest with buyers across Sri Lanka</p>
+            </div>
             <ProgressBar step={step}/>
             
             <div className="bg-white p-4 rounded-xl border shadow-md">

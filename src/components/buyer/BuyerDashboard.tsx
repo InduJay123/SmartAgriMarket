@@ -129,9 +129,9 @@ function BuyerDashboard() {
   const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 w-screen">
       <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-2 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <button
@@ -198,7 +198,7 @@ function BuyerDashboard() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="flex gap-6">
           <Sidebar
             currentView={currentView}
@@ -207,9 +207,9 @@ function BuyerDashboard() {
             setShowMobileMenu={setShowMobileMenu}
           />
 
-          <main className="flex-1 min-w-0">
+          <main className="flex-1 min-w-0 pr-28">
             {currentView === 'shop' && (
-              <div className="space-y-6">
+              <div className="space-y-6 pt-8">
                 <div className="relative rounded-2xl overflow-hidden h-64">
                   <img
                     src="https://images.pexels.com/photos/1300972/pexels-photo-1300972.jpeg"

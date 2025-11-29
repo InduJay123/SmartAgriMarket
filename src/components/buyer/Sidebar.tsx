@@ -1,4 +1,5 @@
-import { ShoppingBag, Package, CreditCard, Heart, X } from 'lucide-react';
+import { ShoppingBag, Package, CreditCard, Heart, X, ShoppingCart } from 'lucide-react';
+import Cart from './Cart';
 
 type View = 'shop' | 'orders' | 'billing' | 'favorites';
 
@@ -15,6 +16,7 @@ function Sidebar({ currentView, setCurrentView, showMobileMenu, setShowMobileMen
     { id: 'orders' as View, label: 'My Orders', icon: Package },
     { id: 'billing' as View, label: 'Billing Info', icon: CreditCard },
     { id: 'favorites' as View, label: 'Favorites', icon: Heart },
+    { id: 'cart' as View, label: 'Cart', icon: ShoppingCart },
   ];
 
   const handleItemClick = (view: View) => {

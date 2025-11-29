@@ -1,10 +1,10 @@
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Eye, Trash2 } from 'lucide-react';
 
 const buyers = [
-  { id: 1, name: 'Good Market (Colombo)', type: 'Wholesaler', location: 'Colombo', verified: true },
-  { id: 2, name: 'Kandy Municipal Central Market (Kandy)', type: 'Retailer', location: 'Kandy', verified: true },
+  { id: 1, name: 'Good Market', type: 'Wholesaler', location: 'Colombo', verified: true },
+  { id: 2, name: 'Kandy Municipal Central Market', type: 'Retailer', location: 'Kandy', verified: true },
   { id: 3, name: 'Bandarawela Wholesale Vegetable Market', type: 'Wholesaler', location: 'Bandarawela', verified: false },
-  { id: 4, name: 'Manning Market (Colombo)', type: 'Retailer', location: 'Colombo', verified: true },
+  { id: 4, name: 'Manning Market', type: 'Retailer', location: 'Colombo', verified: true },
   { id: 5, name: 'Dedicated Economic Centres (DECs)', type: 'Retailer', location: 'Dambulla', verified: true },
 ];
 
@@ -44,11 +44,11 @@ export default function ManageBuyers() {
             </thead>
             <tbody>
               {buyers.map((buyer) => (
-                <tr key={buyer.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="py-3 px-4 text-gray-600">#{buyer.id}</td>
+                <tr key={buyer.id} className="border-b border-gray-100 hover:bg-gray-50 text-gray-600">
+                  <td className="py-3 px-4">#{buyer.id}</td>
                   <td className="py-3 px-4 text-gray-800 font-medium">{buyer.name}</td>
-                  <td className="py-3 px-4 text-gray-600">{buyer.type}</td>
-                  <td className="py-3 px-4 text-gray-600">{buyer.location}</td>
+                  <td className="py-3 px-4">{buyer.type}</td>
+                  <td className="py-3 px-4">{buyer.location}</td>
                   <td className="py-3 px-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -61,8 +61,11 @@ export default function ManageBuyers() {
                     </span>
                   </td>
                   <td className="py-3 px-4">
-                    <button className="text-emerald-600 hover:text-emerald-800 font-medium text-sm">
-                      View Details
+                    <button className="text-emerald-600  hover:text-emerald-800 p-2 hover:bg-emerald-200 border-none">
+                      <Eye size={16}/>
+                    </button>
+                    <button className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 border-none">
+                      <Trash2 size={16}/>
                     </button>
                   </td>
                 </tr>

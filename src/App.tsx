@@ -1,9 +1,6 @@
 import React from 'react'
 import './App.css'
-import Home from './scenes/home'
-import Navbar from './scenes/navbar'
-import ContactUs from './scenes/contactus/contactus'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import BuyerDashboard from './components/buyer/BuyerDashboard'
 
 
 
@@ -27,17 +24,7 @@ function App() {
 
   return (
     <div>
-    
-    <BrowserRouter>
-      {/* Navbar always visible */}
-      <Navbar />
-
-      {/* Page Routing */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/contactus" element={<ContactUs />} />
-      </Routes>
-    </BrowserRouter>
+    <BuyerDashboard/>
 
     </div>
  

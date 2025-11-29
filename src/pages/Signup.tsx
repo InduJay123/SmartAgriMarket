@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SignupFormData, UserRole } from '../types/auth';
+import type{ SignupFormData, UserRole } from '../types/auth';
 import RoleSelector from '../components/RoleSelector';
 import { UserPlus, User, Mail, Lock, Phone, MapPin } from 'lucide-react';
 

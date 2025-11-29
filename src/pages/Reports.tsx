@@ -2,7 +2,7 @@ import { Download, TrendingUp, Users, ShoppingCart } from 'lucide-react';
 
 export default function Reports() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pr-28">
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-xl lg:text-2xl font-bold mb-6">Reports & Analytics</h2>
 

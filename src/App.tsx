@@ -1,10 +1,7 @@
 import React from 'react'
 import './App.css'
-import Home from './scenes/home'
-import Navbar from './scenes/navbar'
 import Admin from './pages/Admin';
-
-
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
 
@@ -25,8 +22,10 @@ function App() {
   );
 
   return ( 
-    <Admin/>
+    <Routes>     
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
   )
 }
 
-export default App
+export default App;

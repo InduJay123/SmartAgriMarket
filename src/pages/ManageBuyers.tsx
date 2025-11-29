@@ -10,7 +10,7 @@ const buyers = [
 
 export default function ManageBuyers() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pr-28">
       <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
           <h2 className="text-xl lg:text-2xl font-bold">Buyers Management</h2>

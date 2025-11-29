@@ -16,7 +16,7 @@ const TopCard:React.FC<TopCardProps> = ({
     iconColor,
 }) => {
     return(
-        <div className="min-w-[200px] max-w-[250px] flex-1 bg-white border border-gray-100 shadow-sm rounded-lg p-4">
+        <div className="min-w-[200px] max-w-[250px] flex-1 bg-white border border-gray-100 shadow-md rounded-lg p-4">
             <div className="flex items-start justify-between">
                 <div className="flex flex-col items-start justify-start">
                     <p className="text-gray-500 text-xs ">{title}</p>

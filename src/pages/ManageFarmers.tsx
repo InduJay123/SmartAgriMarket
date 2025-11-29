@@ -50,8 +50,8 @@ const ManageFarmers:React.FC = () => {
   const [showMap, setShowMap] = useState(false);
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-6">
+    <div className="space-y-6 pr-28">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-1">
         {stats.map((stat, index) => (
           <TopCard key={index}  
             title={stat.title}

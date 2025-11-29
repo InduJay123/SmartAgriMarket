@@ -1,84 +1,99 @@
-import { Home, Users, ShoppingCart, Wheat, Upload, BarChart3, Brain, Settings, Menu, X } from 'lucide-react';
+import { Home, Users, Leaf,  Upload, FileText, Brain, Settings, X, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  isOpen: boolean;
-  toggleSidebar: () => void;
+  showMobileMenu: boolean;
+  setShowMobileMenu: (open: boolean) => void;
 }
 
-const menuItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home },
-  { id: 'farmers', label: 'Manage Farmers', icon: Users },
-  { id: 'buyers', label: 'Manage Buyers', icon: ShoppingCart },
-  { id: 'crops', label: 'Manage Crops', icon: Wheat },
-  { id: 'upload', label: 'Upload Price Data', icon: Upload },
-  { id: 'reports', label: 'Reports & Analytics', icon: BarChart3 },
-  { id: 'ai', label: 'AI Model Management', icon: Brain },
-  { id: 'settings', label: 'Settings / Profile', icon: Settings },
-];
+const Sidebar:React.FC<SidebarProps> = ({
+  activeTab,
+  setActiveTab,
+  showMobileMenu,
+  setShowMobileMenu,
+}) => {
+  const menuItems = [
+    { id: "dashboard", name: "Dashboard", icon: Home },
+    { id: "farmers", name: "Manage Farmers", icon: Users },
+    { id: "buyers", name: "Manage Buyers", icon: Users },
+    { id: "crops", name: "Manage Crops", icon: Leaf },
+    { id: "upload", name: "Upload Prices", icon: Upload },
+    { id: "reports", name: "Reports", icon: FileText },
+    { id: "ai", name: "AI Insights", icon: Brain },
+    { id: "settings", name: "Settings", icon: Settings },
+  ];
 
-export default function Sidebar({ activeTab, setActiveTab, isOpen, toggleSidebar }: SidebarProps) {
+   const navigate = useNavigate();
+
+    const handleLogout = () => {
+        navigate("/login");
+    };
+
   return (
     <>
-      {/* MOBILE TOGGLE BUTTON */}
-      <button
-        onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-green-700 text-white rounded-lg shadow-lg"
-      >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* OVERLAY */}
-      {isOpen && (
+      {/* --- MOBILE OVERLAY --- */}
+      {showMobileMenu && (
         <div
           className="fixed inset-0 bg-black/40 z-30 lg:hidden"
-          onClick={toggleSidebar}
-        />
+          onClick={() => setShowMobileMenu(false)}
+        ></div>
       )}
 
-      {/* SIDEBAR */}
-      <div
+      {/* --- SIDEBAR PANEL --- */}
+      <aside
         className={`
-          fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r shadow-xl p-5
-          transform transition-transform duration-300
-          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          fixed lg:static top-0 left-0 w-64 bg-white border-r shadow-lg z-40
+          transform transition-transform duration-300 h-screen
+          ${showMobileMenu ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
-        {/* HEADER */}
-        <div className="mb-8 px-2">
-          <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>
-          
+        {/* Close button (mobile only) */}
+        <div className="lg:hidden flex justify-end p-4">
+          <button
+            onClick={() => setShowMobileMenu(false)}
+            className="p-2 rounded-lg hover:bg-gray-200"
+          >
+            <X size={22} />
+          </button>
         </div>
 
-        {/* NAVIGATION */}
-        <nav className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const active = activeTab === item.id;
-
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  if (window.innerWidth < 1024) toggleSidebar();
-                }}
-                className={`
-                  flex items-center gap-3 w-full px-4 py-2 rounded-lg transition-colors text-left
-                  ${active
-                    ? "bg-green-700 text-white font-semibold"
-                    : "text-gray-700 hover:bg-gray-200 hover:text-black"
-                  }
-                `}
-              >
-                <Icon size={20} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+        {/* MENU LIST */}
+        <nav className="flex flex-col gap-1 px-4 py-2">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                setShowMobileMenu(false);
+              }}
+              className={`
+                flex items-center gap-3 px-4 py-2 rounded-lg text-left transition-all
+                ${
+                  activeTab === item.id
+                    ? "bg-green-600 text-white hover:border-none"
+                    : "text-gray-700 hover:bg-gray-100 hover:border-none"
+                }
+              `}
+            >
+              <item.icon size={20} />
+              {item.name}
+            </button>
+          ))}
         </nav>
-      </div>
+
+        <button
+          onClick={() => {           
+            handleLogout();
+          }}
+          className="flex gap-3 mx-4 my-4 px-8 py-2 rounded-lg items-center justify-start transition-colors duration-200 text-gray-700 hover:bg-red-800 hover:text-white border-none"
+        >
+          <LogOut size={20} /> Log Out
+        </button>
+      </aside>
     </>
   );
-}
+};
+
+export default Sidebar;

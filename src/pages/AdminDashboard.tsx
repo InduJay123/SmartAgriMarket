@@ -81,9 +81,9 @@ const AdminDashboard:React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pr-28">
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-1">
         {stats.map((stat, index) => (
           <TopCard key={index}  
             title={stat.title}
@@ -101,14 +101,14 @@ const AdminDashboard:React.FC = () => {
         <BarChart data={supplyData} title="Top 5 Crops by Supply" />
       </div>
 
-        <div className="bg-white border rounded-xl  shadow-sm p-4 mb-4font-heading flex flex-col items-start gap-2">
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4 font-heading flex flex-col items-start gap-2">
             <div className="flex font-bold text-xl gap-4 mb-2">
               <Users className="h-5 w-5" />
               Pending User Verifications
             </div>
-              <div className="space-y-4 w-full px-4">
+              <div className="space-y-4 w-full px-4 pr-4">
                 {pendingUsers.map((user) => (
-                  <div key={user.id} className="bg-muted/30 border border-gray-300 rounded-lg">
+                  <div key={user.id} className="bg-muted/30 border border-gray-300 rounded-lg pr-4">
                     <div className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div>
@@ -122,7 +122,7 @@ const AdminDashboard:React.FC = () => {
                         </div>
                         <div className="bg-amber-800/50 px-2 rounded-xl text-xs text-black">{user.type}</div>
                       </div>
-                      <div className="flex gap-4 px-6">
+                      <div className="flex gap-8 px-6">
                         <Dialog.Root>
                           <DialogTrigger asChild>
                             <button className="flex-1 border border-gray-200 bg-gray-50 rounded-xl hover:bg-red-600/90 hover:text-white hover:border-none">

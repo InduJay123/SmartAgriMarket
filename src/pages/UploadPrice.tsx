@@ -2,8 +2,8 @@ import { Upload, FileText } from 'lucide-react';
 
 export default function UploadPrice() {
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
+    <div className="space-y-6 pr-28">
+      <div className="bg-white rounded-lg shadow-lg p-2 lg:p-4">
         <h2 className="text-xl lg:text-2xl font-bold mb-6">Upload Price Data</h2>
 
         <div className="max-w-2xl mx-auto">

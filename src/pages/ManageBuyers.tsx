@@ -33,13 +33,13 @@ export default function ManageBuyers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px]">
             <thead>
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">ID</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Name</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Type</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Location</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
+              <tr className="border-b border-gray-200 bg-gray-50 font-semibold text-gray-700">
+                <th className="text-left py-3 px-4">ID</th>
+                <th className="text-left py-3 px-4 ">Name</th>
+                <th className="text-left py-3 px-4 ">Type</th>
+                <th className="text-left py-3 px-4 ">Location</th>
+                <th className="text-left py-3 px-4 ">Status</th>
+                <th className="text-left py-3 px-4 ">Actions</th>
               </tr>
             </thead>
             <tbody>

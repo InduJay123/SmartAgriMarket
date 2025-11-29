@@ -1,4 +1,3 @@
-import { Settings } from 'lucide-react';
 import { useState } from 'react';
 import Header from '../components/admin/Header';
 import AIModel from './AIModel';
@@ -10,6 +9,7 @@ import Reports from './Reports';
 import UploadPrice from './UploadPrice';
 import Sidebar from '../components/admin/Sidebar';
 import AdminDashboard from './AdminDashboard';
+import Settings from './Settings';
 
 
 const Admin:React.FC = () => {
@@ -37,7 +37,7 @@ const Admin:React.FC = () => {
       case 'ai':
         return <AIModel />;
       case 'settings':
-        return <Settings />;
+        return <Settings/>;
       default:
         return <Dashboard />;
     }

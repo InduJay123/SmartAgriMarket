@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { MapPin, Search, Filter } from 'lucide-react';
-import StatCard from '../components/admin/StatCard';
+import { MapPin, Search, Filter, AlertTriangle, Leaf, ShoppingCart, Users, Eye, Trash2 } from 'lucide-react';
+import TopCard from '../components/admin/TopCard';
 
 
 const farmers = [
@@ -11,20 +11,61 @@ const farmers = [
   { id: 5, name: 'S.A Dayanga', location: 'Nuwara', crops: 'Carrot, Leeks', verified: true },
 ];
 
-export default function ManageFarmers() {
+const ManageFarmers:React.FC = () => {
+
+  const stats = [
+        {
+            title: "Verified Farmers",
+            value:"248",
+            subTitle:"",
+            icon: Users,
+            color:"text-green-300",
+            bgColor:"bg-green-50"           
+        },
+        {
+            title: "Pending Approvals",
+            value:"3",
+            subTitle:"",
+            icon:AlertTriangle,
+            color:"text-red-300" ,
+            bgColor:"bg-red-50"           
+        },
+        {
+            title: "Buyers",
+            value:"156",
+            subTitle:"",
+            icon: ShoppingCart,
+            color:"text-blue-300",
+            bgColor:"bg-blue-50"            
+        },
+        {
+            title: "Crops",
+            value:"58",
+            subTitle:"",
+            icon:Leaf,
+            color:"text-amber-900" ,
+            bgColor:"bg-amber-100"           
+        },
+  ];
   const [showMap, setShowMap] = useState(false);
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard value="240" label="Farmers" color="emerald" />
-        <StatCard value="180" label="Buyers" color="yellow" />
-        <StatCard value="58" label="Crops" color="green" />
-        <StatCard value="1,240" label="Price Updates" color="blue" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-6">
+        {stats.map((stat, index) => (
+          <TopCard key={index}  
+            title={stat.title}
+            description={stat.value}
+            bottomText={stat.subTitle}
+            icon={stat.icon}
+            iconBgColor={stat.bgColor}
+            iconColor={stat.color}
+          />
+        ))}           
       </div>
 
       <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-xl lg:text-2xl font-bold">Farmers Location</h2>
           <button
             onClick={() => setShowMap(!showMap)}
@@ -70,13 +111,13 @@ export default function ManageFarmers() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px]">
             <thead>
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">ID</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Name</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Location</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Crops</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
+              <tr className="border-b border-gray-200 bg-gray-50  font-semibold text-gray-700">
+                <th className="text-left py-3 px-4">ID</th>
+                <th className="text-left py-3 px-4">Name</th>
+                <th className="text-left py-3 px-4">Location</th>
+                <th className="text-left py-3 px-4">Crops</th>
+                <th className="text-left py-3 px-4">Status</th>
+                <th className="text-left py-3 px-4">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -98,8 +139,11 @@ export default function ManageFarmers() {
                     </span>
                   </td>
                   <td className="py-3 px-4">
-                    <button className="text-emerald-600 hover:text-emerald-800 font-medium text-sm">
-                      View Details
+                    <button className="text-emerald-600  hover:text-emerald-800 p-2 hover:bg-emerald-200 border-none">
+                      <Eye size={16}/>
+                    </button>
+                    <button className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 border-none">
+                      <Trash2 size={16}/>
                     </button>
                   </td>
                 </tr>
@@ -111,3 +155,5 @@ export default function ManageFarmers() {
     </div>
   );
 }
+
+export default ManageFarmers;

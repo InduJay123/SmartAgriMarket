@@ -1,4 +1,5 @@
-import { UserRole } from '../types/auth';
+import type { UserRole } from "../types/auth";
+
 import { Sprout, ShoppingCart, Shield } from 'lucide-react';
 
 interface RoleSelectorProps {

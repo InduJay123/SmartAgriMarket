@@ -1,48 +1,21 @@
-import React from 'react'
-import './App.css'
-import Home from './scenes/home'
-import Navbar from './scenes/navbar'
-import ContactUs from './scenes/contactus/contactus'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState } from 'react';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
-
+type Page = 'login' | 'signup';
 
 function App() {
-
-  const [isTopOfPage, setIsTopOfPage] = React.useState(true);
-  
-  React.useEffect(() => {
-    const handleScroll = () => {
-      if(window.scrollY === 0 ) {
-        setIsTopOfPage(true);
-      } else {
-        setIsTopOfPage(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [] 
-  );
+  const [currentPage, setCurrentPage] = useState<Page>('login');
 
   return (
-    <div>
-    
-    <BrowserRouter>
-      {/* Navbar always visible */}
-      <Navbar />
-
-      {/* Page Routing */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/contactus" element={<ContactUs />} />
-      </Routes>
-    </BrowserRouter>
-
-    </div>
- 
-
-  )
+    <>
+      {currentPage === 'login' ? (
+        <Login onNavigateToSignup={() => setCurrentPage('signup')} />
+      ) : (
+        <Signup onNavigateToLogin={() => setCurrentPage('login')} />
+      )}
+    </>
+  );
 }
 
-export default App
+export default App;

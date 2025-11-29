@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import logo from "../../assets/ChatGPT Image Nov 29, 2025, 12_24_03 PM.png";
 
 export default function Navbar() {
 
@@ -23,13 +24,15 @@ export default function Navbar() {
   return (
     <header
       className={`w-full fixed top-0 z-50 transition-all duration-300 ${
-        isTopOfPage ? "bg-white shadow-md" : "bg-white shadow"
+        isTopOfPage ? "" : "bg-white shadow"
       }`}
     >
       <div className="w-11/12 mx-auto flex items-center justify-between py-4">
         
         <div>
-          <h1 className="text-xl font-bold leading-5">
+          <h1 className={`text-xl font-bold leading-5 ${isTopOfPage ? "text-white" : ""}`}>
+            {/* <img src={logo} alt="Logo" className="h-10 w-10 inline-block mr-2" /> */}
+
             Smart Agriculture Market <br /> Management System
           </h1>
         </div>
@@ -37,38 +40,62 @@ export default function Navbar() {
        
         <nav>
           <ul className="flex items-center gap-10 text-sm font-medium">
-            <li><Link to="/" className="hover:text-green-700">{t('Home')}</Link></li>
-            <li>
-              <Link to="/contactus" className="hover:text-green-700">{t('About Us')}</Link>
-            </li>
-           
-            
-
-                  <li className="relative group cursor-pointer">
-                      <button className="inline-flex items-center gap-1 font-medium hover:text-green-700  ">
-                       {t('Pages')}
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-
-        {/* Dropdown Menu */}
-                <div className="absolute hidden group-hover:flex flex-col bg-white shadow-md rounded-md w-40 right-0 top-full pt-2">
-                  <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Farmer</a>
-                  <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Buyer</a>
-                  <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Admin</a>
-                </div>
-      </li>
 
 
-           
+        <li>
+          <Link
+            to="/"
+            className={`relative px-3 py-1 text-sm font-medium group
+              ${isTopOfPage ? "text-white" : ""} hover:${isTopOfPage ? "text-white" : "text-green-700"}
+            `}
+          >
+            {t('Home')}
+
+            <span
+              className={`absolute left-0 bottom-0 h-[2px] w-0 
+              transition-all duration-300 group-hover:w-full
+              ${isTopOfPage ? "bg-white" : "bg-green-700"}
+            `}></span>
+          </Link>
+        </li>
+
+
+        <li>
+          <Link
+            to="/contactus"
+            className={`relative px-3 py-1 text-sm font-medium group
+              ${isTopOfPage ? "text-white" : ""} hover:${isTopOfPage ? "text-white" : "text-green-700"}
+            `}
+          >
+            {t('About Us')}
+
+            <span
+              className={`absolute left-0 bottom-0 h-[2px] w-0 
+              transition-all duration-300 group-hover:w-full
+              ${isTopOfPage ? "bg-white" : "bg-green-700"}
+            `}></span>
+          </Link>
+        </li>
+
+
+        <li>
+          <Link
+            to="/contactus"
+            className={`relative px-3 py-1 text-sm font-medium group
+              ${isTopOfPage ? "text-white" : ""} hover:${isTopOfPage ? "text-white" : "text-green-700"}
+            `}
+          >
+            {t('Contact Us')}
+
+            <span
+              className={`absolute left-0 bottom-0 h-[2px] w-0 
+              transition-all duration-300 group-hover:w-full
+              ${isTopOfPage ? "bg-white" : "bg-green-700"}
+            `}></span>
+          </Link>
+        </li>
+
+ 
           </ul>
         </nav>
 
@@ -77,18 +104,51 @@ export default function Navbar() {
           <button className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md">
            {t('Login')}
           </button>
-          <button className="px-6 py-2 rounded-md border border-gray-400 hover:bg-gray-200">
+          <button className={`px-6 py-2 rounded-md border text-${isTopOfPage ? "white" : ""} border-gray-400 hover:bg-gray-200 hover:text-green-700`}>
             {t('Sign Up')}
           </button>
         </div>
 
         <div className="flex gap-3">
-      <button onClick={() => changeLanguage("en")} className="px-3 py-1 border-x-0 border-y-0 hover:bg-gray-200">
+      <button
+        onClick={() => changeLanguage("en")}
+        className={`relative px-3 py-1 text-sm font-medium group 
+          ${isTopOfPage ? "text-white" : ""}
+          focus:outline-none focus:ring-0 focus-visible:outline-none
+          border border-transparent
+        `}
+      >
         EN
-      </button>
-      <button onClick={() => changeLanguage("si")} className="px-3 py-1 border-x-0 border-y-0 hover:bg-gray-200 ">
+
+        <span
+          className={`absolute left-0 bottom-0 h-[2px] w-0
+            transition-all duration-300 group-hover:w-full
+            ${isTopOfPage ? "bg-white" : "bg-green-700"}
+          `}
+        ></span>
+    </button>
+
+    <button
+        onClick={() => changeLanguage("si")}
+        className={`relative px-3 py-1 text-sm font-medium group 
+          ${isTopOfPage ? "text-white" : ""}
+          focus:outline-none focus:ring-0 focus-visible:outline-none
+          border border-transparent
+        `}
+      >
         සිං
-      </button>
+
+        <span
+          className={`absolute left-0 bottom-0 h-[2px] w-0
+            transition-all duration-300 group-hover:w-full
+            ${isTopOfPage ? "bg-white" : "bg-green-700"}
+          `}
+        ></span>
+    </button>
+
+
+
+      
     </div>
 
 

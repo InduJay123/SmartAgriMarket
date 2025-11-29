@@ -55,7 +55,7 @@ const SideBarLayout: React.FC = () => {
         <Sidebar isOpen={showSidebar} onClose={() => setShowSidebar(false)}/>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1 overflow-auto min-h-0 px-10">
+        <main className="flex-1 overflow-auto min-h-0 pl-10 pr-40">
           <Outlet />
         </main>
 

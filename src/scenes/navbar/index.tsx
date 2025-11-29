@@ -42,22 +42,25 @@ export default function Navbar() {
           <ul className="flex items-center gap-10 text-sm font-medium">
 
 
-        <li>
+       <li>
           <Link
             to="/"
             className={`relative px-3 py-1 text-sm font-medium group
-              ${isTopOfPage ? "text-white" : ""} hover:${isTopOfPage ? "text-white" : "text-green-700"}
+              ${isTopOfPage ? "text-white" : ""} 
+              hover:${isTopOfPage ? "text-white" : "text-green-700"}
             `}
           >
             {t('Home')}
 
             <span
               className={`absolute left-0 bottom-0 h-[2px] w-0 
-              transition-all duration-300 group-hover:w-full
-              ${isTopOfPage ? "bg-white" : "bg-green-700"}
-            `}></span>
+                transition-all duration-300 group-hover:w-full
+                ${isTopOfPage ? "bg-white" : "bg-green-700"}
+              `}
+            ></span>
           </Link>
-        </li>
+      </li>
+
 
 
         <li>

@@ -1,7 +1,8 @@
 import { LineChart, BarChart,Users, AlertTriangle, ShoppingCart, Leaf, CheckCircle, Eye, XCircle } from "lucide-react";
 import ActivityTable from "../components/admin/ActivityTable";
 import TopCard from "./TopCard";
-import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import * as Dialog from "@radix-ui/react-dialog";
 
 const AdminDashboard:React.FC = () => {
 
@@ -105,7 +106,7 @@ const AdminDashboard:React.FC = () => {
               <Users className="h-5 w-5" />
               Pending User Verifications
             </div>
-              <div className="space-y-4 w-full">
+              <div className="space-y-4 w-full px-4">
                 {pendingUsers.map((user) => (
                   <div key={user.id} className="bg-muted/30 border border-gray-300 rounded-lg">
                     <div className="p-4">
@@ -121,36 +122,41 @@ const AdminDashboard:React.FC = () => {
                         </div>
                         <div className="bg-amber-800/50 px-2 rounded-xl text-xs text-black">{user.type}</div>
                       </div>
-                      <div className="flex gap-2">
-                        <Dialog>
+                      <div className="flex gap-4 px-6">
+                        <Dialog.Root>
                           <DialogTrigger asChild>
-                            <button className="flex-1 border border-gray-200 bg-gray-50 rounded-xl">
-                              <div className="flex items-center gap-4 justify-center font-medium">
+                            <button className="flex-1 border border-gray-200 bg-gray-50 rounded-xl hover:bg-red-600/90 hover:text-white hover:border-none">
+                              <div className="flex items-center gap-4 justify-center font-medium ">
                                 <Eye size={20}/>
                                 Review
                               </div>
                             </button>
                           </DialogTrigger>
-                          <DialogContent>
+                          
+                            <Dialog.Portal>
+                              <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+
+                              <Dialog.Content className="fixed top-1/2 left-1/2 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl p-4 shadow-xl">
+                                <Dialog.Title className="font-bold text-lg mb-4">
+                                  User Verification Details
+                                </Dialog.Title>
                             
-                              <p>User Verification Details</p>
-                            
-                            <div className="space-y-4">
+                            <div className="space-y-2">
                               <div>
-                                <label>Name</label>
+                                <label className="text-sm">Name</label>
                                 <p className="font-medium">{user.name}</p>
                               </div>
                               <div>
-                                <label>Type</label>
+                                <label className="text-sm">Type</label>
                                 <p className="font-medium">{user.type}</p>
                               </div>
                               <div>
-                                <label>Region</label>
+                                <label className="text-sm">Region</label>
                                 <p className="font-medium">{user.region}</p>
                               </div>
                               {user.nic && (
                                 <div>
-                                  <label>NIC</label>
+                                  <label className="text-sm">NIC</label>
                                   <p className="font-medium">{user.nic}</p>
                                 </div>
                               )}
@@ -160,34 +166,43 @@ const AdminDashboard:React.FC = () => {
                                   <p className="font-medium">{user.business}</p>
                                 </div>
                               )}
-                              <div className="flex gap-2 pt-4">
+                              <div className="flex gap-2 px-4 pt-4">
                                 <button 
                                   onClick={() => handleApprove(user.id)}
-                                  className="flex-1"
+                                  className="p-1 flex-1 bg-green-800/90 text-white rounded-xl hover:bg-green-800/85 hover:border-none"
                                 >
-                                  <CheckCircle className="h-4 w-4 mr-1" />
-                                  Approve
+                                  <div className="flex items-center gap-4 justify-center font-medium ">
+                                    <CheckCircle className="h-4 w-4 mr-1" />
+                                    Approve
+                                  </div>
                                 </button>
                                 <button 
                                   onClick={() => handleReject(user.id)}
-                                  className="flex-1"
+                                  className="flex-1 bg-red-600 text-white rounded-xl hover:bg-red-600/90 hover:border-none "
                                 >
-                                  <XCircle className="h-4 w-4 mr-1" />
-                                  Reject
+                                  <div className="flex items-center gap-4 justify-center font-medium ">
+                                    <XCircle className="h-4 w-4 mr-1" />
+                                    Reject
+                                  </div>
                                 </button>
                               </div>
                             </div>
-                          </DialogContent>
-                        </Dialog>
-                        <button 
-                          
+                            <Dialog.Close className="absolute top-3 right-4 text-gray-500 hover:text-black border-none">
+                                ✕
+                            </Dialog.Close>
+                          </Dialog.Content>
+                          </Dialog.Portal>
+                        </Dialog.Root>
+                        <button                           
                           onClick={() => handleApprove(user.id)}
-                          className="flex-1"
+                          className="flex-1  bg-green-800/90 text-white rounded-xl hover:bg-green-800/85 hover:border-none"
                         >
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Approve
+                          <div className="flex items-center gap-4 justify-center font-medium ">
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            Approve
+                          </div>
                         </button>
-                        <button    
+                        <button className="p-2 bg-red-600 text-white rounded-xl hover:border-none hover:bg-red-600/90"   
                           onClick={() => handleReject(user.id)}
                         >
                           <XCircle className="h-4 w-4" />

@@ -18,6 +18,7 @@ import {useTranslation} from 'react-i18next';
 import i18next from "i18next";
 import { footer } from "framer-motion/client";
 import { Link } from "react-router-dom";
+import video from "../../assets/Video Banner Stock Videos - Rural, Farming, Agriculture, Nature.mp4";
 
 // Animation variants
 const fadeUp = {
@@ -154,35 +155,61 @@ const isSinhala = i18n.language === "si";
       </section>
 
       {/* SERVICES ICONS */}
-      <section className="py-8 md:py-12 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-6 text-center ">
-          <h3 className="text-2xl md:text-3xl font-bold text-custom-green mb-3">{t('Our services')}</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 ">
+      <section className="py-8 md:py-12 bg-gray-50 relative overflow-hidden">
+
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src={video} type="video/mp4" />
+        </video>
+
+        <div className="absolute inset-0 bg-black/30 z-0"></div>
+
+        <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
+          <h3 className="text-2xl md:text-3xl font-bold text-white mb-8">
+            {t('Our services')}
+          </h3>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
             {[{
               icon: Sprout,
               title: t('Predict Price Before you Sell'),
-            },{
+            }, {
               icon: Users,
               title: t('Consultant Services for Crops'),
-            },{
+            }, {
               icon: FileText,
               title: t('Reduce Wastage of Harvest'),
-            },{
+            }, {
               icon: Globe,
               title: t('Create Global Market Place'),
             }].map((s, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-white p-4 rounded-lg shadow-sm">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white p-4 rounded-lg shadow-sm"
+              >
                 <div className="flex flex-col items-center gap-3">
                   <div className="bg-[#e6f6f0] p-3 rounded-full">
                     <s.icon className="w-6 h-6 text-[#0f6b53]" />
                   </div>
-                  <p className="text-sm font-medium text-gray-800">{s.title}</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {s.title}
+                  </p>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
-      </section>
+
+</section>
+
 
       {/* FEATURED PRODUCTS - CENTERED CARDS SWIPER */}
      

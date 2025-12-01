@@ -36,7 +36,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
   return (
     <div className="min-h-screen grid md:grid-cols-2">
       {/* LEFT SECTION - LOGIN FORM */}
-      <div className="flex items-center justify-center px-6 py-10">
+      <div className="flex items-center justify-center px-6 py-2">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
             Welcome back!
@@ -142,7 +142,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
       </div>
 
       {/* RIGHT SECTION - IMAGE + TEXT */}
-      <div className="hidden md:flex flex-col items-left justify-center bg-white p-10">
+      <div className="hidden md:flex flex-col items-left justify-center bg-white p-2">
         
         <h2 className="text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6">
           Reach your<br /> customers faster, <br />

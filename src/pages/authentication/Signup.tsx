@@ -65,7 +65,7 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
   };
 
   return ( 
-      <div className="w-full bg-white grid grid-cols-1 md:grid-cols-2 overflow-hidden px-10">
+      <div className="w-full bg-white grid grid-cols-1 md:grid-cols-2 overflow-hidden py-10 px-16">
         {/* LEFT SIDE – SIGNUP FORM */}
         <div className="p-10">
           <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>

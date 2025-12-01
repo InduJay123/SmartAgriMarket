@@ -1,27 +1,20 @@
 import { useState, useEffect } from 'react';
-
-import { ShoppingCart, Search, Filter, Menu, X, User, Heart, TrendingUp } from 'lucide-react';
+import { Search, ShoppingCart, TrendingUp, User,  } from 'lucide-react';
 import ProductGrid from './ProductGrid';
-import Cart from './Cart';
-import Sidebar from './Sidebar';
-import OrderHistory from './OrderHistory';
-import BillingInfo from './BillingInfo';
+
 import PriceRangeFilter from './PriceRangeFilter';
 import { mockProducts, type CartItem, type Product } from '../../lib/supabase';
+import Cart from './Cart';
 
-type View = 'shop' | 'orders' | 'billing' | 'favorites';
-
-function BuyerDashboard() {
+const BuyerShop = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [currentView, setCurrentView] = useState<View>('shop');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10]);
   const [maxPrice, setMaxPrice] = useState(10);
   const [showCart, setShowCart] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [loading, setLoading] = useState(true);
   const buyerId = 'demo-buyer-id';
 
@@ -46,27 +39,17 @@ function BuyerDashboard() {
 
   const fetchCartItems = () => {
     const savedCart = localStorage.getItem(`cart_${buyerId}`);
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
+    if (savedCart) setCartItems(JSON.parse(savedCart));
   };
 
   const filterProducts = () => {
     let filtered = products;
-
-    if (searchQuery) {
-      filtered = filtered.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
-    }
-
+    if (searchQuery) filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    if (selectedCategory !== 'all') filtered = filtered.filter(p => p.category === selectedCategory);
     filtered = filtered.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
-
     setFilteredProducts(filtered);
   };
 
@@ -75,26 +58,9 @@ function BuyerDashboard() {
     if (!product) return;
 
     const existingItem = cartItems.find(item => item.product_id === productId);
-    let updatedCart: CartItem[];
-
-    if (existingItem) {
-      updatedCart = cartItems.map(item =>
-        item.product_id === productId
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    } else {
-      updatedCart = [
-        ...cartItems,
-        {
-          id: `cart_${Date.now()}`,
-          buyer_id: buyerId,
-          product_id: productId,
-          quantity: 1,
-          product,
-        },
-      ];
-    }
+    const updatedCart = existingItem
+      ? cartItems.map(item => item.product_id === productId ? { ...item, quantity: item.quantity + 1 } : item)
+      : [...cartItems, { id: `cart_${Date.now()}`, buyer_id: buyerId, product_id: productId, quantity: 1, product }];
 
     setCartItems(updatedCart);
     localStorage.setItem(`cart_${buyerId}`, JSON.stringify(updatedCart));
@@ -105,11 +71,7 @@ function BuyerDashboard() {
       removeFromCart(itemId);
       return;
     }
-
-    const updatedCart = cartItems.map(item =>
-      item.id === itemId ? { ...item, quantity } : item
-    );
-
+    const updatedCart = cartItems.map(item => item.id === itemId ? { ...item, quantity } : item);
     setCartItems(updatedCart);
     localStorage.setItem(`cart_${buyerId}`, JSON.stringify(updatedCart));
   };
@@ -120,33 +82,23 @@ function BuyerDashboard() {
     localStorage.setItem(`cart_${buyerId}`, JSON.stringify(updatedCart));
   };
 
-  const cartTotal = cartItems.reduce((sum, item) => {
-    return sum + (item.product?.price || 0) * item.quantity;
-  }, 0);
-
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
   const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const cartTotal = cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0);
 
   return (
-    <div className="bg-gray-50 w-screen">
+    <div className="space-y-6 pt-8">
       <header className="bg-white shadow-sm sticky top-0 z-40">
         <div className="mx-auto px-2 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => setShowMobileMenu(!showMobileMenu)}
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
-              >
-                {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
-              </button>
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                   <TrendingUp className="text-white" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">SAMMS</h1>
-                  <p className="text-xs text-gray-500">Agriculture Market</p>
+                  <h1 className="text-xl font-bold text-gray-900">Buyer Portal</h1>
+                  <p className="text-xs text-gray-500">Henri's Market</p>
                 </div>
               </div>
             </div>
@@ -198,103 +150,37 @@ function BuyerDashboard() {
         </div>
       </header>
 
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 ">
-        <div className="flex gap-6">
-          <Sidebar
-            currentView={currentView}
-            setCurrentView={setCurrentView}
-            showMobileMenu={showMobileMenu}
-            setShowMobileMenu={setShowMobileMenu}
-          />
 
-          <main className="flex-1 min-w-0 pr-28">
-            {currentView === 'shop' && (
-              <div className="space-y-6 pt-8">
-                <div className="relative rounded-2xl overflow-hidden h-64">
-                  <img
-                    src="https://images.pexels.com/photos/1300972/pexels-photo-1300972.jpeg"
-                    alt="Fresh vegetables"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-                  <div className="relative h-full flex flex-col justify-center p-8 text-white">
-                    <h2 className="text-3xl font-bold mb-2">Fresh From Farm</h2>
-                    <p className="text-gray-100 mb-4">Get the freshest vegetables delivered to your doorstep</p>
-                    <button className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-green-50 transition w-fit">
-                      Shop Now
-                    </button>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-bold text-gray-900">Filter Products</h3>
-                    <Filter size={20} className="text-gray-500" />
-                  </div>
-
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">Categories</label>
-                      <div className="flex flex-wrap gap-2">
-                        {categories.map(category => (
-                          <button
-                            key={category}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                              selectedCategory === category
-                                ? 'bg-green-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                          >
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <PriceRangeFilter
-                      priceRange={priceRange}
-                      setPriceRange={setPriceRange}
-                      maxPrice={maxPrice}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-bold text-gray-900">
-                      Available Products ({filteredProducts.length})
-                    </h3>
-                  </div>
-
-                  {loading ? (
-                    <div className="text-center py-12">
-                      <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-                      <p className="mt-4 text-gray-600">Loading products...</p>
-                    </div>
-                  ) : (
-                    <ProductGrid
-                      products={filteredProducts}
-                      addToCart={addToCart}
-                    />
-                  )}
-                </div>
-              </div>
-            )}
-
-            {currentView === 'orders' && <OrderHistory buyerId={buyerId} />}
-            {currentView === 'billing' && <BillingInfo buyerId={buyerId} />}
-            {currentView === 'favorites' && (
-              <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-                <Heart size={48} className="text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">No Favorites Yet</h3>
-                <p className="text-gray-600">Start adding products to your favorites list</p>
-              </div>
-            )}
-          </main>
+      {/* Categories & Price Filter */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="flex flex-wrap gap-2">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                selectedCategory === cat ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            </button>
+          ))}
         </div>
+
+        <PriceRangeFilter priceRange={priceRange} setPriceRange={setPriceRange} maxPrice={maxPrice} />
       </div>
 
+      {/* Products */}
+      {loading ? (
+        <div className="text-center py-12">
+          <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">Loading products...</p>
+        </div>
+      ) : (
+        <ProductGrid products={filteredProducts} addToCart={addToCart} />
+      )}
+
+      {/* Cart */}
       <Cart
         cartItems={cartItems}
         showCart={showCart}
@@ -307,6 +193,6 @@ function BuyerDashboard() {
       />
     </div>
   );
-}
+};
 
-export default BuyerDashboard;
+export default BuyerShop;

@@ -1,8 +1,10 @@
 import React from 'react'
 import './App.css'
-import BuyerDashboard from './components/buyer/BuyerDashboard'
-
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import BillingInfo from './components/buyer/BillingInfo';
+import BuyerShop from './components/buyer/BuyerDashboard';
+import OrderHistory from './components/buyer/OrderHistory';
+import SideBarLayout from './layout/SidebarLayout';
 
 function App() {
 
@@ -23,12 +25,16 @@ function App() {
   );
 
   return (
-    <div>
-    <BuyerDashboard/>
-
-    </div>
- 
-
+    <BrowserRouter>
+      <Routes>
+        <Route path="/buyer" element={<SideBarLayout />}>
+          <Route path="shop" element={<BuyerShop />} />
+          <Route path="orders" element={<OrderHistory buyerId={''} />} />
+          <Route path="billing" element={<BillingInfo buyerId={''} />} />
+          
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

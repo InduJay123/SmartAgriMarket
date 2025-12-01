@@ -1,84 +1,82 @@
-import { ShoppingBag, Package, CreditCard, Heart, X, ShoppingCart } from 'lucide-react';
-import Cart from './Cart';
-
-type View = 'shop' | 'orders' | 'billing' | 'favorites';
+// Sidebar.tsx
+import { CreditCard, Heart,  LogOut, Package,ShoppingBag, ShoppingCart, } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 interface SidebarProps {
-  currentView: View;
-  setCurrentView: (view: View) => void;
-  showMobileMenu: boolean;
-  setShowMobileMenu: (show: boolean) => void;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
-function Sidebar({ currentView, setCurrentView, showMobileMenu, setShowMobileMenu }: SidebarProps) {
-  const menuItems = [
-    { id: 'shop' as View, label: 'Shop', icon: ShoppingBag },
-    { id: 'orders' as View, label: 'My Orders', icon: Package },
-    { id: 'billing' as View, label: 'Billing Info', icon: CreditCard },
-    { id: 'favorites' as View, label: 'Favorites', icon: Heart },
-    { id: 'cart' as View, label: 'Cart', icon: ShoppingCart },
-  ];
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+    const navigate = useNavigate();
 
-  const handleItemClick = (view: View) => {
-    setCurrentView(view);
-    setShowMobileMenu(false);
-  };
+    const handleLogout = () => navigate("/login");
 
-  return (
-    <>
-      {showMobileMenu && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-          onClick={() => setShowMobileMenu(false)}
-        />
-      )}
+    const menuItems = [
+      { name: "Shop", icon: ShoppingBag, path: "/buyer/shop" },
+      { name: "My Orders", icon: Package, path: "/buyer/orders" },
+      { name: "Billing Info", icon: CreditCard, path: "/buyer/billing" },
+      { name: "Favorites", icon: Heart, path: "/buyer/favorites" },
+      { name: "Cart", icon: ShoppingCart, path: "/buyer/cart" },
+    ];
 
-      <aside
-        className={`
-          fixed lg:sticky top-0 left-0 h-screen lg:h-auto
-          w-64 bg-white rounded-xl shadow-sm p-6
-          transform transition-transform duration-300 z-40
-          ${showMobileMenu ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}
-      >
-        <div className="flex items-center justify-between lg:hidden mb-6">
-          <h3 className="text-lg font-bold text-gray-900">Menu</h3>
-          <button
-            onClick={() => setShowMobileMenu(false)}
-            className="p-2 hover:bg-gray-100 rounded-lg"
-          >
-            <X size={20} />
-          </button>
-        </div>
+    return (
+        <>
+            {/* MOBILE OVERLAY */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/40 z-20 sm:hidden"
+                    onClick={onClose}
+                ></div>
+            )}
 
-        <nav className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = currentView === item.id;
-
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleItemClick(item.id)}
+            {/* SIDEBAR */}
+            <div
                 className={`
-                  w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                  font-medium transition-all
-                  ${
-                    isActive
-                      ? 'bg-green-600 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }
+                    fixed left-0 top-0 h-screen w-60 bg-white border-r shadow-xl p-4 z-30
+                    transform transition-transform duration-300
+                    ${isOpen ? "translate-x-0" : "-translate-x-full"}
+                    sm:translate-x-0 sm:static sm:block
                 `}
-              >
-                <Icon size={20} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-      </aside>
-    </>
-  );
-}
+            >
+                {/* CLOSE BUTTON MOBILE */}
+                <div className="flex justify-end sm:hidden mb-4">
+                    <button onClick={onClose} className="p-2 rounded-md hover:bg-gray-200">
+                        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* NAVIGATION */}
+                <nav className="flex flex-col gap-3 mb-10">
+                    {menuItems.map((item) => (
+                        <NavLink
+                            key={item.name}
+                            to={item.path}
+                            className={({ isActive }) =>
+                                `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200
+                                ${isActive
+                                    ? "text-white font-semibold bg-green-700 hover:text-white/80"
+                                    : "text-gray-700 hover:bg-gray-200 hover:text-black"}`
+                            }
+                            onClick={onClose} // closes sidebar on click (mobile)
+                        >
+                            <item.icon size={20} /> {item.name}
+                        </NavLink>
+                    ))}
+                </nav>
+
+                {/* LOGOUT */}
+                <button
+                    onClick={() => { onClose(); handleLogout(); }}
+                    className="flex w-full gap-2 px-2 py-2 rounded-lg items-center justify-start transition-colors duration-200 text-gray-700 hover:bg-red-800 hover:text-white"
+                >
+                    <LogOut size={20} /> Log Out
+                </button>
+            </div>
+        </>
+    );
+};
 
 export default Sidebar;

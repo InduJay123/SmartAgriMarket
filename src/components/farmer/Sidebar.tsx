@@ -1,4 +1,4 @@
-import emoji from "emoji-dictionary";
+// Sidebar.tsx
 import { Home, LogOut, MessageSquare, PlusCircle, Settings, TrendingUp } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -10,9 +10,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        navigate("/login");
-    };
+    const handleLogout = () => navigate("/login");
 
     const menuItems = [
         { name: "Home", icon: Home, path: "/farmer/dashboard" },
@@ -32,44 +30,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 ></div>
             )}
 
-            {/* SIDEBAR CONTAINER */}
+            {/* SIDEBAR */}
             <div
                 className={`
-                    fixed left-0 top-0 h-full w-56 bg-white border-r shadow-xl p-4 z-30
+                    fixed left-0 top-0 h-screen w-60 bg-white border-r shadow-xl p-4 z-30
                     transform transition-transform duration-300
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}
                     sm:translate-x-0 sm:static sm:block
                 `}
             >
-                {/* CLOSE BUTTON (MOBILE ONLY) */}
+                {/* CLOSE BUTTON MOBILE */}
                 <div className="flex justify-end sm:hidden mb-4">
-                    <button
-                        onClick={onClose}
-                        className="p-2 rounded-md hover:bg-gray-200"
-                    >
-                        <svg
-                            className="w-6 h-6 text-gray-700"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                            />
+                    <button onClick={onClose} className="p-2 rounded-md hover:bg-gray-200">
+                        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
-                </div>
-
-                {/* HEADER */}
-                <div className="flex items-start gap-3 mb-8">
-                    <p className="text-3xl">{emoji.getUnicode("ear_of_rice")}</p>
-                    <div>
-                        <h2 className="text-xl font-bold">Farmer Portal</h2>
-                        <p className="text-gray-500">Neha's Farm</p>
-                    </div>
                 </div>
 
                 {/* NAVIGATION */}
@@ -79,13 +55,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             key={item.name}
                             to={item.path}
                             className={({ isActive }) =>
-                                `
-                                flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200
+                                `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200
                                 ${isActive
-                                    ? "text-white font-semibold bg-green-700"
-                                    : "text-gray-700 hover:bg-gray-200 hover:text-black"
-                                }
-                            `
+                                    ? "text-white font-semibold bg-green-700 hover:text-white/80"
+                                    : "text-gray-700 hover:bg-gray-200 hover:text-black"}`
                             }
                             onClick={onClose} // closes sidebar on click (mobile)
                         >
@@ -96,10 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
                 {/* LOGOUT */}
                 <button
-                    onClick={() => {
-                        onClose();
-                        handleLogout();
-                    }}
+                    onClick={() => { onClose(); handleLogout(); }}
                     className="flex w-full gap-2 px-2 py-2 rounded-lg items-center justify-start transition-colors duration-200 text-gray-700 hover:bg-red-800 hover:text-white"
                 >
                     <LogOut size={20} /> Log Out

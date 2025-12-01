@@ -142,7 +142,7 @@ const FarmerDashboard: React.FC = () => {
 
 
     return(
-        <div className="bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen">
+        <div className="bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full">
 
             <Header/>
 

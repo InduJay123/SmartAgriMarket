@@ -1,15 +1,9 @@
 import React from 'react'
 import './App.css'
 import Home from './scenes/home'
-import ContactUs from './scenes/contactus/contactus'
+import Navbar from './scenes/navbar'
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import SidebarLayout from './layout/SidebarLayout';
-import FarmerDashboard from './pages/farmer/FarmerDashboard';
-import AiInsights from './pages/farmer/AiInsights';
-import AddCrops from './pages/farmer/AddCrops';
-import Settings from './pages/farmer/Settings';
-import PublicLayout from './layout/PublicLayout'
+
 
 function App() {
 
@@ -29,22 +23,15 @@ function App() {
   }, [] 
   );
 
-  return (    
-    <BrowserRouter>
-      <Routes>
-        <Route element={<PublicLayout/>}>
-          <Route path="/" element={<Home />} />
-          <Route path="/contactus" element={<ContactUs />} />
-        </Route>
-            
-        <Route path='/farmer' element = {<SidebarLayout/>} >
-          <Route path='dashboard' element = {<FarmerDashboard/>}/>
-          <Route path='analytics' element={<AiInsights/>} />
-          <Route path='addcrops' element={<AddCrops/>}/>
-          <Route path='settings' element={<Settings/>}/>
-        </Route>
-      </Routes>
-   </BrowserRouter> 
+  return (
+    <div>
+    
+    <Navbar></Navbar>
+
+    <Home></Home>
+    </div>
+ 
+
   )
 }
 

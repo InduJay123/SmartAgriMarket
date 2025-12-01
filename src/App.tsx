@@ -1,7 +1,6 @@
 import React from 'react'
 import './App.css'
 import Home from './scenes/home'
-import Navbar from './scenes/navbar'
 import Admin from './pages/admin/Admin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -17,6 +16,10 @@ import FarmerDashboard from './pages/farmer/FarmerDashboard';
 import Messages from './pages/farmer/Messages';
 import Settings from './pages/farmer/Settings';
 import SideBarLayout from './layout/SidebarLayout';
+import BillingInfo from './components/buyer/BillingInfo';
+import BuyerShop from './components/buyer/BuyerDashboard';
+import OrderHistory from './components/buyer/OrderHistory';
+import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 
 function App() {
 
@@ -39,6 +42,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path="/" element={<Home />} />
 
         <Route path="/farmer" element={<SideBarLayout />}>
@@ -59,6 +63,11 @@ function App() {
           <Route path="reports" element={<Reports />} />
           <Route path="ai" element={<AIModel />} />
           <Route path="settings" element={<Settings />} />
+        </Route>
+        <Route path="/buyer" element={<BuyerSideBarLayout/>}>
+          <Route path="shop" element={<BuyerShop />} />
+          <Route path="orders" element={<OrderHistory buyerId={''} />} />
+          <Route path="billing" element={<BillingInfo buyerId={''} />} />          
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,30 +1,21 @@
 import React from 'react'
-import './App.css'
-import Home from './scenes/home'
-import Admin from './pages/admin/Admin';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AIModel from './pages/admin/AIModel';
-import ManageBuyers from './pages/admin/ManageBuyers';
-import ManageCrops from './pages/admin/ManageCrops';
-import ManageFarmers from './pages/admin/ManageFarmers';
-import Reports from './pages/admin/Reports';
-import UploadPrice from './pages/admin/UploadPrice';
-import AddCrops from './pages/farmer/AddCrops';
-import AiInsights from './pages/farmer/AiInsights';
-import FarmerDashboard from './pages/farmer/FarmerDashboard';
-import Messages from './pages/farmer/Messages';
-import Settings from './pages/farmer/Settings';
-import SideBarLayout from './layout/SidebarLayout';
-import BillingInfo from './components/buyer/BillingInfo';
-import BuyerShop from './components/buyer/BuyerDashboard';
-import OrderHistory from './components/buyer/OrderHistory';
-import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
+import { useState } from 'react';
+import Login from './pages/authentication/Login';
+import Signup from './pages/authentication/Signup';
+import Home from './scenes/home';
+// import Navbar from './scenes/navbar/Navbar';
+import ContactUs from './scenes/contactus/contactus';
+import { BrowserRouter,Routes, Route } from 'react-router-dom';
+
+type Page = 'login' | 'signup';
+
 
 function App() {
 
   const [isTopOfPage, setIsTopOfPage] = React.useState(true);
-  
+
+  const [currentPage, setCurrentPage] = useState<Page>('login');
+
   React.useEffect(() => {
     const handleScroll = () => {
       if(window.scrollY === 0 ) {
@@ -40,7 +31,8 @@ function App() {
   );
 
   return (
-    <BrowserRouter>
+    <div>
+      <BrowserRouter>
       <Routes>
 
         <Route path="/" element={<Home />} />
@@ -71,7 +63,14 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
-  )
+
+      {currentPage === 'login' ? (
+        <Login onNavigateToSignup={() => setCurrentPage('signup')} />
+      ) : (
+        <Signup onNavigateToLogin={() => setCurrentPage('login')} />
+      )}
+    </div>
+  );
 }
 
 export default App;

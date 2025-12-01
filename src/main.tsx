@@ -3,9 +3,13 @@ import './index.css'
 import App from './App.tsx'
 import React from 'react'
 import "./i18n";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
 
 createRoot(document.getElementById('root')!).render(
-   <React.StrictMode>
-      <App />
-    </React.StrictMode>
-)
+  <StrictMode>
+    <App />
+  </StrictMode>
+);

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Login from './pages/authentication/Login';
+import Signup from './pages/authentication/Signup';
 import Home from './scenes/home';
 // import Navbar from './scenes/navbar/Navbar';
 import ContactUs from './scenes/contactus/contactus';
@@ -32,13 +32,7 @@ function App() {
 
   return (
     <div>
-
-
       <BrowserRouter>
-      {/* Navbar always visible */}
-      {/* <Navbar /> */}
-
-      {/* Page Routing */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contactus" element={<ContactUs />} />

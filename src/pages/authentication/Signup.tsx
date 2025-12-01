@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { UserPlus, User, Mail, Lock, Phone, MapPin } from "lucide-react";
-import RoleSelector from "../components/RoleSelector";
-import type { SignupFormData, UserRole } from "../types/auth";
-import rightimg from "../assets/man-seller-sells-fresh-organic-fruit-vegetable-street-shop-seasonal-outdoor-farmer-local-market_575670-344.avif"
+import RoleSelector from "../../components/authentication/RoleSelector";
+import type { SignupFormData, UserRole } from "../../types/auth";
+import rightimg from "../../assets/man-seller-sells-fresh-organic-fruit-vegetable-street-shop-seasonal-outdoor-farmer-local-market_575670-344.avif"
 
 interface SignupProps {
   onNavigateToLogin: () => void;
@@ -64,11 +64,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-green-50 px-6">
-      {/* Wrapper */}
-      <div className="max-w-6xl w-full bg-white rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-2 overflow-hidden">
-
+  return ( 
+      <div className="w-full bg-white grid grid-cols-1 md:grid-cols-2 overflow-hidden px-10">
         {/* LEFT SIDE – SIGNUP FORM */}
         <div className="p-10">
           <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
@@ -184,25 +181,19 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
         </div>
 
         {/* RIGHT SIDE – Illustration area */}
-        <div className="hidden md:flex flex-col  items-center justify-center p-10 ">
-          
+        <div className="hidden md:flex flex-col  items-center justify-center p-10 ">         
           <h2 className="text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6 -mt-12">
           Reach your<br /> customers faster, <br />
           Manage your<br /> harvest without loss, <br />
           <span className="text-green-700 font-bold">With Us.</span>
-        </h2>
-          
-          
+        </h2>                  
           <img
             src={rightimg}
             alt="Signup Illustration"
             className="max-w-md w-full"
           />
-
         </div>
-
       </div>
-    </div>
   );
 }
 

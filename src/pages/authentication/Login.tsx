@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { LogIn, User, Lock } from "lucide-react";
-import type { LoginFormData, UserRole } from "../types/auth";
-import RoleSelector from "../components/RoleSelector";
-import { Link } from "react-router-dom";
-import marketImg from "../assets/legumes-frais-1140x510.png" 
+import { User, Lock } from "lucide-react";
+import type { LoginFormData, UserRole } from "../../types/auth";
+import RoleSelector from "../../components/authentication/RoleSelector";
+import marketImg from "../../assets/legumes-frais-1140x510.png" 
 
 
 interface LoginProps {

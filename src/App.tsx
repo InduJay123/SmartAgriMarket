@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import BillingInfo from './components/buyer/BillingInfo';
 import BuyerShop from './components/buyer/BuyerDashboard';
 import OrderHistory from './components/buyer/OrderHistory';
-import SideBarLayout from './layout/SidebarLayout';
+import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 
 function App() {
 
@@ -27,11 +27,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/buyer" element={<SideBarLayout />}>
+        <Route path="/buyer" element={<BuyerSideBarLayout/>}>
           <Route path="shop" element={<BuyerShop />} />
           <Route path="orders" element={<OrderHistory buyerId={''} />} />
-          <Route path="billing" element={<BillingInfo buyerId={''} />} />
-          
+          <Route path="billing" element={<BillingInfo buyerId={''} />} />          
         </Route>
       </Routes>
     </BrowserRouter>

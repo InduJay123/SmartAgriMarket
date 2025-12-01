@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Search, ShoppingCart, TrendingUp, User,  } from 'lucide-react';
 import ProductGrid from './ProductGrid';
-
 import PriceRangeFilter from './PriceRangeFilter';
 import { mockProducts, type CartItem, type Product } from '../../lib/supabase';
 import Cart from './Cart';
+import { Filter } from 'lucide-react';
 
 const BuyerShop = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -87,72 +86,37 @@ const BuyerShop = () => {
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0);
 
   return (
-    <div className="space-y-6 pt-8">
-      <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="mx-auto px-2 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="text-white" size={24} />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">Buyer Portal</h1>
-                  <p className="text-xs text-gray-500">Henri's Market</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search for vegetables, fruits..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-                <User size={20} />
-                <span className="text-sm font-medium">Account</span>
-              </button>
-              <button
-                onClick={() => setShowCart(true)}
-                className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-              >
-                <ShoppingCart size={24} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className="md:hidden pb-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
+    <div className="space-y-6 pt-4">
+      <div className="space-y-6 pt-4">
+        <div className="relative rounded-2xl overflow-hidden h-64">
+          <img
+            src="https://images.pexels.com/photos/1300972/pexels-photo-1300972.jpeg"
+            alt="Fresh vegetables"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+            <div className="relative h-full flex flex-col justify-center p-8 text-white">
+              <h2 className="text-3xl font-bold mb-2">Fresh From Farm</h2>
+                <p className="text-gray-100 mb-4">Get the freshest vegetables delivered to your doorstep</p>
+                  <button className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-green-50 transition w-fit">
+                    Shop Now
+                  </button>
             </div>
           </div>
         </div>
-      </header>
 
 
       {/* Categories & Price Filter */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-gray-900">Filter Products</h3>
+          <Filter size={20} className="text-gray-500" />
+        </div>
+
+      <div className="space-y-6">
+        <div>
+        <label className="block text-sm font-medium text-gray-700 mb-3">Categories</label>
+  
         <div className="flex flex-wrap gap-2">
           {categories.map(cat => (
             <button
@@ -166,10 +130,10 @@ const BuyerShop = () => {
             </button>
           ))}
         </div>
-
+      </div>
         <PriceRangeFilter priceRange={priceRange} setPriceRange={setPriceRange} maxPrice={maxPrice} />
       </div>
-
+    </div>
       {/* Products */}
       {loading ? (
         <div className="text-center py-12">

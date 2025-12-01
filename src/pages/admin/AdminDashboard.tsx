@@ -1,8 +1,9 @@
 import { LineChart, BarChart,Users, AlertTriangle, ShoppingCart, Leaf, CheckCircle, Eye, XCircle } from "lucide-react";
-import ActivityTable from "../components/admin/ActivityTable";
-import TopCard from "../components/admin/TopCard";
+
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import * as Dialog from "@radix-ui/react-dialog";
+import TopCard from "../../components/admin/TopCard";
+import ActivityTable from "../../components/admin/ActivityTable";
 
 const AdminDashboard:React.FC = () => {
 

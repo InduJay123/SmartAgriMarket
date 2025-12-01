@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { MapPin, Search, Filter, AlertTriangle, Leaf, ShoppingCart, Users, Eye, Trash2 } from 'lucide-react';
-import TopCard from '../components/admin/TopCard';
-
+import TopCard from '../../components/admin/TopCard';
 
 const farmers = [
   { id: 1, name: 'M.A premadasa', location: 'Weeraketiya', crops: 'Pumpkin, Wheat', verified: true },

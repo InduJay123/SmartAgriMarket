@@ -65,10 +65,7 @@ export default function Navbar() {
                   <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Buyer</a>
                   <a href="#" className="px-4 py-2 hover:bg-gray-100 hover:text-green-700">Admin</a>
                 </div>
-      </li>
-
-
-           
+      </li>       
           </ul>
         </nav>
 

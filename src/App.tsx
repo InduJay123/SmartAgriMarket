@@ -2,8 +2,8 @@ import React from 'react'
 import './App.css'
 import Home from './scenes/home'
 import Navbar from './scenes/navbar'
-
-
+import Admin from './pages/admin/Admin';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
 
@@ -24,14 +24,11 @@ function App() {
   );
 
   return (
-    <div>
-    
-    <Navbar></Navbar>
-
-    <Home></Home>
-    </div>
- 
-
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

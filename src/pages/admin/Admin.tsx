@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Menu, X, User } from "lucide-react";
-import Sidebar from "../components/admin/Sidebar";
+
 import AdminDashboard from "./AdminDashboard";
 import ManageFarmers from "./ManageFarmers";
 import ManageBuyers from "./ManageBuyers";
@@ -9,6 +9,7 @@ import UploadPrice from "./UploadPrice";
 import Reports from "./Reports";
 import AIModel from "./AIModel";
 import Settings from "./Settings";
+import Sidebar from "../../components/admin/Sidebar";
 
 const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState("dashboard");

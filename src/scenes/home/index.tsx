@@ -1,12 +1,6 @@
-
 import "swiper/swiper-bundle.css";
-
-
 import { Swiper, SwiperSlide } from "swiper/react";
-
-
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
-
 import { Sprout, Users, FileText, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 import img from './../../assets/purepng.com-brinjalvegetables-brinjal-eggplant-melongene-garden-egg-guinea-squash-941524725891tf1xf.png'
@@ -15,8 +9,6 @@ import img2 from './../../assets/potato.jpg';
 import img3 from './../../assets/pumpking2.png';
 import img4 from './../../assets/carbage.png';
 import {useTranslation} from 'react-i18next';
-import i18next from "i18next";
-import { footer } from "framer-motion/client";
 import { Link } from "react-router-dom";
 
 // Animation variants

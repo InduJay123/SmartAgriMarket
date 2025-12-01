@@ -6,6 +6,24 @@ import Home from './scenes/home';
 // import Navbar from './scenes/navbar/Navbar';
 import ContactUs from './scenes/contactus/contactus';
 import { BrowserRouter,Routes, Route } from 'react-router-dom';
+import BillingInfo from './components/buyer/BillingInfo';
+import BuyerShop from './components/buyer/BuyerDashboard';
+import OrderHistory from './components/buyer/OrderHistory';
+import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
+import SideBarLayout from './layout/SidebarLayout';
+import Admin from './pages/admin/Admin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AIModel from './pages/admin/AIModel';
+import ManageBuyers from './pages/admin/ManageBuyers';
+import ManageCrops from './pages/admin/ManageCrops';
+import ManageFarmers from './pages/admin/ManageFarmers';
+import Reports from './pages/admin/Reports';
+import UploadPrice from './pages/admin/UploadPrice';
+import AddCrops from './pages/farmer/AddCrops';
+import AiInsights from './pages/farmer/AiInsights';
+import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import Messages from './pages/farmer/Messages';
+import Settings from './pages/admin/Settings';
 
 type Page = 'login' | 'signup';
 

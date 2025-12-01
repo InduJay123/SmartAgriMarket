@@ -1,16 +1,19 @@
 import React from 'react'
-import { useState } from 'react';
+import { BrowserRouter,Routes, Route, useNavigate } from 'react-router-dom';
+
+import PublicLayout from './layout/PublicLayout';
+import Home from './scenes/home';
+import ContactUs from './scenes/contactus/contactus';
+
 import Login from './pages/authentication/Login';
 import Signup from './pages/authentication/Signup';
-import Home from './scenes/home';
-// import Navbar from './scenes/navbar/Navbar';
-import ContactUs from './scenes/contactus/contactus';
-import { BrowserRouter,Routes, Route } from 'react-router-dom';
+
 import BillingInfo from './components/buyer/BillingInfo';
 import BuyerShop from './components/buyer/BuyerDashboard';
 import OrderHistory from './components/buyer/OrderHistory';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 import SideBarLayout from './layout/SidebarLayout';
+
 import Admin from './pages/admin/Admin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AIModel from './pages/admin/AIModel';
@@ -19,20 +22,25 @@ import ManageCrops from './pages/admin/ManageCrops';
 import ManageFarmers from './pages/admin/ManageFarmers';
 import Reports from './pages/admin/Reports';
 import UploadPrice from './pages/admin/UploadPrice';
+
 import AddCrops from './pages/farmer/AddCrops';
 import AiInsights from './pages/farmer/AiInsights';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
 import Messages from './pages/farmer/Messages';
 import Settings from './pages/admin/Settings';
 
-type Page = 'login' | 'signup';
-
-
 function App() {
+  function LoginWrapper() {
+    const navigate = useNavigate();
+    return <Login onNavigateToSignup={() => navigate("/signup")} />;
+  }
+
+  function SignupWrapper() {
+    const navigate = useNavigate();
+    return <Signup onNavigateToLogin={() => navigate("/login")} />;
+  }
 
   const [isTopOfPage, setIsTopOfPage] = React.useState(true);
-
-  const [currentPage, setCurrentPage] = useState<Page>('login');
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -52,8 +60,12 @@ function App() {
     <div>
       <BrowserRouter>
       <Routes>
-
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<PublicLayout />}>
+          <Route index element={<Home />} />
+          <Route path="contact" element={<ContactUs />} />
+          <Route path='login' element={<LoginWrapper/>} />
+          <Route path="signup" element={<SignupWrapper />} /> 
+        </Route>
 
         <Route path="/farmer" element={<SideBarLayout />}>
           <Route path='dashboard' element={<FarmerDashboard/>} />
@@ -81,12 +93,6 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
-
-      {currentPage === 'login' ? (
-        <Login onNavigateToSignup={() => setCurrentPage('signup')} />
-      ) : (
-        <Signup onNavigateToLogin={() => setCurrentPage('login')} />
-      )}
     </div>
   );
 }

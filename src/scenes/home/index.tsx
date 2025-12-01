@@ -22,13 +22,10 @@ const stagger = {
 };
 
 
-
 export default function Home() {
 //translation part
 const { t, i18n } = useTranslation();
 const isSinhala = i18n.language === "si";
-
-
 
   return (
     <div className={`w-screen overflow-x-hidden ${isSinhala ? "font-sinhala text-2xl" : "font-sans"} text-gray-900`}>

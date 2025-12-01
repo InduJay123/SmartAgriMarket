@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import type{ LoginFormData, UserRole } from '../types/auth';
-import RoleSelector from '../components/RoleSelector';
-import { LogIn, User, Lock } from 'lucide-react';
+import { useState } from "react";
+import { LogIn, User, Lock } from "lucide-react";
+import type { LoginFormData, UserRole } from "../types/auth";
+import RoleSelector from "../components/RoleSelector";
+import { Link } from "react-router-dom";
+import marketImg from "../assets/legumes-frais-1140x510.png" 
+
 
 interface LoginProps {
   onNavigateToSignup: () => void;
@@ -9,9 +12,9 @@ interface LoginProps {
 
 export default function Login({ onNavigateToSignup }: LoginProps) {
   const [formData, setFormData] = useState<LoginFormData>({
-    username: '',
-    password: '',
-    role: 'farmer',
+    username: "",
+    password: "",
+    role: "farmer",
   });
 
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
@@ -20,136 +23,140 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
     e.preventDefault();
 
     const newErrors: Partial<LoginFormData> = {};
-
-    if (!formData.username) newErrors.username = 'Username is required';
-    if (!formData.password) newErrors.password = 'Password is required';
+    if (!formData.username) newErrors.username = "Username is required";
+    if (!formData.password) newErrors.password = "Password is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    console.log('Login submitted:', formData);
+    console.log("Login submitted:", formData);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&w=1920')",
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-green-900/80 via-green-800/75 to-green-700/70 backdrop-blur-sm"></div>
-      </div>
+    <div className="min-h-screen grid md:grid-cols-2">
+      {/* LEFT SECTION - LOGIN FORM */}
+      <div className="flex items-center justify-center px-6 py-10">
+        <div className="w-full max-w-md">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            Welcome back!
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Enter your Credentials to access your account
+          </p>
 
-      <div className="relative z-10 w-full max-w-md px-6">
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-600 to-green-700 rounded-full mb-4">
-              <Sprout className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h1>
-            <p className="text-sm text-gray-600">Smart Agriculture Market Management System</p>
-          </div>
-
+          {/* FORM */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* ROLE */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="text-sm font-medium text-gray-700">
                 Select Your Role
               </label>
               <RoleSelector
                 selectedRole={formData.role}
-                onRoleChange={(role: UserRole) => setFormData({ ...formData, role })}
+                onRoleChange={(role: UserRole) =>
+                  setFormData({ ...formData, role })
+                }
               />
             </div>
 
+            {/* USERNAME */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Username
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
               </label>
+
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
-                  id="username"
                   type="text"
                   value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all outline-none"
-                  placeholder="Enter your username"
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
+                  placeholder="Enter your email"
+                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none"
                 />
               </div>
-              {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
+              {errors.username && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.username}
+                </p>
+              )}
             </div>
 
+            {/* PASSWORD */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
+
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
-                  id="password"
                   type="password"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all outline-none"
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   placeholder="Enter your password"
+                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none"
                 />
               </div>
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
-            <div className="flex items-center justify-end">
-              <button
-                type="button"
-                className="text-sm text-green-700 hover:text-green-800 font-medium transition-colors"
-              >
-                Forgot Password?
+            {/* FORGOT PASSWORD */}
+            <div className="flex justify-end">
+              <button className="text-sm text-green-700 hover:text-green-800">
+                Forgot password?
               </button>
             </div>
 
+            {/* LOGIN BUTTON */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center gap-2"
+              className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition"
             >
-              <LogIn className="w-5 h-5" />
               Login
             </button>
           </form>
 
+          {/* SIGN UP */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don’t have an account?{" "}
               <button
                 onClick={onNavigateToSignup}
-                className="text-green-700 font-semibold hover:text-green-800 transition-colors"
+                className="text-green-700 font-semibold hover:text-green-800"
               >
-                Sign up
+                Sign Up
               </button>
             </p>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
 
-function Sprout({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 3v18m0-18c3 0 5 2 5 5s-2 5-5 5m0-10c-3 0-5 2-5 5s2 5 5 5m0 0c0-3 2-5 5-5m-5 5c0-3-2-5-5-5"
-      />
-    </svg>
+      {/* RIGHT SECTION - IMAGE + TEXT */}
+      <div className="hidden md:flex flex-col items-left justify-center bg-white p-10">
+        
+        <h2 className="text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6">
+          Reach your<br /> customers faster, <br />
+          Manage your<br /> harvest without loss, <br />
+          <span className="text-green-700 font-bold">With Us.</span>
+        </h2>
+
+        <img
+          src={marketImg}
+          alt="vegetable market"
+          className="w-100 mb-6"
+        />
+      </div>
+    </div>
   );
 }

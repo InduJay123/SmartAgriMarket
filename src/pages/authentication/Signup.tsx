@@ -9,6 +9,7 @@ interface SignupProps {
 }
 
 export default function Signup({ onNavigateToLogin }: SignupProps) {
+
   const [formData, setFormData] = useState<SignupFormData>({
     fullName: "",
     username: "",
@@ -19,6 +20,7 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     role: "farmer",
     farmLocation: "",
   });
+
 
   const [errors, setErrors] = useState<
     Partial<Record<keyof SignupFormData, string>>
@@ -163,7 +165,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
               />
             )}
 
-            <button className="w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
+            <button 
+              className="w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
               <UserPlus className="inline w-5 h-5 mr-2" />
               Sign Up
             </button>

@@ -3,6 +3,7 @@ import { User, Lock } from "lucide-react";
 import type { LoginFormData, UserRole } from "../../types/auth";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import marketImg from "../../assets/legumes-frais-1140x510.png" 
+import { useNavigate } from "react-router-dom";
 
 
 interface LoginProps {
@@ -10,6 +11,7 @@ interface LoginProps {
 }
 
 export default function Login({ onNavigateToSignup }: LoginProps) {
+   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
     username: "",
     password: "",
@@ -33,6 +35,21 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
     console.log("Login submitted:", formData);
   };
 
+   const handleLogin = () => {
+      switch(formData.role){
+        case "farmer":
+          navigate("/farmer/dashboard");
+          break;
+        case "buyer":
+          navigate("/buyer/shop");
+          break;
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        default:
+          alert("Please select the role..")
+      }
+    };
   return (
     <div className="min-h-screen grid md:grid-cols-2">
       {/* LEFT SECTION - LOGIN FORM */}
@@ -119,6 +136,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
 
             {/* LOGIN BUTTON */}
             <button
+              onClick={handleLogin}
               type="submit"
               className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition"
             >

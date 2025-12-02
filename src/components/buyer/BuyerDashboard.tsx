@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import ProductGrid from './ProductGrid';
 import PriceRangeFilter from './PriceRangeFilter';
 import { mockProducts, type CartItem, type Product } from '../../lib/supabase';
 import Cart from './Cart';
 import { Filter } from 'lucide-react';
+import ProductPage from './ProductPage';
 
 const BuyerShop = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -141,7 +141,7 @@ const BuyerShop = () => {
           <p className="mt-4 text-gray-600">Loading products...</p>
         </div>
       ) : (
-        <ProductGrid products={filteredProducts} addToCart={addToCart} />
+        <ProductPage/>
       )}
 
       {/* Cart */}

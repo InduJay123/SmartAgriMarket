@@ -30,7 +30,9 @@ const AddLocation:React.FC<LocationProps> = ({ formData,setFormData }) => {
         if(file){
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImagePreview(reader.result as string);
+                const base64 = reader.result as string;
+                setImagePreview(base64);
+                setFormData({...formData, image: base64 });
             };
             reader.readAsDataURL(file);
         }

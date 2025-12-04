@@ -93,10 +93,8 @@ const AddCrops: React.FC = () => {
             marketplaceData.append("farmer_id", "1"); // or get from auth
 
 
-            if(formData.cropImage){
-                marketplaceData.append("image", formData.cropImage);
-            }else {
-                marketplaceData.append("image", "default.jpg"); // empty string to satisfy DB
+            if(formData.image){
+                marketplaceData.append("image", formData.image);
             }
 
 

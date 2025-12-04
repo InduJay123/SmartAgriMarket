@@ -40,7 +40,7 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
         >
           <div className="relative aspect-square overflow-hidden bg-gray-100">
             <img
-              src={product.crop?.image ?? carbageImg }
+              src={product.image_url ||  product.image || product.crop?.image || carbageImg }
               alt={product.crop?.crop_name ?? "unknown Crop"}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />

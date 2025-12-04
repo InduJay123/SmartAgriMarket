@@ -59,6 +59,7 @@ const FarmerDashboard: React.FC = () => {
         "Paddy": "🌾",
         "Wheat": "🌾",
         "Corn": "🌽",
+        "Cabbage": "🥬",
         "Maize": "🌽",
         "Tomato": "🍅",
         "Potato": "🥔",

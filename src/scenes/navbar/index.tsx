@@ -21,6 +21,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+
   return (
     <header
       className={`w-full fixed top-0 z-50 transition-all duration-300 ${
@@ -35,13 +36,10 @@ export default function Navbar() {
 
             Smart Agriculture Market <br /> Management System
           </h1>
-        </div>
-
-       
+        </div>   
         <nav>
+
           <ul className="flex items-center gap-10 text-sm font-medium">
-
-
        <li>
           <Link
             to="/"
@@ -60,10 +58,7 @@ export default function Navbar() {
             ></span>
           </Link>
       </li>
-
-
-
-        <li>
+       <li>
           <Link
             to="/contactus"
             className={`relative px-3 py-1 text-sm font-medium group
@@ -97,9 +92,7 @@ export default function Navbar() {
             `}></span>
           </Link>
         </li>
-
- 
-          </ul>
+         </ul>
         </nav>
 
        
@@ -147,14 +140,8 @@ export default function Navbar() {
             ${isTopOfPage ? "bg-white" : "bg-green-700"}
           `}
         ></span>
-    </button>
-
-
-
-      
+    </button>    
     </div>
-
-
       </div>
     </header>
   );

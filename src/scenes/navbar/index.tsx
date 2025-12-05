@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import logo from "../../assets/ChatGPT Image Nov 29, 2025, 12_24_03 PM.png";
 
 export default function Navbar() {
 
+  const navigate = useNavigate();
+  
   const {i18n} = useTranslation();
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -22,6 +24,12 @@ export default function Navbar() {
   }, []);
 
 
+  const navLinks = [
+  { name: "Home", path: "/" },
+  { name: "About Us", path: "/about" },
+  { name: "Contact", path: "/contact" },
+];
+
   return (
     <header
       className={`w-full fixed top-0 z-50 transition-all duration-300 ${
@@ -36,10 +44,40 @@ export default function Navbar() {
 
             Smart Agriculture Market <br /> Management System
           </h1>
-        </div>   
+        </div>
+
+       
         <nav>
+      <ul className="flex items-center gap-10 text-sm font-medium">
+        {navLinks.map((link) => (
+          <li key={link.name}>
+            <Link to={link.path} className="hover:text-green-700">
+              {link.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+  
+      
+    <div className="flex items-center gap-4">
+      <button
+        onClick={() => navigate("/login")}
+        className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md"
+      >
+        {t('Login')}
+      </button>
+
+      <button
+        onClick={() => navigate("/signup")}
+        className="px-6 py-2 rounded-md border border-gray-400 hover:bg-gray-200"
+      >
+        {t('Sign Up')}
+      </button>
+    </div>
 
           <ul className="flex items-center gap-10 text-sm font-medium">
+
+
        <li>
           <Link
             to="/"
@@ -58,7 +96,10 @@ export default function Navbar() {
             ></span>
           </Link>
       </li>
-       <li>
+
+
+
+        <li>
           <Link
             to="/contactus"
             className={`relative px-3 py-1 text-sm font-medium group
@@ -92,7 +133,9 @@ export default function Navbar() {
             `}></span>
           </Link>
         </li>
-         </ul>
+
+ 
+          </ul>
         </nav>
 
        
@@ -104,6 +147,7 @@ export default function Navbar() {
             {t('Sign Up')}
           </button>
         </div>
+
 
         <div className="flex gap-3">
       <button
@@ -140,8 +184,14 @@ export default function Navbar() {
             ${isTopOfPage ? "bg-white" : "bg-green-700"}
           `}
         ></span>
-    </button>    
+    </button>
+
+
+
+      
     </div>
+
+
       </div>
     </header>
   );

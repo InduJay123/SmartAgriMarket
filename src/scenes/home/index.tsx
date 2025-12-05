@@ -40,7 +40,7 @@ const isSinhala = i18n.language === "si";
 
 
   return (
-    <div className={`w-screen overflow-x-hidden ${isSinhala ? "font-sinhala text-2xl" : "font-sans"} text-gray-900`}>
+    <div className={`w-screen -mt-10 overflow-x-hidden ${isSinhala ? "font-sinhala text-2xl" : "font-sans"} text-gray-900`}>
       <section className="h-[80vh] md:h-[90vh] relative">
           <Swiper
             modules={[Navigation, Pagination, Autoplay, EffectFade]}

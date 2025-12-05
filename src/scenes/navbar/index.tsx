@@ -33,7 +33,7 @@ export default function Navbar() {
   return (
     <header
       className={`w-full fixed top-0 z-50 transition-all duration-300 ${
-        isTopOfPage ? "bg-transparent" : "bg-white shadow"
+        isTopOfPage ? "bg-transparent " : "bg-white shadow"
       }`}
     >
       <div className="w-11/12 mx-auto flex items-center justify-between py-4">
@@ -133,7 +133,7 @@ export default function Navbar() {
         className={`relative px-3 py-1 text-sm font-medium group 
           ${isTopOfPage ? "text-white" : ""}
           focus:outline-none focus:ring-0 focus-visible:outline-none
-          border border-transparent
+          border border-transparent bg-transparent
         `}
       >
         EN
@@ -151,7 +151,7 @@ export default function Navbar() {
         className={`relative px-3 py-1 text-sm font-medium group 
           ${isTopOfPage ? "text-white" : ""}
           focus:outline-none focus:ring-0 focus-visible:outline-none
-          border border-transparent
+          border border-transparent bg-transparent
         `}
       >
         සිං

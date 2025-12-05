@@ -48,32 +48,10 @@ export default function Navbar() {
 
        
         <nav>
-      <ul className="flex items-center gap-10 text-sm font-medium">
-        {navLinks.map((link) => (
-          <li key={link.name}>
-            <Link to={link.path} className="hover:text-green-700">
-              {link.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+     
   
       
-    <div className="flex items-center gap-4">
-      <button
-        onClick={() => navigate("/login")}
-        className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md"
-      >
-        {t('Login')}
-      </button>
-
-      <button
-        onClick={() => navigate("/signup")}
-        className="px-6 py-2 rounded-md border border-gray-400 hover:bg-gray-200"
-      >
-        {t('Sign Up')}
-      </button>
-    </div>
+    
 
           <ul className="flex items-center gap-10 text-sm font-medium">
 
@@ -140,13 +118,20 @@ export default function Navbar() {
 
        
         <div className="flex items-center gap-4">
-          <button className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md">
-           {t('Login')}
-          </button>
-          <button className={`px-6 py-2 rounded-md border text-${isTopOfPage ? "white" : ""} border-gray-400 hover:bg-gray-200 hover:text-green-700`}>
-            {t('Sign Up')}
-          </button>
-        </div>
+      <button
+        onClick={() => navigate("/login")}
+        className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md"
+      >
+        {t('Login')}
+      </button>
+
+      <button
+        onClick={() => navigate("/signup")}
+        className="px-6 py-2 rounded-md border text-white border-gray-400 hover:bg-gray-200"
+      >
+        {t('Sign Up')}
+      </button>
+    </div>
 
 
         <div className="flex gap-3">

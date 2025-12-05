@@ -1,6 +1,12 @@
+
 import "swiper/swiper-bundle.css";
+
+
 import { Swiper, SwiperSlide } from "swiper/react";
+
+
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+
 import { Sprout, Users, FileText, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 import img from './../../assets/purepng.com-brinjalvegetables-brinjal-eggplant-melongene-garden-egg-guinea-squash-941524725891tf1xf.png'
@@ -9,6 +15,8 @@ import img2 from './../../assets/potato.jpg';
 import img3 from './../../assets/pumpking2.png';
 import img4 from './../../assets/carbage.png';
 import {useTranslation} from 'react-i18next';
+import i18next from "i18next";
+import { footer } from "framer-motion/client";
 import { Link } from "react-router-dom";
 import video from "../../assets/Video Banner Stock Videos - Rural, Farming, Agriculture, Nature.mp4";
 
@@ -23,15 +31,18 @@ const stagger = {
 };
 
 
+
 export default function Home() {
 //translation part
 const { t, i18n } = useTranslation();
 const isSinhala = i18n.language === "si";
 
+
+
   return (
     <div className={`w-screen overflow-x-hidden ${isSinhala ? "font-sinhala text-2xl" : "font-sans"} text-gray-900`}>
       <section className="h-[80vh] md:h-[90vh] relative">
-        <Swiper
+          <Swiper
             modules={[Navigation, Pagination, Autoplay, EffectFade]}
             effect="fade"
             slidesPerView={1}
@@ -99,7 +110,7 @@ const isSinhala = i18n.language === "si";
                     <button className="rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md px-6 py-3  font-medium w-full sm:w-auto">
                       {t('getStarted')}
                     </button>
-                    <button className="border border-white px-6 py-3 rounded text-white hover:bg-white hover:text-[#0f6b53] w-full sm:w-auto">
+                    <button className="border border-white px-6 py-3 bg-transparent rounded text-white hover:bg-white hover:text-[#0f6b53] w-full sm:w-auto">
                       {t('learnMore')}
                     </button>
                   </motion.div>
@@ -282,7 +293,7 @@ const isSinhala = i18n.language === "si";
             <p className="mt-3 text-white/90">{t('Innovative tools and insights to reduce waste and increase yields.')}</p>
             <div className="mt-4 flex gap-3">
               <button className="bg-custom-green px-5 py-2 rounded text-white">{t('learnMore')}</button>
-              <button className="border border-white px-5 py-2 rounded text-white hover:bg-white hover:text-[#0f6b53]"><Link to="/contactus" className="hover:text-green-700">{t('Contact Us')}</Link></button>
+              <button className="border border-white bg-transparent px-5 py-2 rounded text-white hover:bg-white hover:text-[#0f6b53]"><Link to="/contactus" className="hover:text-green-700">{t('Contact Us')}</Link></button>
             </div>
           </div>
         </div>

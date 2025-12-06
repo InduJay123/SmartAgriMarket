@@ -74,6 +74,8 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
             >
               <ShoppingCart size={18} />
               {product.quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+            
+              
             </button>
           </div>
         </div>

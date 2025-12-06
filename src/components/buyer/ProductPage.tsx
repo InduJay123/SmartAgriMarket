@@ -43,7 +43,7 @@ function ProductPage({ products, addToCart, loading }: ProductPageProps) {
         setPriceRange={setPriceRange}
         maxPrice={maxPrice}
       />
-      <ProductGrid products={filteredProducts} addToCart={addToCart} />
+      <ProductGrid products={filteredProducts}  addToCart={addToCart} />
     </div>
   );
 }

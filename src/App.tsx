@@ -4,6 +4,7 @@ import { BrowserRouter,Routes, Route, useNavigate } from 'react-router-dom';
 import PublicLayout from './layout/PublicLayout';
 import Home from './scenes/home';
 import ContactUs from './scenes/contactus/contactus';
+import AboutUs from './scenes/aboutus/aboutus';
 
 import Login from './pages/authentication/Login';
 import Signup from './pages/authentication/Signup';
@@ -62,7 +63,8 @@ function App() {
       <Routes>
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Home />} />
-          <Route path="contact" element={<ContactUs />} />
+          <Route path="contactus" element={<ContactUs />} />
+          <Route path="aboutus" element={<AboutUs />} />
           <Route path='login' element={<LoginWrapper/>} />
           <Route path="signup" element={<SignupWrapper />} /> 
         </Route>

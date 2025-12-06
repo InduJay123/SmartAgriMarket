@@ -26,8 +26,9 @@ export default function Navbar() {
 
   const navLinks = [
   { name: "Home", path: "/" },
-  { name: "About Us", path: "/about" },
-  { name: "Contact", path: "/contact" },
+  { name: "About Us", path: "/aboutus" },
+  { name: "Contact", path: "/contactus" },
+  
 ];
 
   return (
@@ -72,7 +73,7 @@ export default function Navbar() {
 
         <li>
           <Link
-            to="/contactus"
+            to="/aboutus"
             className={`relative px-3 py-1 text-sm font-medium group
               ${isTopOfPage ? "text-white" : ""} hover:${isTopOfPage ? "text-white" : "text-green-700"}
             `}

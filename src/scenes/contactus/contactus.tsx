@@ -3,10 +3,10 @@ import video from "../../assets/Video Banner Stock Videos - Rural, Farming, Agri
 
 export default function ContactUs() {
   return (
-    <section className="relative w-screen min-h-screen py-20 md:py-28 overflow-hidden">
+    <section className="relative w-screen -mt-10 min-h-screen py-20 md:py-28 overflow-hidden">
 
-     
-       <video
+      {/* Background Video */}
+      <video
         autoPlay
         loop
         muted
@@ -16,38 +16,27 @@ export default function ContactUs() {
         <source src={video} type="video/mp4" />
       </video>
 
-      
+      {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/40 z-0"></div>
 
-     {/* main */}
+      {/* Main Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center text-white">
         
-       
-        <h1 className="text-4xl md:text-5xl font-extrabold drop-shadow-lg text-custom-green text-stroke-white ">
-          About Us
-        </h1>
-
-        <p className="mt-4 text-lg max-w-3xl mx-auto drop-shadow-md">
-          Smart Agriculture Market Management System is designed to support 
-          farmers by providing a modern digital marketplace. Our mission is to 
-          help farmers get fair prices, connect with buyers directly, reduce 
-          middleman influence, and improve agricultural efficiency across Sri Lanka.
-        </p>
-
-        <p className="mt-4 text-lg max-w-3xl mx-auto drop-shadow-md">
-          We are committed to building a reliable and user-friendly platform 
-          that empowers rural communities, increases transparency, and promotes 
-          economic growth in the farming sector.
-        </p>
-
+        {/* Contact Form Card */}
         <div className="mt-16 bg-green-50/90 opacity-90 backdrop-blur-lg rounded-3xl shadow-2xl p-10 md:p-14 text-gray-900">
           <h2 className="text-3xl font-bold text-custom-green mb-6 text-center">
-            Contact Us
+            Get in Touch With Us
           </h2>
+
+          <p className="text-gray-700 text-lg mb-8 max-w-3xl mx-auto">
+            Have questions about our system, partnership opportunities, or technical support?  
+            We’re here to help you!  
+            Fill out the form below, and our team will contact you within 24–48 hours.
+          </p>
 
           <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-           
+            {/* Full Name */}
             <div className="flex flex-col text-left">
               <label className="font-semibold text-gray-700 mb-2">Full Name</label>
               <input
@@ -57,9 +46,9 @@ export default function ContactUs() {
               />
             </div>
 
-           
+            {/* Email */}
             <div className="flex flex-col text-left">
-              <label className="font-semibold text-gray-700 mb-2">Email</label>
+              <label className="font-semibold text-gray-700 mb-2">Email Address</label>
               <input
                 type="email"
                 className="p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
@@ -67,7 +56,7 @@ export default function ContactUs() {
               />
             </div>
 
-           
+            {/* Subject */}
             <div className="flex flex-col text-left md:col-span-2">
               <label className="font-semibold text-gray-700 mb-2">Subject</label>
               <input
@@ -77,7 +66,7 @@ export default function ContactUs() {
               />
             </div>
 
-            
+            {/* Message */}
             <div className="flex flex-col text-left md:col-span-2">
               <label className="font-semibold text-gray-700 mb-2">Message</label>
               <textarea
@@ -86,7 +75,7 @@ export default function ContactUs() {
               ></textarea>
             </div>
 
-         
+            {/* Button */}
             <div className="md:col-span-2 flex justify-center">
               <button className="mt-4 bg-custom-green text-white px-10 py-3 rounded-2xl font-semibold text-lg shadow-lg hover:bg-green-800">
                 Send Message
@@ -95,15 +84,27 @@ export default function ContactUs() {
           </form>
         </div>
 
-       
-        <div className="mt-10 text-md text-white drop-shadow-lg">
+        {/* Contact Details */}
+        <div className="mt-12 text-md text-white drop-shadow-lg space-y-2">
           <p>
-            Email: <span className="text-blue-300 font-semibold">support@smartagri.lk</span>
+            <span className="font-semibold text-custom-green">Customer Support:</span>{" "}
+            support@smartagri.lk
           </p>
-          <p className="mt-1">
-            Phone: <span className="text-blue-300 font-semibold">+94 71 234 5678</span>
+
+          <p>
+            <span className="font-semibold text-custom-green">Hotline:</span>{" "}
+            +94 71 234 5678
           </p>
-          <p className="mt-1">Location: Mathara, Sri Lanka</p>
+
+          <p>
+            <span className="font-semibold text-custom-green">Office Address:</span>{" "}
+            Matara, Sri Lanka
+          </p>
+
+          <p className="mt-3 text-sm text-gray-200 max-w-xl mx-auto">
+            Our support team is available Monday to Friday from 8:30 AM to 5:30 PM.  
+            We aim to support farmers, buyers, and administrators with a smooth platform experience.
+          </p>
         </div>
       </div>
     </section>

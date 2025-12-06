@@ -1,37 +1,51 @@
-import { useEffect, useState } from 'react';
-import ProductGrid from './ProductGrid';
-import type { Product } from '../../@types/Product';
+import { useState, useMemo } from "react";
+import ProductGrid from "./ProductGrid";
+import PriceRangeFilter from "./PriceRangeFilter";
+import type { Product } from "../../@types/Product";
 
-function ProductPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ProductPageProps {
+  products: Product[];
+  addToCart: (productId: number) => void;
+  loading: boolean;
+}
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/products/')
-      .then(res => res.json())
-      .then((data: Product[]) => {
-        const mapped = data.map(item => ({
-    ...item,
-    price: typeof item.price === 'string' ? parseFloat(item.price) : item.price
-  }));
-        console.log("Fetched raw data:", data);       
+function ProductPage({ products, addToCart, loading }: ProductPageProps) {
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
 
-        setProducts(mapped);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Fetch error:", err);
-        setLoading(false);
-      });
-  }, []);
+  const maxPrice = useMemo(() => {
+    const prices = products.map((p) => p.price);
+    const max = prices.length ? Math.max(...prices) : 0;
+    if (priceRange[1] === 0) setPriceRange([0, max]);
+    return max;
+  }, [products]);
 
-  const addToCart = (productId: string) => {
-    console.log("Added to cart:", productId);
-  };
+  const filteredProducts = useMemo(
+    () =>
+      products.filter(
+        (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
+      ),
+    [products, priceRange]
+  );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh] flex-col">
+        <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-gray-600">Loading products...</p>
+      </div>
+    );
+  }
 
-  return <ProductGrid products={products} addToCart={addToCart} />;
+  return (
+    <div className="space-y-6">
+      <PriceRangeFilter
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+        maxPrice={maxPrice}
+      />
+      <ProductGrid products={filteredProducts} addToCart={addToCart} />
+    </div>
+  );
 }
 
 export default ProductPage;

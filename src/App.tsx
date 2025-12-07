@@ -2,6 +2,7 @@ import React from 'react'
 import './App.css'
 import Admin from './pages/Admin';
 import { Route, Routes } from 'react-router-dom';
+import AdminLanding from './pages/AdminLanding';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
 
   return ( 
     <Routes>     
+      <Route path="/" element={<AdminLanding />} />
       <Route path="/admin" element={<Admin />} />
     </Routes>
   )

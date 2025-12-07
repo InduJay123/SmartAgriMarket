@@ -3,16 +3,23 @@ import { image, video } from "framer-motion/client";
 import { Leaf, Users, Sprout, TrendingUp } from "lucide-react";
 import video1 from "../../assets/Video Banner Stock Videos - Rural, Farming, Agriculture, Nature.mp4";
 import img from "../../assets/raphael-rychetsky-li9JfUHQfOY-unsplash.jpg";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
+
   return (
-    <div className="w-full -mt-10 overflow-hidden">
+    <div className={`w-full -mt-10 overflow-hidden ${isSinhala ?"font-sinhala text-2xl" : "font-sans"}`}>
 
       {/* HERO SECTION */}
       <section
         className="h-screen w-full  bg-cover bg-center flex items-center justify-center"
        
-      >
+        >
         <video
         autoPlay
         loop
@@ -33,34 +40,30 @@ const Home: React.FC = () => {
           className="text-center text-white px-4"
         >
            <p className="text-xl md:text-2xl drop-shadow-md max-w-2xl mx-auto">
-                   This is about our           </p> 
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+                  {t("This is about our")}           </p> 
+          <h1 className={`text-5xl md:text-6xl font-bold mb-4 drop-shadow-lg ${isSinhala ?"font-sans" : "font-sans"}`}>
             Smart Agriculture Market Management System
           </h1>
           <p className="mt-4 text-lg max-w-3xl mx-auto drop-shadow-md mt-8">
-               " Smart Agriculture Market Management System is designed to support 
-                farmers by providing a modern digital marketplace. Our mission is to 
-                help farmers get fair prices, connect with buyers directly, reduce 
-                middleman influence, and improve agricultural efficiency across Sri Lanka. 
+               
+                {t("Smart Agriculture Market Management System is designed to support farmers by providing a modern digital marketplace. Our mission is to help farmers get fair prices, connect with buyers directly, reduce middleman influence, and improve agricultural efficiency across Sri Lanka.")}
                 
                       </p>
 
              <p className="mt-4 text-lg max-w-3xl mx-auto drop-shadow-md">
-                    We are committed to building a reliable and user-friendly platform 
-                    that empowers rural communities, increases transparency, and promotes 
-                    economic growth in the farming sector."
+                   {t("We are committed to building a reliable and user-friendly platform that empowers rural communities, increases transparency, and promotes economic growth in the farming sector.")}
                 </p>
         </motion.div>
       </section>
 
       {/* FEATURES SECTION */}
       <section className="py-20 bg-gray-50" id="features">
-        <h2 className="text-4xl font-bold text-center mb-10">Our Features</h2>
+        <h2 className="text-4xl font-bold text-center mb-10">{t("Our Features")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-20">
           {[
-            { icon: Sprout, title: "Smart Crop Pricing", text: "AI-powered predictions for daily vegetable and fruit prices." },
-            { icon: TrendingUp, title: "Market Insights", text: "Real-time market demand and supply analytics." },
-            { icon: Leaf, title: "Eco-Friendly Planning", text: "Reduce food wastage with intelligent forecasting." },
+            { icon: Sprout, title: "Smart Crop Pricing", text: t("AI-powered predictions for daily vegetable and fruit prices.") },
+            { icon: TrendingUp, title: "Market Insights", text: t("Real-time market demand and supply analytics.") },
+            { icon: Leaf, title: "Eco-Friendly Planning", text: t("Reduce food wastage with intelligent forecasting.") },
           ].map((item, index) => (
             <motion.div
               key={index}
@@ -90,24 +93,24 @@ const Home: React.FC = () => {
             
 
 
-        <h2 className="text-4xl font-bold text-center mb-12 text-white">Our Journey</h2>
+        <h2 className="text-4xl font-bold text-center mb-12 text-white">{t("Our Journey")}</h2>
 
         <div className="relative border-l-4 border-green-700 max-w-3xl mx-auto px-6">
           {[
             {
             //   year: "2023",
               step: "Idea Born",
-              desc: "We identified the problem of massive vegetable and fruit wastage.",
+              desc: t("We identified the problem of massive vegetable and fruit wastage."),
             },
             {
             //   year: "2024",
               step: "Research & Model",
-              desc: "Machine learning models created to predict daily prices.",
+              desc: t("Machine learning models created to predict daily prices."),
             },
             {
             //   year: "2025",
               step: "Smart System Launch",
-              desc: "Full management system deployed for farmers & buyers.",
+              desc: t("Full management system deployed for farmers & buyers."),
             },
           ].map((item, index) => (
             <motion.div
@@ -130,9 +133,9 @@ const Home: React.FC = () => {
 
       {/* TEAM SECTION */}
       <section className="py-20 bg-gray-100" id="team">
-        <h2 className="text-4xl font-bold text-center mb-12">Meet Our Team</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">{t("Meet Our Team")}</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-20">
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-20 ${isSinhala ?"font-sans" : "font-sans"}`}>
           {[
             { name: "Nuwan Rathnayaka", role: " Full Stack Developer", img: "https://i.pravatar.cc/200?img=1" },
             { name: "Member 2", role: "ML Model Developer", img: "https://i.pravatar.cc/200?img=2" },
@@ -163,7 +166,114 @@ const Home: React.FC = () => {
           ))}
         </div>
       </section>
+
+      <footer
+      className={`bg-custom-green text-white py-14 ${isSinhala ? "font-sans" : "font-sans"}`}
+    >
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+
+          {/* Brand Section */}
+          <div>
+            <h4 className="font-extrabold text-xl leading-tight">
+              {t("Smart Agriculture Market Management System")}
+            </h4>
+
+            <p className="text-white/90 mt-3 text-sm">
+              {t(
+                "Empowering farmers with technology, price forecasting, and reliable market insights."
+              )}
+            </p>
+
+            {/* Social Links */}
+            <div className="flex gap-4 mt-5">
+              <a className="hover:text-yellow-300 transition">
+                <i className="fab fa-facebook text-xl"></i>
+              </a>
+              <a className="hover:text-yellow-300 transition">
+                <i className="fab fa-instagram text-xl"></i>
+              </a>
+              <a className="hover:text-yellow-300 transition">
+                <i className="fab fa-twitter text-xl"></i>
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h5 className="font-semibold text-lg mb-3 border-b border-white/40 pb-1">
+              {t("Quick Links")}
+            </h5>
+            <ul className="text-sm text-white/90 space-y-2">
+              <li className="hover:text-yellow-300 cursor-pointer transition"><Link to="/">Home</Link></li>
+              <li className="hover:text-yellow-300 cursor-pointer transition">
+                <Link to="/">Products</Link>
+              </li>
+              <li className="hover:text-yellow-300 cursor-pointer transition">
+                <Link to="/aboutus"> About Us </Link>
+              </li>
+              <li className="hover:text-yellow-300 cursor-pointer transition">
+                Blog
+              </li>
+            </ul>
+          </div>
+
+          {/* Help Section */}
+          <div>
+            <h5 className="font-semibold text-lg mb-3 border-b border-white/40 pb-1">
+              {t("Support")}
+            </h5>
+            <ul className="text-sm text-white/90 space-y-2">
+              <li className="hover:text-yellow-300 cursor-pointer transition">
+                <Link to="/contactus">Contact</Link>
+              </li>
+              <li className="hover:text-yellow-300 cursor-pointer transition">
+                <Link to="/aboutus">Services</Link>
+              </li>
+              <li className="hover:text-yellow-300 cursor-pointer transition">
+                <Link to="/contactus">Help Center</Link>
+              </li>
+              <li className="hover:text-yellow-300 cursor-pointer transition">
+                Careers
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h5 className="font-semibold text-lg mb-3 border-b border-white/40 pb-1">
+              {t("Contact Information")}
+            </h5>
+
+            <ul className="text-sm text-white/90 space-y-3">
+              <li className="flex gap-2 items-start">
+                <i className="fas fa-map-marker-alt mt-1"></i>
+                <span>{t("Matara, Sri Lanka")}</span>
+              </li>
+
+              <li className="flex gap-2 items-center">
+                <i className="fas fa-envelope"></i>
+                <span>support@smartagri.lk</span>
+              </li>
+
+              <li className="flex gap-2 items-center">
+                <i className="fas fa-phone-alt"></i>
+                <span>+94 71 234 5678</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Footer Strip */}
+        <div className="mt-10 border-t border-white/20 pt-5 text-center text-sm text-white/80">
+          © {new Date().getFullYear()} Smart Agriculture Market Management System.
+          {t("All Rights Reserved.")}.
+        </div>
+      </footer>
     </div>
+
+    
+
+
   );
 };
 

@@ -28,6 +28,7 @@ export default function Navbar() {
   { name: "Home", path: "/" },
   { name: "About Us", path: "/aboutus" },
   { name: "Contact", path: "/contactus" },
+ 
   
 ];
 
@@ -35,7 +36,7 @@ export default function Navbar() {
     <header
       className={`w-full fixed top-0 z-50 transition-all duration-300 ${
         isTopOfPage ? "bg-transparent " : "bg-white shadow"
-      }`}
+      } `}
     >
       <div className="w-11/12 mx-auto flex items-center justify-between py-4">
         

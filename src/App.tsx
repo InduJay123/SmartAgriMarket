@@ -105,13 +105,6 @@ function App() {
     </div>
   );
 
-  return ( 
-    <Routes>     
-      <Route path="/" element={<AdminLanding />} />
-      <Route path="/admin" element={<Admin />} />
-    </Routes>
-  )
-
 }
 
 export default App;

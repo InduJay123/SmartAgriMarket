@@ -30,6 +30,10 @@ import FarmerDashboard from './pages/farmer/FarmerDashboard';
 import Messages from './pages/farmer/Messages';
 import Settings from './pages/admin/Settings';
 
+import './App.css'
+
+import AdminLanding from './pages/AdminLanding';
+
 function App() {
   function LoginWrapper() {
     const navigate = useNavigate();
@@ -57,6 +61,7 @@ function App() {
   }, [] 
   );
 
+
   return (
     <div>
       <BrowserRouter>
@@ -77,8 +82,9 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-         <Route path="/admin" element={<Admin />}>
+         <Route path="/admin" element={<AdminLanding />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<Admin/>} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="farmers" element={<ManageFarmers />} />
           <Route path="buyers" element={<ManageBuyers />} />
@@ -97,6 +103,14 @@ function App() {
     </BrowserRouter>
     </div>
   );
+
+  return ( 
+    <Routes>     
+      <Route path="/" element={<AdminLanding />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
+  )
+
 }
 
 export default App;

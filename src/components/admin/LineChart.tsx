@@ -24,20 +24,17 @@ export default function LineChart({ data, title }: LineChartProps) {
   });
 
   const pathD = points
-    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-    .join(' ');
+    .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
+    .join(" ");
 
   const areaD = `${pathD} L 100 100 L 0 100 Z`;
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
       <h3 className="text-lg lg:text-xl font-semibold mb-4">{title}</h3>
-      <div className="relative" style={{ height: '250px' }}>
-        <svg
-          viewBox="0 0 100 100"
-          className="w-full h-full"
-          preserveAspectRatio="none"
-        >
+
+      <div className="relative" style={{ height: "250px" }}>
+        <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
           <defs>
             <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="#10b981" stopOpacity="0.3" />
@@ -45,26 +42,11 @@ export default function LineChart({ data, title }: LineChartProps) {
             </linearGradient>
           </defs>
 
-          <path
-            d={areaD}
-            fill="url(#areaGradient)"
-          />
-
-          <path
-            d={pathD}
-            fill="none"
-            stroke="#10b981"
-            strokeWidth="0.5"
-          />
+          <path d={areaD} fill="url(#areaGradient)" />
+          <path d={pathD} fill="none" stroke="#10b981" strokeWidth="0.5" />
 
           {points.map((point, index) => (
-            <circle
-              key={index}
-              cx={point.x}
-              cy={point.y}
-              r="1"
-              fill="#059669"
-            />
+            <circle key={index} cx={point.x} cy={point.y} r="1" fill="#059669" />
           ))}
         </svg>
 
@@ -76,7 +58,7 @@ export default function LineChart({ data, title }: LineChartProps) {
       </div>
 
       <div className="flex justify-between mt-6 text-sm text-gray-500">
-        <span>Price Range: Rs: {minPrice} - Rs: {maxPrice}</span>
+        <span>Price Range: Rs {minPrice} - Rs {maxPrice}</span>
       </div>
     </div>
   );

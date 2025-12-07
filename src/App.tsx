@@ -82,18 +82,19 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-         <Route path="/admin" element={<AdminLanding />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="dashboard" element={<Admin/>} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="farmers" element={<ManageFarmers />} />
-          <Route path="buyers" element={<ManageBuyers />} />
-          <Route path="crops" element={<ManageCrops />} />
-          <Route path="upload" element={<UploadPrice />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="ai" element={<AIModel />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
+         <Route path="/admin" element={<AdminLanding />} />
+
+        {/* Admin routes */}
+        <Route path="/admin/dashboard" element={<Admin />} />
+        
+        <Route path="/admin/farmers" element={<ManageFarmers />} />
+        <Route path="/admin/buyers" element={<ManageBuyers />} />
+        <Route path="/admin/crops" element={<ManageCrops />} />
+        <Route path="/admin/upload" element={<UploadPrice />} />
+        <Route path="/admin/reports" element={<Reports />} />
+        <Route path="/admin/ai" element={<AIModel />} />
+        <Route path="/admin/settings" element={<Settings />} />
+
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
           <Route path="shop" element={<BuyerShop />} />
           <Route path="orders" element={<OrderHistory buyerId={''} />} />

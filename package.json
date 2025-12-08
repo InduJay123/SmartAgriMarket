@@ -11,10 +11,14 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@radix-ui/react-dialog": "^1.1.15",
     "@supabase/supabase-js": "^2.57.4",
     "axios": "^1.13.2",
     "emoji-dictionary": "^1.0.12",
+=======
+    "axios": "^1.13.2",
+>>>>>>> buyer-dashboard
     "framer-motion": "^12.23.24",
     "i18next": "^25.6.3",
     "i18next-browser-languagedetector": "^8.2.0",

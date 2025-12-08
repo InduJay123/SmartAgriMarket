@@ -129,7 +129,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
         <div className="flex-1">
           <label className="block text-xs font-medium text-gray-600 mb-1">Min Price</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">Rs.</span>
             <input
               type="number"
               min="0"
@@ -147,7 +147,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
         <div className="flex-1">
           <label className="block text-xs font-medium text-gray-600 mb-1">Max Price</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">Rs. </span>
             <input
               type="number"
               min={localMin}
@@ -164,9 +164,9 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
       <div className="bg-green-50 rounded-lg p-3 border border-green-100">
         <p className="text-sm text-gray-700">
           Showing products between{' '}
-          <span className="font-bold text-green-700">${localMin.toFixed(2)}</span>
+          <span className="font-bold text-green-700">Rs.{localMin.toFixed(2)}</span>
           {' '} and{' '}
-          <span className="font-bold text-green-700">${localMax.toFixed(2)}</span>
+          <span className="font-bold text-green-700">Rs.{localMax.toFixed(2)}</span>
         </p>
       </div>
     </div>

@@ -5,6 +5,11 @@ import video1 from "../../assets/Video Banner Stock Videos - Rural, Farming, Agr
 import img from "../../assets/raphael-rychetsky-li9JfUHQfOY-unsplash.jpg";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import nuwan from "../../assets/team/nuwan.png";
+import mihitha from "../../assets/team/mihita.jpg";
+import iduni from "../../assets/team/iduni.jpg";
+import shalin from "../../assets/team/shalin.jpg";
+import methsara from "../../assets/team/methsara.jpg";
 
 const Home: React.FC = () => {
 
@@ -137,12 +142,12 @@ const Home: React.FC = () => {
 
         <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-20 ${isSinhala ?"font-sans" : "font-sans"}`}>
           {[
-            { name: "Nuwan Rathnayaka", role: " Full Stack Developer", img: "https://i.pravatar.cc/200?img=1" },
-            { name: "Member 2", role: "ML Model Developer", img: "https://i.pravatar.cc/200?img=2" },
-            { name: "Member 3", role: "UI/UX & Research", img: "https://i.pravatar.cc/200?img=3" },
-             { name: "Member 3", role: "UI/UX & Research", img: "https://i.pravatar.cc/200?img=3" },
-             { name: "Member 3", role: "UI/UX & Research", img: "https://i.pravatar.cc/200?img=3" },
-             { name: "Member 3", role: "UI/UX & Research", img: "https://i.pravatar.cc/200?img=3" },
+            { name: "Mr. Gihan Chathuranga", role: " Supervisor", img: "https://i.pravatar.cc/200?img=1" },
+            { name: "Induni Jayamanne", role: "Team Leader / Fullstack Developer", img: iduni },
+            { name: "Shalin Nimesh", role: "ML Model Developer", img: shalin },
+             { name: "Nuwan Rathnayaka", role: "Fullstack Developer", img: nuwan },
+             { name: "Mihitha Bandara", role: "ML Model Developer", img: mihitha },
+             { name: "Methsara Malindu", role: "Fullstack Developer", img: methsara },
 
 
 

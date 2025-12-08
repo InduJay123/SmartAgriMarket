@@ -1,6 +1,6 @@
-import { X, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
-import type { CartItem } from '../../lib/supabase';
-import { useState } from 'react';
+import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
+import type { CartItem } from "./BuyerDashboard";
+import { useState } from "react";
 
 interface CartProps {
   cartItems: CartItem[];
@@ -24,17 +24,17 @@ function Cart({
   onOrderComplete,
 }: CartProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [deliveryAddress, setDeliveryAddress] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
 
   const handleCheckout = () => {
     if (!deliveryAddress.trim()) {
-      alert('Please enter a delivery address');
+      alert("Please enter a delivery address");
       return;
     }
 
     if (cartItems.length === 0) {
-      alert('Your cart is empty');
+      alert("Your cart is empty");
       return;
     }
 
@@ -45,21 +45,21 @@ function Cart({
         id: `order_${Date.now()}`,
         buyer_id: buyerId,
         total_amount: cartTotal,
-        status: 'pending',
+        status: "pending",
         delivery_address: deliveryAddress,
         payment_method: paymentMethod,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
 
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
       orders.push(order);
-      localStorage.setItem('orders', JSON.stringify(orders));
+      localStorage.setItem("orders", JSON.stringify(orders));
 
       localStorage.removeItem(`cart_${buyerId}`);
 
-      alert('Order placed successfully!');
-      setDeliveryAddress('');
+      alert("Order placed successfully!");
+      setDeliveryAddress("");
       setShowCart(false);
       onOrderComplete();
       setIsProcessing(false);
@@ -106,17 +106,20 @@ function Cart({
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex gap-4 bg-gray-50 rounded-xl p-4 hover:shadow-md transition"
+                  className="flex gap-2 bg-gray-50 rounded-xl p-2 hover:shadow-md transition"
                 >
                   <img
-                    src={item.product?.image_url || 'https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg'}
-                    alt={item.product?.name}
+                    src={item.product.image_url ||
+                         item.product.image ||
+                         item.product.crop?.image ||
+                         item.carbageImg}
+                    alt={item.product.crop?.crop_name || "Product"}
                     className="w-24 h-24 object-cover rounded-lg"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-gray-900 mb-1">{item.product?.name}</h4>
+                    <h4 className="font-bold text-gray-900 mb-1">{item.product.crop?.crop_name || "Unknown"}</h4>
                     <p className="text-sm text-gray-600 mb-2">
-                      ${item.product?.price.toFixed(2)} / {item.product?.unit}
+                      Rs.{Number(item.product.price || 0).toFixed(2)} / {item.product.unit || "unit"}
                     </p>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200">
@@ -144,7 +147,7 @@ function Cart({
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-bold text-gray-900">
-                      ${((item.product?.price || 0) * item.quantity).toFixed(2)}
+                      Rs.{((Number(item.product.price) || 0) * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -154,7 +157,7 @@ function Cart({
         </div>
 
         {cartItems.length > 0 && (
-          <div className="border-t bg-white p-6 space-y-4">
+          <div className="border-t bg-white px-6 py-2 space-y-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Delivery Address
@@ -175,7 +178,7 @@ function Cart({
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
                 <option value="cash">Cash on Delivery</option>
                 <option value="card">Credit/Debit Card</option>
@@ -184,17 +187,17 @@ function Cart({
               </select>
             </div>
 
-            <div className="flex items-center justify-between py-4 border-t">
+            <div className="flex items-center justify-between py-2 border-t">
               <span className="text-lg font-semibold text-gray-900">Total Amount:</span>
-              <span className="text-2xl font-bold text-green-600">${cartTotal.toFixed(2)}</span>
+              <span className="text-2xl font-bold text-green-600">Rs.{cartTotal.toFixed(2)}</span>
             </div>
 
             <button
               onClick={handleCheckout}
               disabled={isProcessing}
-              className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all active:scale-95"
+              className="w-full bg-green-800 text-white py-2 rounded-xl font-bold text-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all active:scale-95"
             >
-              {isProcessing ? 'Processing...' : 'Place Order'}
+              {isProcessing ? "Processing..." : "Place Order"}
             </button>
           </div>
         )}

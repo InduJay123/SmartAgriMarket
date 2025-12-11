@@ -3,7 +3,7 @@ import type { Product } from '../../@types/Product';
 import carbageImg from '../../assets/carbage.png';
 import { useState } from 'react';
 import ProductPopup from './ProductPopup';
-import PlaceOrder from '../PlaceOrder';
+import PlaceOrder from './PlaceOrder';
 
 interface ProductGridProps {
   products: Product[];

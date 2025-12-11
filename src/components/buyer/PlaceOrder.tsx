@@ -1,6 +1,6 @@
 import { X, CreditCard, Minus, Plus, ArrowLeft, Truck, User, PhoneCall, Phone } from "lucide-react";
 import { useState } from "react";
-import type { Product } from "../@types/Product";
+import type { Product } from "../../@types/Product";
 import { useNavigate } from "react-router-dom";
 
 interface PlaceOrderProps {
@@ -25,6 +25,41 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
   const dec = () => {
     if (quantity > 1) setQuantity(quantity - 1);
   };
+
+  const handlePlaceOrder = () => {
+  if (!product) return;
+
+ const newOrder = {
+  id: Date.now(),
+  product: {
+    id: product.id,
+    crop_name: product.crop?.crop_name,
+    unit: product.unit,
+    price: product.price,
+    farmer: { name: product.farmer?.name },
+  },
+  quantity,
+  total,
+  status: 'pending',
+  createdAt: new Date().toISOString(),
+  deliveryDetails: {
+    fullName,
+    phone,
+    address,
+    city,
+  },
+};
+
+
+  const savedOrders = JSON.parse(localStorage.getItem('farmfresh_orders') || '[]');
+
+// Keep last 50 orders only
+const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
+  localStorage.setItem("farmfresh_orders", JSON.stringify(updatedOrders));
+
+  // Redirect to order history page
+  window.location.href = "/orders";
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -89,7 +124,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
                     <Minus size={18} />
                   </button>
 
-                  <span classname="w-16 text-center text-lg font-bold">
+                  <span className="w-16 text-center text-lg font-bold">
                     {quantity} {product.unit}
                   </span>
 
@@ -225,6 +260,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
             </div>
 
             <button
+                onClick={handlePlaceOrder}
               className="w-full bg-green-800/90 text-white font-semibold py-2 rounded-lg mt-6 flex items-center justify-center gap-2 hover:bg-green-700"
             >
               <CreditCard size={18} />

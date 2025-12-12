@@ -66,7 +66,7 @@ export default function ProductPopup({ product, onClose, onPlaceOrder }) {
 
             <div>
               <div className="flex items-center gap-2">
-                <h4 className="font-bold">Helena Ron</h4>
+                <h4 className="font-bold"> {product.farmer?.name} </h4>
                 <div className="flex items-center gap-1 bg-green-100 px-1 rounded-xl">
                   <Star className="w-4 h-4 fill-yellow-500" />
                   <span className="font-semibold text-green-700">3.2</span>
@@ -76,9 +76,9 @@ export default function ProductPopup({ product, onClose, onPlaceOrder }) {
               <p className="text-sm text-gray-600">Helloo</p>
               {/* Farmer info icons */}
               <div className="grid grid-cols-2 mt-4 gap-2 text-sm text-gray-700">
-                <span className="flex items-center gap-2"><MapPin size={16} />galle</span>
-                <span className="flex items-center gap-2"><Calendar size={16} /> Member since 2015</span>
-                <span className="flex items-center gap-2"><Phone size={16} /> 07012457896</span>
+                <span className="flex items-center gap-2"><MapPin size={16} /> {product.farmer?.region} </span>
+                <span className="flex items-center gap-2"><Calendar size={16} /> Member since {product.farmer?.created_at}</span>
+                <span className="flex items-center gap-2"><Phone size={16} /> {product.farmer?.phone} </span>
                 <span className="flex items-center gap-2"><ShoppingBag size={16} /> 200 sales</span>
               </div>
             </div>

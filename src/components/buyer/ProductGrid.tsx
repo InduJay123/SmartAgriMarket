@@ -48,7 +48,7 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
                 alt="farmer image"
                 className="w-6 h-6 rounded-full object-cover"
               />
-              <span className="text-xs font-medium text-foreground">Helena Ron</span>
+              <span className="text-xs font-medium text-foreground"> {product.farmer?.name} </span>
               <div className="flex items-center gap-0.5">
                 <Star className="w-3 h-3 fill-rating-star text-yellow-500" />
                 <span className="text-xs font-semibold text-foreground">2.4</span>

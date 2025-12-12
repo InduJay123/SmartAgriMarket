@@ -60,7 +60,10 @@ export default function ProductPopup({ product, onClose, onPlaceOrder }) {
         <div className="p-4 border rounded-xl bg-gray-50">
           <div className="flex items-center gap-4">
             <img
-              src={carbageImg}
+              src={product.image_url ||
+                product.image ||
+                product.crop?.image}
+              alt="farmer image"
               className="w-16 h-16 rounded-full object-cover"
             />
 
@@ -77,7 +80,7 @@ export default function ProductPopup({ product, onClose, onPlaceOrder }) {
               {/* Farmer info icons */}
               <div className="grid grid-cols-2 mt-4 gap-2 text-sm text-gray-700">
                 <span className="flex items-center gap-2"><MapPin size={16} /> {product.farmer?.region} </span>
-                <span className="flex items-center gap-2"><Calendar size={16} /> Member since {product.farmer?.created_at}</span>
+                <span className="flex items-center gap-2"><Calendar size={16} /> Member since {product.farmer?.created_at? new Date(product.farmer.created_at).getFullYear() : "-"}</span>
                 <span className="flex items-center gap-2"><Phone size={16} /> {product.farmer?.phone} </span>
                 <span className="flex items-center gap-2"><ShoppingBag size={16} /> 200 sales</span>
               </div>

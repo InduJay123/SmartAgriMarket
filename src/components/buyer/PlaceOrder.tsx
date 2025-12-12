@@ -104,7 +104,7 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
 
                 <div className="flex-1">
                   <h4 className="font-bold text-lg">{product.crop?.crop_name}</h4>
-                  <p className="text-sm text-gray-600">Sold by: Helena</p>
+                  <p className="text-sm text-gray-600">Sold by: {product.farmer?.name} </p>
                   <p className="text-lg font-bold text-green-700">
                     Rs.{product.price.toFixed(2)}/{product.unit}
                   </p>

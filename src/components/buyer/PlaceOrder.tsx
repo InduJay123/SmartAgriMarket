@@ -2,6 +2,7 @@ import { X, CreditCard, Minus, Plus, ArrowLeft, Truck, User, PhoneCall, Phone } 
 import { useState } from "react";
 import type { Product } from "../../@types/Product";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface PlaceOrderProps {
   product: Product | null;
@@ -10,7 +11,13 @@ interface PlaceOrderProps {
 
 export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
   const [quantity, setQuantity] = useState(1)
-  const navigate = useNavigate;
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+
+  const navigate = useNavigate();
+
   if (!product) return null;
 
   const maxQuantity = product.quantity ?? 1;
@@ -26,40 +33,37 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
     if (quantity > 1) setQuantity(quantity - 1);
   };
 
-  const handlePlaceOrder = () => {
-  if (!product) return;
+  const handlePlaceOrder = async () => {
+    if (!fullName || !phone || !address || !city) {
+      alert("Please fill all required delivery details");
+      return;
+    }
 
- const newOrder = {
-  id: Date.now(),
-  product: {
-    id: product.id,
-    crop_name: product.crop?.crop_name,
-    unit: product.unit,
-    price: product.price,
-    farmer: { name: product.farmer?.name },
-  },
-  quantity,
-  total,
-  status: 'pending',
-  createdAt: new Date().toISOString(),
-  deliveryDetails: {
-    fullName,
-    phone,
-    address,
-    city,
-  },
-};
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/order/place/",
+        {
+          buyer_id: 1, 
+          market_id: product.market_id, // marketplace.market_id
+          quantity: quantity,
+          price_at_order: product.price,
+          total_amount: total,
+          full_name: fullName,
+          phone: phone,
+          address: address,
+          city: city,
+        }
+      );
+      console.log("Order placed:", response.data);
 
-
-  const savedOrders = JSON.parse(localStorage.getItem('farmfresh_orders') || '[]');
-
-// Keep last 50 orders only
-const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
-  localStorage.setItem("farmfresh_orders", JSON.stringify(updatedOrders));
-
-  // Redirect to order history page
-  window.location.href = "/orders";
-};
+      alert("Order placed successfully!");
+      onClose();
+      navigate("/orders");
+    }catch (error: any) {
+      console.error("Order error:", error);
+      alert("Failed to place order");
+    }
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -153,8 +157,10 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
                 <label className="font-medium text-sm flex items-center gap-2"><User size={16}/> Full Name *</label>
                 <input
                   type="text"
-                  className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
                   placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"         
                 />
               </div>
 
@@ -162,8 +168,10 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
                 <label className="font-medium text-sm flex items-center gap-2"><Phone size={16}/> Phone *</label>
                 <input
                   type="text"
-                  className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
                   placeholder="+94 71 234 5678"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"                 
                 />
               </div>
             </div>
@@ -173,6 +181,7 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
               <label className="font-medium text-sm">✉️ Email Address</label>
               <input
                 type="email"
+                
                 className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
                 placeholder="your@email.com"
               />
@@ -182,6 +191,8 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
             <div className="mb-2">
               <label className="font-medium text-sm">📍 Delivery Address *</label>
               <textarea
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
                 placeholder="House number, street, landmark..."
                 rows={3}
@@ -193,8 +204,10 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
               <div>
                 <label className="font-medium text-sm">City *</label>
                 <input
-                  className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
                   placeholder="Enter city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"                  
                 />
               </div>
 
@@ -209,7 +222,7 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
 
             {/* Pincode */}
             <div className="mb-2">
-              <label className="font-medium text-sm">PIN Code *</label>
+              <label className="font-medium text-sm">PIN Code </label>
               <input
                 className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
                 placeholder="Enter PIN code"
@@ -274,5 +287,6 @@ const updatedOrders = [newOrder, ...savedOrders].slice(0, 50);
         </div>
       </div>
     </div>
+  
   );
 }

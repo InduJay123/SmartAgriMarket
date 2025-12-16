@@ -10,5 +10,5 @@ export interface CropFormData {
   district?: string;          
   cropImage?: File;             
   additionalDetails?: string;  
-  image?:string;
+  image?:String;
 }

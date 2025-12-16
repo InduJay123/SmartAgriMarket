@@ -97,7 +97,7 @@ function App() {
 
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
           <Route path="shop" element={<BuyerShop />} />
-          <Route path="orders" element={<OrderHistory buyerId={''} />} />
+          <Route path="orders" element={<OrderHistory />} />
           <Route path="billing" element={<BillingInfo buyerId={''} />} />          
         </Route>
       </Routes>

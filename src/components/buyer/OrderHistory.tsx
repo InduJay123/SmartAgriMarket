@@ -1,38 +1,31 @@
 import { useEffect, useState } from 'react';
+import { Package, Clock, CheckCircle, XCircle, ChevronDown, ChevronUp, Calendar, Package2, Eye } from 'lucide-react';
+import axios from 'axios';
+import type { Order } from '../../@types/Order';
 
-import { Package, Clock, CheckCircle, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
-import type { Order, OrderItem } from '../../lib/supabase';
-
-interface OrderHistoryProps {
-  buyerId: string;
-}
-
-function OrderHistory({ buyerId }: OrderHistoryProps) {
+function OrderHistory() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [orderItems, setOrderItems] = useState<{ [key: string]: OrderItem[] }>({});
-  const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
+  const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const buyerId = 1; // You can replace with dynamic ID
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  const fetchOrders = () => {
-    setTimeout(() => {
-      const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-      const buyerOrders = allOrders.filter((order: Order) => order.buyer_id === buyerId);
-      setOrders(buyerOrders);
-
-      const itemsMap: { [key: string]: OrderItem[] } = {};
-      buyerOrders.forEach((order: Order) => {
-        itemsMap[order.id] = [];
-      });
-      setOrderItems(itemsMap);
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/order/buyer/${buyerId}`);
+      setOrders(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Failed to load orders", error);
+    } finally {
       setLoading(false);
-    }, 300);
+    }
   };
 
-  const toggleOrderExpansion = (orderId: string) => {
+  const toggleOrderExpansion = (orderId: number) => {
     const newExpanded = new Set(expandedOrders);
     if (newExpanded.has(orderId)) {
       newExpanded.delete(orderId);
@@ -46,7 +39,8 @@ function OrderHistory({ buyerId }: OrderHistoryProps) {
     switch (status) {
       case 'pending':
         return <Clock className="text-yellow-600" size={20} />;
-      case 'confirmed':
+      case 'accepted':
+      case 'shipped':
       case 'delivered':
         return <CheckCircle className="text-green-600" size={20} />;
       case 'cancelled':
@@ -60,8 +54,10 @@ function OrderHistory({ buyerId }: OrderHistoryProps) {
     switch (status) {
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
-      case 'confirmed':
+      case 'accepted':
         return 'bg-blue-100 text-blue-800';
+      case 'shipped':
+        return 'bg-purple-100 text-purple-800';
       case 'delivered':
         return 'bg-green-100 text-green-800';
       case 'cancelled':
@@ -98,87 +94,71 @@ function OrderHistory({ buyerId }: OrderHistoryProps) {
       </div>
 
       {orders.map((order) => {
-        const isExpanded = expandedOrders.has(order.id);
-        const items = orderItems[order.id] || [];
+        const isExpanded = expandedOrders.has(order.order_id);
 
         return (
-          <div key={order.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div key={order.order_id} className="bg-white rounded-xl shadow-sm overflow-hidden">
             <div
               className="p-6 cursor-pointer hover:bg-gray-50 transition"
-              onClick={() => toggleOrderExpansion(order.id)}
+              onClick={() => toggleOrderExpansion(order.order_id)}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-4 flex-1">
                   <div className="bg-green-100 p-3 rounded-lg">
                     {getStatusIcon(order.status)}
                   </div>
-                  <div className="flex-1">
+                  
+                  <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-bold text-gray-900">Order #{order.id.slice(0, 8)}</h3>
+                      <h3 className="text-lg font-bold text-gray-900">Order #{order.order_id}</h3>
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">
+                    
+                    <div className='flex flex-wrap gap-4 text-sm text-gray-500'>
+                      <p>Quantity: {order.quantity}</p>
+                      <p>Sold by: {order.market_id}</p>
+                    </div>
+
+                    <div className='flex flex-wrap gap-4'>
+                      <div className="flex gap-2 text-sm text-gray-500 mb-1 items-center">
+                      <Calendar size={16}/>
                       {new Date(order.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
                       })}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Payment: <span className="font-semibold">{order.payment_method}</span>
-                    </p>
+                    </div>
+                    <div className="flex gap-2 text-sm text-gray-500 mb-1 items-center">
+                      <Package size={16}/>
+                      {order.city}
+                    </div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
+
+                <div className=" gap-4">
+                  <div className="flex-1 gap-4 text-right">
                     <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-                    <p className="text-2xl font-bold text-green-600">${order.total_amount.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-green-600/">Rs.{order.total_amount}</p>
                   </div>
-                  <button className="p-2 hover:bg-gray-100 rounded-lg transition">
-                    {isExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                  <button className='flex items-center gap-2 py-1 px-2 mt-2 font-semibold bg-green-700/90 text-white'>
+                    <Eye size={18}/>
+                    View Details
                   </button>
                 </div>
+                
               </div>
+              
 
-              {order.delivery_address && (
+              {order.address && (
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="text-sm font-semibold text-gray-700 mb-1">Delivery Address:</p>
-                  <p className="text-sm text-gray-600">{order.delivery_address}</p>
+                  <p className="text-sm text-gray-600">{order.address}</p>
                 </div>
               )}
             </div>
-
-            {isExpanded && items.length > 0 && (
-              <div className="border-t border-gray-200 p-6 bg-gray-50">
-                <h4 className="font-bold text-gray-900 mb-4">Order Items</h4>
-                <div className="space-y-3">
-                  {items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4 bg-white rounded-lg p-4">
-                      <img
-                        src={item.product?.image_url || 'https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg'}
-                        alt={item.product?.name}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h5 className="font-bold text-gray-900">{item.product?.name}</h5>
-                        <p className="text-sm text-gray-600">
-                          ${item.price_at_purchase.toFixed(2)} × {item.quantity} {item.product?.unit}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-gray-900">
-                          ${(item.price_at_purchase * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         );
       })}

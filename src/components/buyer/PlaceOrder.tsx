@@ -58,7 +58,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
 
       alert("Order placed successfully!");
       onClose();
-      navigate("/orders");
+      navigate("/buyer/orders");
     }catch (error: any) {
       console.error("Order error:", error);
       alert("Failed to place order");

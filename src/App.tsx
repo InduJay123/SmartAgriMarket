@@ -33,6 +33,7 @@ import Settings from './pages/admin/Settings';
 import './App.css'
 
 import AdminLanding from './pages/AdminLanding';
+import ProfileInfo from './pages/farmer/ProfileInfo';
 
 function App() {
   function LoginWrapper() {
@@ -79,7 +80,7 @@ function App() {
           <Route path="ai-insights" element={<AiInsights />} />
           <Route path="addcrops" element={<AddCrops />} />
           <Route path="messages" element={<Messages />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<ProfileInfo />} />
         </Route>
 
          <Route path="/admin" element={<AdminLanding />} />

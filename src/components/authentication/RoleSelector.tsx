@@ -1,6 +1,6 @@
 import type { UserRole } from "../../types/auth";
 
-import { Sprout, ShoppingCart, Shield } from 'lucide-react';
+import { Sprout, ShoppingCart } from 'lucide-react';
 
 interface RoleSelectorProps {
   selectedRole: UserRole;
@@ -11,7 +11,6 @@ export default function RoleSelector({ selectedRole, onRoleChange }: RoleSelecto
   const roles: { value: UserRole; label: string; icon: typeof Sprout }[] = [
     { value: 'farmer', label: 'Farmer', icon: Sprout },
     { value: 'buyer', label: 'Buyer', icon: ShoppingCart },
-    { value: 'admin', label: 'Admin', icon: Shield },
   ];
 
   return (

@@ -18,9 +18,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
 
     setTimeout(() => {
       setIsLoading(false);
-      alert("Login successful!");
       onClose(); 
-      navigate("/admin");
+      navigate("/admin/dashboard");
     }, 1500);
   };
 

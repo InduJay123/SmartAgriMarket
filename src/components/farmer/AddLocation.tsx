@@ -86,13 +86,29 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
           </div>
         </div>
 
-        <div className="mt-4">
-          <label>Upload Crop Photo</label>
-          <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" id="crop-image"/>
-          <label htmlFor="crop-image" className="flex border-2 border-dashed rounded-xl cursor-pointer h-64 items-center justify-center">
-            {uploading ? "Uploading..." : imagePreview ? <img src={imagePreview} alt="Preview" className="object-contain w-full h-full"/> : <p>Click to upload photo</p>}
-          </label>
-        </div>
+        
+        <div className="relative">
+                    <input id="crop-image" type="file" accept="image/*" 
+                    onChange={handleImageUpload}
+                    className="hidden"/>
+                    <label htmlFor="crop-image" className={`flex border-2 border-dashed rounded-xl hover:bg-green-50 hover:border-green-800 ${imagePreview ? "border bg-green-50" : "border"}`}>
+                        {imagePreview ? (
+                            <div className="w-full h-64 flex flex-col items-center justify-center overflow-hidden relative">
+                                <img src={imagePreview} alt="Preview"
+                                className="object-contain w-full h-full"/>
+                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition-opacity">
+                                    <p className="text-white text-sm"> Click to change photo </p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="w-full flex flex-col items-center justify-center py-16 px-4 text-gray-700 gap-2">
+                                <UploadIcon/>
+                                <p> Click to upload crop photo</p>
+                                <p className="text-gray-600 text-xs font-normal"> PNG, JPG up to 10MB </p>
+                            </div>
+                        )}
+                    </label>
+                </div>
 
         <p className="text-xs text-gray-500 mt-2"><Info size={12}/> High-quality photos attract more buyers!</p>
       </form>

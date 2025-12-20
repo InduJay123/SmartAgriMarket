@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import { Package, Clock, CheckCircle, XCircle, ChevronDown, ChevronUp, Calendar, Package2, Eye } from 'lucide-react';
 import axios from 'axios';
 import type { Order } from '../../@types/Order';
+import OrderDetails from './OrderDetails';
 
 function OrderHistory() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
   const buyerId = 1; // You can replace with dynamic ID
 
   useEffect(() => {
@@ -104,13 +107,15 @@ function OrderHistory() {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-4 flex-1">
-                  <div className="bg-green-100 p-3 rounded-lg">
-                    {getStatusIcon(order.status)}
-                  </div>
+                  <img 
+                    src={order.product_image} 
+                    alt="Product"
+                    className="w-20 h-20 object-cover rounded-lg border"
+                  />                 
                   
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-bold text-gray-900">Order #{order.order_id}</h3>
+                      <h3 className="text-lg font-bold text-gray-900">{order.product_name}</h3>
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </span>
@@ -118,7 +123,7 @@ function OrderHistory() {
                     
                     <div className='flex flex-wrap gap-4 text-sm text-gray-500'>
                       <p>Quantity: {order.quantity}</p>
-                      <p>Sold by: {order.market_id}</p>
+                      <p>Sold by: {order.farmer_name}</p>
                     </div>
 
                     <div className='flex flex-wrap gap-4'>
@@ -143,15 +148,15 @@ function OrderHistory() {
                     <p className="text-sm text-gray-600 mb-1">Total Amount</p>
                     <p className="text-2xl font-bold text-green-600/">Rs.{order.total_amount}</p>
                   </div>
-                  <button className='flex items-center gap-2 py-1 px-2 mt-2 font-semibold bg-green-700/90 text-white'>
-                    <Eye size={18}/>
-                    View Details
+                  <button 
+                    onClick={() => setSelectedOrder(order)}
+                    className='flex items-center gap-2 py-1 px-2 mt-2 font-semibold bg-green-700/90 text-white'>
+                      <Eye size={18}/>
+                      View Details
                   </button>
-                </div>
-                
+                </div>               
               </div>
               
-
               {order.address && (
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="text-sm font-semibold text-gray-700 mb-1">Delivery Address:</p>
@@ -159,7 +164,13 @@ function OrderHistory() {
                 </div>
               )}
             </div>
-          </div>
+            {selectedOrder && (
+              <OrderDetails
+                order={selectedOrder}
+                onClose={() => setSelectedOrder(null)}
+              />
+            )}
+          </div>          
         );
       })}
     </div>

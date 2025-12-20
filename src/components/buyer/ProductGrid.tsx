@@ -1,4 +1,4 @@
-import { Eye, ShoppingCart, Star, X } from 'lucide-react';
+import { CalendarCheck, Eye, ShoppingCart, Star, X } from 'lucide-react';
 import type { Product } from '../../@types/Product';
 import carbageImg from '../../assets/carbage.png';
 import { useState } from 'react';

@@ -1,23 +1,58 @@
-import { CalendarCheck, Eye, ShoppingCart, Star, X } from 'lucide-react';
+import { CalendarCheck, Eye, Heart, ShoppingCart, Star, X } from 'lucide-react';
 import type { Product } from '../../@types/Product';
 import carbageImg from '../../assets/carbage.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProductPopup from './ProductPopup';
 import PlaceOrder from './PlaceOrder';
+import { fetchFavourites, toggleFavourite } from '../../api/favourites';
 
 interface ProductGridProps {
   products: Product[];
-  addToCart: (productId: number) => void;
+
 }
 
-function ProductGrid({ products, addToCart }: ProductGridProps) {
+function ProductGrid({ products }: ProductGridProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orderProduct, setOrderProduct] = useState<Product | null>(null);
-
+  const [favourites, setFavourites] = useState<number[]>([]);
   const openOrderPopup = (product: Product) => {
     setSelectedProduct(null);
     setOrderProduct(product);
   };
+
+  useEffect(() => {
+    const loadFavourites = async () => {
+      try {
+        const favs = await fetchFavourites();
+        console.log(favs);
+        if (Array.isArray(favs)) {
+          setFavourites(favs.map((f: any) => f.market_id));
+        } else {
+          setFavourites([]);
+        }
+      } catch (err) {
+        console.error(err);
+        setFavourites([]);
+      }
+    };
+    loadFavourites();
+  }, []);
+  
+  const handleToggleFavourite = async (productId: number) => {
+    try {
+      const res = await toggleFavourite(productId);
+      setFavourites(prev =>
+        prev.includes(productId)
+          ? prev.filter(id => id !== productId)
+          : [...prev, productId]
+      );
+      console.log(res.data.message);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  
 
   if (products.length === 0) {
     return (
@@ -41,6 +76,18 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
               alt={product.crop?.crop_name ?? 'Unknown Crop'}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
+            <button
+              onClick={() => handleToggleFavourite(product.market_id)}
+              className="absolute top-3 right-3 p-1 hover:border-none rounded-full hover:bg-white/50 transition"
+            >
+              <Star
+                className={
+                  favourites.includes(product.market_id)
+                    ? 'fill-yellow-500 text-yellow-500 w-6 h-6'
+                    : 'text-gray-400 w-6 h-6'
+                }
+              />
+            </button>
 
             <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 shadow-md">
               <img
@@ -96,7 +143,7 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
                 {product.quantity === 0 ? 'Out of Stock' : 'View'}    
               </button>
               <button
-                onClick={() => addToCart(product.market_id)}
+                
                 disabled={product.quantity === 0}
                 className={`w-full py-1.5 rounded-lg font-semibold flex items-center justify-center gap-2 ${
                   product.quantity === 0

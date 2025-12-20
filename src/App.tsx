@@ -5,6 +5,7 @@ import BillingInfo from './components/buyer/BillingInfo';
 import BuyerShop from './components/buyer/BuyerDashboard';
 import OrderHistory from './components/buyer/OrderHistory';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
+import FavouritesPage from './pages/buyer/FavouritesPage';
 
 function App() {
 
@@ -30,7 +31,8 @@ function App() {
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
           <Route path="shop" element={<BuyerShop />} />
           <Route path="orders" element={<OrderHistory />} />
-          <Route path="billing" element={<BillingInfo buyerId={''} />} />          
+          <Route path="billing" element={<BillingInfo buyerId={''} />} />
+          <Route path="favourites" element={<FavouritesPage />} />          
         </Route>
       </Routes>
     </BrowserRouter>

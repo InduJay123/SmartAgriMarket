@@ -36,7 +36,7 @@ export default function OrderDetails({ order, onClose }: Props) {
         </div>
 
         {/* Order meta */}
-        <div className="px-6 py-4 text-xs text-gray-500 flex gap-2">
+        <div className="px-6 py-2 text-xs text-gray-500 flex gap-2">
           <div className="flex items-center gap-2">
             <Calendar size={16} />
              Order ID: ORD-{order.order_id}
@@ -49,7 +49,7 @@ export default function OrderDetails({ order, onClose }: Props) {
         </div>
 
         {/* Product Details */}
-        <div className="px-6 py-4 bg-blue-50/40 m-4 rounded-md">
+        <div className="px-6 py-2 bg-blue-50/40 m-4 rounded-md">
           <h3 className="font-semibold flex items-center gap-2">
             <Package size={18} className="text-green-600"/> Product Details
           </h3>
@@ -62,7 +62,7 @@ export default function OrderDetails({ order, onClose }: Props) {
             />
 
             <div className="space-y-1">
-              <p className="font-bold text-lg">Market ID: {order.product_name}</p>
+              <p className="font-bold text-lg">Product: {order.product_name}</p>
               <p className="text-sm text-gray-600">
                 Sold by: <span className="font-semibold">{order.farmer_name}</span>
               </p>

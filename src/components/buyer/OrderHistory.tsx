@@ -92,9 +92,8 @@ function OrderHistory() {
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Order History</h2>
-        <p className="text-gray-600">Track and manage your orders</p>
-      </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">My Orders</h2>
+    </div>
 
       {orders.map((order) => {
         const isExpanded = expandedOrders.has(order.order_id);
@@ -105,7 +104,7 @@ function OrderHistory() {
               className="p-6 cursor-pointer hover:bg-gray-50 transition"
               onClick={() => toggleOrderExpansion(order.order_id)}
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4 flex-1">
                   <img 
                     src={order.product_image} 
@@ -127,18 +126,18 @@ function OrderHistory() {
                     </div>
 
                     <div className='flex flex-wrap gap-4'>
-                      <div className="flex gap-2 text-sm text-gray-500 mb-1 items-center">
-                      <Calendar size={16}/>
-                      {new Date(order.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </div>
-                    <div className="flex gap-2 text-sm text-gray-500 mb-1 items-center">
-                      <Package size={16}/>
-                      {order.city}
-                    </div>
+                      <div className="flex gap-2 text-sm text-gray-500 items-center">
+                        <Calendar size={16}/>
+                        {new Date(order.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </div>
+                      <div className="flex gap-2 text-sm text-gray-500 items-center">
+                        <Package size={16}/>
+                        {order.city}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -157,12 +156,7 @@ function OrderHistory() {
                 </div>               
               </div>
               
-              {order.address && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-1">Delivery Address:</p>
-                  <p className="text-sm text-gray-600">{order.address}</p>
-                </div>
-              )}
+              
             </div>
             {selectedOrder && (
               <OrderDetails

@@ -1,11 +1,11 @@
 import React from 'react'
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import BillingInfo from './components/buyer/BillingInfo';
-import BuyerShop from './components/buyer/BuyerDashboard';
-import OrderHistory from './components/buyer/OrderHistory';
+import BillingInfo from './pages/buyer/BillingInfo';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 import FavouritesPage from './pages/buyer/FavouritesPage';
+import OrderHistory from './pages/buyer/OrderHistory';
+import BuyerDashboard from './pages/buyer/BuyerDashboard';
 
 function App() {
 
@@ -29,7 +29,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
-          <Route path="shop" element={<BuyerShop />} />
+          <Route path="shop" element={<BuyerDashboard />} />
           <Route path="orders" element={<OrderHistory />} />
           <Route path="billing" element={<BillingInfo buyerId={''} />} />
           <Route path="favourites" element={<FavouritesPage />} />          

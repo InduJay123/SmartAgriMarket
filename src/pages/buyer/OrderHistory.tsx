@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Package, Clock, CheckCircle, XCircle, ChevronDown, ChevronUp, Calendar, Package2, Eye } from 'lucide-react';
 import axios from 'axios';
 import type { Order } from '../../@types/Order';
-import OrderDetails from './OrderDetails';
+import OrderDetails from '../../components/buyer/OrderDetails';
+
 
 function OrderHistory() {
   const [orders, setOrders] = useState<Order[]>([]);

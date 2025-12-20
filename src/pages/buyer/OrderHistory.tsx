@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Package, Clock, CheckCircle, XCircle, ChevronDown, ChevronUp, Calendar, Package2, Eye } from 'lucide-react';
+import { Package, Clock, CheckCircle, XCircle, Calendar, Eye } from 'lucide-react';
 import axios from 'axios';
 import type { Order } from '../../@types/Order';
 import OrderDetails from '../../components/buyer/OrderDetails';

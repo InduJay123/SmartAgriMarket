@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       { name: "My Orders", icon: Package, path: "/buyer/orders" },     
       { name: "Favorites", icon: Heart, path: "/buyer/favourites" },
       { name: "Cart", icon: ShoppingCart, path: "/buyer/cart" },
-      { name: "My Profile", icon: User, path: "/buyer/billing" },
+      { name: "My Profile", icon: User, path: "/buyer/profile" },
     ];
 
     return (

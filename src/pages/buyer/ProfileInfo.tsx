@@ -11,11 +11,11 @@ interface BuyerProfile {
   postal_code: string;
 }
 
-interface BillingInfoProps {
+interface ProfileInfoProps {
   buyerId: string;
 }
 
-function BillingInfo({ buyerId }: BillingInfoProps) {
+function ProfileInfo({ buyerId }: ProfileInfoProps) {
   const [profile, setProfile] = useState<BuyerProfile>({
     id: '',
     full_name: '',
@@ -249,4 +249,4 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
   );
 }
 
-export default BillingInfo;
+export default ProfileInfo;

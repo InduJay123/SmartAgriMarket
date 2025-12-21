@@ -11,4 +11,7 @@ export interface Order {
   address: string;
   city: string;
   created_at: string;
+  product_name: string;
+  product_image:string;
+  farmer_name: string;
 }

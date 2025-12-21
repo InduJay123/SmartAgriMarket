@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import ProductPage from "./ProductPage";
 import type { Product } from "../../@types/Product";
 import { Filter } from "lucide-react";
 import { fetchProducts } from "../../lib/ProductService";
-import Cart from "./Cart";
+import ProductPage from "../../components/buyer/ProductPage";
+import Cart from "../../components/buyer/Cart";
 
 interface CartItem {
   id: string;

@@ -1,5 +1,5 @@
 // Sidebar.tsx
-import { CreditCard, Heart,  LogOut, Package,ShoppingBag, ShoppingCart, } from "lucide-react";
+import { CreditCard, Heart,  LogOut, Package,ShoppingBag, ShoppingCart, User, } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 interface SidebarProps {
@@ -14,10 +14,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     const menuItems = [
       { name: "Shop", icon: ShoppingBag, path: "/buyer/shop" },
-      { name: "My Orders", icon: Package, path: "/buyer/orders" },
-      { name: "Billing Info", icon: CreditCard, path: "/buyer/billing" },
-      { name: "Favorites", icon: Heart, path: "/buyer/favorites" },
+      { name: "My Orders", icon: Package, path: "/buyer/orders" },     
+      { name: "Favorites", icon: Heart, path: "/buyer/favourites" },
       { name: "Cart", icon: ShoppingCart, path: "/buyer/cart" },
+      { name: "My Profile", icon: User, path: "/buyer/billing" },
     ];
 
     return (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CreditCard, MapPin, Phone, Mail, User, Save, Camera } from 'lucide-react';
 import { getBuyerProfile, updateBuyerProfile } from '../../api/profile';
+import ProfileImageUpload from '../../components/buyer/ProfileImageUpload';
 
 interface BuyerProfile {
   user_id: string;
@@ -40,6 +41,22 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
+  const normalizeProfile = (data: any) => ({
+  user_id: data.user_id ?? '',
+  fullname: data.fullname ?? '',
+  username: data.username ?? '',
+  email: data.email ?? '',
+  phone: data.phone ?? '',
+
+  company_name: data.company_name ?? '',
+  company_email: data.company_email ?? '',
+  company_phone: data.company_phone ?? '',
+  address: data.address ?? '',
+  city: data.city ?? '',
+  postal_code: data.postal_code ?? '',
+  profile_image: data.profile_image ?? '',
+});
+
   // Fetch profile from backend
  useEffect(() => {
   async function fetchProfile() {
@@ -70,7 +87,7 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
     setMessage('');
     try {
       const data = await updateBuyerProfile(profile);
-      setProfile(data);
+      setProfile(normalizeProfile(data));
       setMessage('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -103,6 +120,14 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>
         <div className="space-y-5">
+          <ProfileImageUpload  
+            image={profile.profile_image}
+            onChange={(url) =>
+              setProfile((prev) => ({
+                ...prev,
+                profile_image: url,
+              }))
+            }/>
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
               <User size={16} />
@@ -145,14 +170,6 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
-          </div>
-
-          <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-              <Camera size={16} />
-              Profile Image
-            </label>
-            <input type='image'/>
           </div>
         </div>
       </div>

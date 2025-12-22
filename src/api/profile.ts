@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_BASE = "http://127.0.0.1:8000/api";
-const userId = 2;
+const userId = 1;
 
 // Get buyer profile
 export const getBuyerProfile = async () => {

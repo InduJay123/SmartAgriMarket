@@ -1,11 +1,12 @@
 import React from 'react'
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import BillingInfo from './pages/buyer/BillingInfo';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 import FavouritesPage from './pages/buyer/FavouritesPage';
 import OrderHistory from './pages/buyer/OrderHistory';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
+import ProfileInfo from './pages/buyer/ProfileInfo';
+import PriceList from './pages/buyer/PriceList';
 
 function App() {
 
@@ -31,9 +32,10 @@ function App() {
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
           <Route path="shop" element={<BuyerDashboard />} />
           <Route path="orders" element={<OrderHistory />} />
-          <Route path="billing" element={<BillingInfo buyerId={''} />} />
-          <Route path="favourites" element={<FavouritesPage />} />          
-        </Route>
+          <Route path="favourites" element={<FavouritesPage />} />  
+          <Route path="pricelist" element={<PriceList />} />                 
+          <Route path="profile" element={<ProfileInfo buyerId={''} />} />
+         </Route>
       </Routes>
     </BrowserRouter>
   )

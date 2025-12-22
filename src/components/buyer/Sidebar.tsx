@@ -1,5 +1,5 @@
 // Sidebar.tsx
-import { CreditCard, Heart,  LogOut, Package,ShoppingBag, ShoppingCart, User, } from "lucide-react";
+import { FileSpreadsheet,  Heart,  LogOut, Package,ShoppingBag, User, } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 interface SidebarProps {
@@ -13,11 +13,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const handleLogout = () => navigate("/login");
 
     const menuItems = [
-      { name: "Shop", icon: ShoppingBag, path: "/buyer/shop" },
+      { name: "Marketplace", icon: ShoppingBag, path: "/buyer/shop" },
       { name: "My Orders", icon: Package, path: "/buyer/orders" },     
       { name: "Favorites", icon: Heart, path: "/buyer/favourites" },
-      { name: "Cart", icon: ShoppingCart, path: "/buyer/cart" },
-      { name: "My Profile", icon: User, path: "/buyer/billing" },
+      { name: "Daily Price List", icon: FileSpreadsheet, path: "/buyer/pricelist" },
+      { name: "My Profile", icon: User, path: "/buyer/profile" },
     ];
 
     return (

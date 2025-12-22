@@ -1,74 +1,114 @@
 import { useEffect, useState } from 'react';
-import { CreditCard, MapPin, Phone, Mail, User, Save } from 'lucide-react';
+import { CreditCard, MapPin, Phone, Mail, User, Save, Camera } from 'lucide-react';
+import { getBuyerProfile, updateBuyerProfile } from '../../api/profile';
+import ProfileImageUpload from '../../components/buyer/ProfileImageUpload';
 
 interface BuyerProfile {
-  id: string;
-  full_name: string;
+  user_id: string;
+  fullname: string;
+  username: string;
   email: string;
   phone: string;
-  address: string;
-  city: string;
-  postal_code: string;
+  company_name?: string;
+  company_email?: string;
+  company_phone?: string;
+  address?: string;
+  city?: string;
+  postal_code?: string;
+  profile_image?: string;
 }
 
-interface BillingInfoProps {
+interface ProfileInfoProps {
   buyerId: string;
 }
 
-function BillingInfo({ buyerId }: BillingInfoProps) {
+function ProfileInfo({ buyerId }: ProfileInfoProps) {
   const [profile, setProfile] = useState<BuyerProfile>({
-    id: '',
-    full_name: '',
+    user_id: '',
+    fullname: '',
+    username: '',
     email: '',
     phone: '',
+    company_name: '',
+    company_email: '',
+    company_phone: '',
     address: '',
     city: '',
     postal_code: '',
+    profile_image: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+  const normalizeProfile = (data: any) => ({
+  user_id: data.user_id ?? '',
+  fullname: data.fullname ?? '',
+  username: data.username ?? '',
+  email: data.email ?? '',
+  phone: data.phone ?? '',
 
-  const fetchProfile = () => {
-    setTimeout(() => {
-      const savedProfile = localStorage.getItem(`profile_${buyerId}`);
-      if (savedProfile) {
-        setProfile(JSON.parse(savedProfile));
-      }
-      setLoading(false);
-    }, 300);
-  };
+  company_name: data.company_name ?? '',
+  company_email: data.company_email ?? '',
+  company_phone: data.company_phone ?? '',
+  address: data.address ?? '',
+  city: data.city ?? '',
+  postal_code: data.postal_code ?? '',
+  profile_image: data.profile_image ?? '',
+});
 
-  const handleSave = () => {
-    setSaving(true);
-    setMessage('');
+  // Fetch profile from backend
+ useEffect(() => {
+  async function fetchProfile() {
+    setLoading(true);
+    const data = await getBuyerProfile();
 
-    setTimeout(() => {
-      localStorage.setItem(`profile_${buyerId}`, JSON.stringify(profile));
-      setMessage('Profile updated successfully!');
-      setSaving(false);
-    }, 500);
-  };
+    if (data) {
+      setProfile(data);
+    } else {
+      setMessage("Failed to load profile");
+    }
 
+    setLoading(false);
+  }
+
+  fetchProfile();
+}, []);
+
+
+  // Handle input changes
   const handleChange = (field: keyof BuyerProfile, value: string) => {
     setProfile(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Save profile to backend
+  const handleSave = async () => {
+    setSaving(true);
+    setMessage('');
+    try {
+      const data = await updateBuyerProfile(profile);
+      setProfile(normalizeProfile(data));
+      setMessage('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setMessage('Failed to update profile.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
     return (
       <div className="bg-white rounded-xl shadow-sm p-12 text-center">
         <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-gray-600">Loading billing information...</p>
+        <p className="mt-4 text-gray-600">Loading profile information...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
+      {/* Personal Information */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center gap-3 mb-2">
           <CreditCard size={28} className="text-green-600" />
@@ -79,8 +119,15 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
 
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>
-
         <div className="space-y-5">
+          <ProfileImageUpload  
+            image={profile.profile_image}
+            onChange={(url) =>
+              setProfile((prev) => ({
+                ...prev,
+                profile_image: url,
+              }))
+            }/>
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
               <User size={16} />
@@ -88,8 +135,8 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
             </label>
             <input
               type="text"
-              value={profile.full_name}
-              onChange={(e) => handleChange('full_name', e.target.value)}
+              value={profile.fullname}
+              onChange={(e) => handleChange('fullname', e.target.value)}
               placeholder="Enter your full name"
               className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
             />
@@ -119,17 +166,17 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
                 type="tel"
                 value={profile.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+(94) 000-0000"
-                className="w-full px-4 py-1 mb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                placeholder="+94 71 2345678"
+                className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
           </div>
         </div>
       </div>
 
+      {/* Market / Company Information */}
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Market / Company Information</h3>
-
         <div className="space-y-5">
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
@@ -138,8 +185,8 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
             </label>
             <input
               type="text"
-              value={profile.full_name}
-              onChange={(e) => handleChange('full_name', e.target.value)}
+              value={profile.company_name || ''}
+              onChange={(e) => handleChange('company_name', e.target.value)}
               placeholder="Enter your Market / Company Name"
               className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
             />
@@ -149,13 +196,13 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Mail size={16} />
-                Email Address
+                Company Email
               </label>
               <input
                 type="email"
-                value={profile.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                placeholder="your.email@example.com"
+                value={profile.company_email || ''}
+                onChange={(e) => handleChange('company_email', e.target.value)}
+                placeholder="company.email@example.com"
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
@@ -163,20 +210,21 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Phone size={16} />
-                Phone Number
+                Company Phone
               </label>
               <input
                 type="tel"
-                value={profile.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+(94) 000-0000"
-                className="w-full px-4 py-1 mb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                value={profile.company_phone || ''}
+                onChange={(e) => handleChange('company_phone', e.target.value)}
+                placeholder="+94 71 2345678"
+                className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
           </div>
         </div>
       </div>
 
+      {/* Address */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center gap-2 mb-4">
           <MapPin size={20} className="text-green-600" />
@@ -185,11 +233,9 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
 
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Street Address
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
             <textarea
-              value={profile.address}
+              value={profile.address || ''}
               onChange={(e) => handleChange('address', e.target.value)}
               placeholder="Enter your street address"
               rows={3}
@@ -199,12 +245,10 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                City
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
               <input
                 type="text"
-                value={profile.city}
+                value={profile.city || ''}
                 onChange={(e) => handleChange('city', e.target.value)}
                 placeholder="Enter city"
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
@@ -212,12 +256,10 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Postal Code
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
               <input
                 type="text"
-                value={profile.postal_code}
+                value={profile.postal_code || ''}
                 onChange={(e) => handleChange('postal_code', e.target.value)}
                 placeholder="Enter postal code"
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
@@ -249,4 +291,4 @@ function BillingInfo({ buyerId }: BillingInfoProps) {
   );
 }
 
-export default BillingInfo;
+export default ProfileInfo;

@@ -1,15 +1,49 @@
-// ProductPopup.jsx
-import { X, Star, MapPin, Phone, Calendar, ShoppingBag } from "lucide-react";
-import carbageImg from '../../assets/carbage.png';
-import type { Product } from "../../@types/Product";
+import { X, Star, MapPin, Phone, Calendar, ShoppingBag, Send } from "lucide-react";
+import { useEffect, useState } from "react";
+import { addReview, getReviews } from "../../api/reviews";
 
 interface ProductPopupProps {
-  product: Product;
+  product: any; 
   onClose: () => void;
-  onPlaceOrder: () => void;
+  onPlaceOrder: (product: any) => void;
 }
 
-export default function ProductPopup({ product, onClose, onPlaceOrder }) {
+interface Review {
+  id: number;
+  user_name: string;
+  rating: number;
+  comment: string;
+}
+
+const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOrder }) => {
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    if(product?.market_id){
+      fetchReviews();
+    }
+  }, [product]);
+
+  const fetchReviews = async () => {
+    const data = await getReviews(product.market_id);
+    setReviews(data || []);
+  }
+
+  const handleAddReview = async () => {
+    if (!comment) return alert("Please enter a comment");
+    
+    // Replace 1 with actual logged-in user ID
+    const newReview = await addReview(product.market_id, 1, rating, comment);
+    if (newReview) {
+        setReviews([newReview, ...reviews]); // add new review at top
+        setComment("");
+        setRating(5);
+    }
+};
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       {/* modal container */}
@@ -68,7 +102,7 @@ export default function ProductPopup({ product, onClose, onPlaceOrder }) {
             />
 
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h4 className="font-bold"> {product.farmer?.name} </h4>
                 <div className="flex items-center gap-1 bg-green-100 px-1 rounded-xl">
                   <Star className="w-4 h-4 fill-yellow-500" />
@@ -124,28 +158,59 @@ export default function ProductPopup({ product, onClose, onPlaceOrder }) {
           </div>
             </div>
         </div>
+      <div>
+    
+      {reviews.length === 0 && (
+        <p className="text-sm text-gray-500">No reviews yet</p>
+      )}
 
-        {/*reviews.map((r) => (
-          <div
-            key={r.id}
-            className="p-3 mb-3 border rounded-xl bg-gray-50 flex gap-3"
-          >
-            <img src={r.avatar} className="w-10 h-10 rounded-full" />
-            <div>
-              <p className="font-bold">{r.name}</p>
-              <p className="text-yellow-500 flex">
-                {"★★★★★".substring(0, r.stars)}
-              </p>
-              <p className="text-sm">{r.comment}</p>
-              <p className="text-xs text-gray-500">{r.date}</p>
-            </div>
+      {reviews.map((review) => (
+        <div key={review.id} className="border-b py-2 border-red-200/80 bg-red-50/70 rounded-lg px-4 mb-2">
+          <div className="flex flex-wrap items-center justify-between">
+            <p className="text-sm font-semibold">{review.user_name}</p>
+            <p className="text-yellow-500">⭐ {review.rating}</p>
           </div>
-        ))*/}
+          <p className="text-xs">{review.comment}</p>
+        </div>
+      ))}
+
+      <div className="mt-4 border-t pt-4">      
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Write your review..."
+          className="w-full border p-2 rounded mb-2"
+        />
+
+        <div className="flex flex-wrap items-center justify-between">
+          <div className="flex items-center gap-2 mb-2">
+            <label>Rating:</label>
+            <select value={rating} 
+              onChange={(e) => setRating(Number(e.target.value))} 
+              className="border p-1 rounded">
+              {[5,4,3,2,1].map((r) => (
+                <option key={r} value={r}>{r} ⭐</option>
+              ))}
+            </select>
+          </div>
+
+          <button
+              onClick={handleAddReview}
+              className="bg-green-900 hover:bg-green-800 text-white p-2 rounded-xl"
+              disabled={loading}
+            >
+              <Send size={20}/>
+              {loading ? "Submitting..." : "Submit"}
+            </button>
+          </div> 
+
+        </div>
+    </div>
 
         <div className="mt-8">
           <button
             onClick={() => {
-              onPlaceOrder(product);   // open new popup
+              onPlaceOrder(product);  
             }}
             className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-3 rounded-xl shadow-md flex items-center justify-center gap-2"
             >
@@ -156,3 +221,5 @@ export default function ProductPopup({ product, onClose, onPlaceOrder }) {
     </div>
   );
 }
+
+export default ProductPopup;

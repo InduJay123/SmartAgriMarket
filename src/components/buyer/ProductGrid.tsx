@@ -1,22 +1,79 @@
-import { Eye, ShoppingCart, Star, X } from 'lucide-react';
+import { Eye, ShoppingCart, Star } from 'lucide-react';
 import type { Product } from '../../@types/Product';
 import carbageImg from '../../assets/carbage.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProductPopup from './ProductPopup';
 import PlaceOrder from './PlaceOrder';
+import { fetchFavourites, toggleFavourite } from '../../api/favourites';
+import { getReviewSummary } from '../../api/reviews';
+import avatar from '../../assets/avatar.svg?url'
 
 interface ProductGridProps {
   products: Product[];
-  addToCart: (productId: number) => void;
+
 }
 
-function ProductGrid({ products, addToCart }: ProductGridProps) {
+function ProductGrid({ products }: ProductGridProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orderProduct, setOrderProduct] = useState<Product | null>(null);
+  const [favourites, setFavourites] = useState<number[]>([]);
+  const [productRatings, setProductRatings] = useState<Record<number, { avg: number; total: number }>>({});
+
+  useEffect(() => {
+  const loadRatings = async () => {
+    const ratings: Record<number, { avg: number; total: number }> = {};
+
+    await Promise.all(
+      products.map(async (product) => {
+        const res = await getReviewSummary(product.market_id);
+        ratings[product.market_id] = res;
+      })
+    );
+
+    setProductRatings(ratings);
+  };
+
+  if (products.length) {
+    loadRatings();
+  }
+}, [products]);
+
 
   const openOrderPopup = (product: Product) => {
     setSelectedProduct(null);
     setOrderProduct(product);
+  };
+
+  useEffect(() => {
+    const loadFavourites = async () => {
+      try {
+        const favs = await fetchFavourites();
+        console.log(favs);
+        if (Array.isArray(favs)) {
+          setFavourites(favs.map((f: any) => f.market_id));
+        } else {
+          setFavourites([]);
+        }
+      } catch (err) {
+        console.error(err);
+        setFavourites([]);
+      }
+    };
+    loadFavourites();
+  }, []);
+  
+  const handleToggleFavourite = async (productId: number) => {
+    try {
+      const res = await toggleFavourite(productId);
+      setFavourites(prev =>
+        prev.includes(productId)
+          ? prev.filter(id => id !== productId)
+          : [...prev, productId]
+      );
+      console.log(res.data.message);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (products.length === 0) {
@@ -41,20 +98,40 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
               alt={product.crop?.crop_name ?? 'Unknown Crop'}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
+            <button
+              onClick={() => handleToggleFavourite(product.market_id)}
+              className="absolute top-3 right-3 p-1 hover:border-none rounded-full hover:bg-white/50 transition"
+            >
+              <Star
+                className={
+                  favourites.includes(product.market_id)
+                    ? 'fill-yellow-500 text-yellow-500 w-6 h-6'
+                    : 'text-black w-6 h-6'
+                }
+              />
+            </button>
 
             <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 shadow-md">
               <img
-                src={carbageImg}
+                src={product.farmer?.profile_image || avatar}
                 alt="farmer image"
                 className="w-6 h-6 rounded-full object-cover"
               />
-              <span className="text-xs font-medium text-foreground"> {product.farmer?.name} </span>
+              <span className="text-xs font-medium text-foreground"> {product.farmer?.fullname} </span>
               <div className="flex items-center gap-0.5">
-                <Star className="w-3 h-3 fill-rating-star text-yellow-500" />
-                <span className="text-xs font-semibold text-foreground">2.4</span>
+                <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
+                <span className="text-xs font-semibold text-foreground">
+                  {productRatings[product.market_id]?.avg?.toFixed(1) ?? "0.0"}
+                </span>
               </div>
             </div>
-      
+  
+            <p className="text-sm">
+              ⭐ {productRatings[product.market_id]?.avg ?? 0}
+              <span className="text-gray-500 ml-1">
+                ({productRatings[product.market_id]?.total ?? 0} reviews)
+              </span>
+            </p>
 
             {product.quantity < 20 && (
               <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -81,7 +158,6 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
                 {product.unit}
               </span>
             </div>
-
             <div className='flex gap-2'>
               <button
                 onClick={() => setSelectedProduct(product)}
@@ -96,7 +172,7 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
                 {product.quantity === 0 ? 'Out of Stock' : 'View'}    
               </button>
               <button
-                onClick={() => addToCart(product.market_id)}
+                
                 disabled={product.quantity === 0}
                 className={`w-full py-1.5 rounded-lg font-semibold flex items-center justify-center gap-2 ${
                   product.quantity === 0
@@ -115,12 +191,12 @@ function ProductGrid({ products, addToCart }: ProductGridProps) {
       {/* PRODUCT DETAILS MODAL */}
       {selectedProduct && (
         <ProductPopup
-          product={selectedProduct}
+          product={selectedProduct}        
           /*farmer={product.farmer}
           reviews={product.reviews}*/
           onClose={() => setSelectedProduct(null)}
           onPlaceOrder={(product) => {
-            openOrderPopup(product);  // open order popup with product
+            openOrderPopup(product);  
           }}
         />
       )}

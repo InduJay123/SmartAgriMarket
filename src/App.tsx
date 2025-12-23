@@ -9,14 +9,10 @@ import AboutUs from './scenes/aboutus/aboutus';
 import Login from './pages/authentication/Login';
 import Signup from './pages/authentication/Signup';
 
-import BillingInfo from './components/buyer/BillingInfo';
-import BuyerShop from './components/buyer/BuyerDashboard';
-import OrderHistory from './components/buyer/OrderHistory';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 import SideBarLayout from './layout/SidebarLayout';
 
 import Admin from './pages/admin/Admin';
-import AdminDashboard from './pages/admin/AdminDashboard';
 import AIModel from './pages/admin/AIModel';
 import ManageBuyers from './pages/admin/ManageBuyers';
 import ManageCrops from './pages/admin/ManageCrops';
@@ -33,7 +29,13 @@ import Settings from './pages/admin/Settings';
 import './App.css'
 
 import AdminLanding from './pages/AdminLanding';
-import ProfileInfo from './pages/farmer/ProfileInfo';
+
+import FavouritesPage from './pages/buyer/FavouritesPage';
+import OrderHistory from './pages/buyer/OrderHistory';
+import BuyerDashboard from './pages/buyer/BuyerDashboard';
+import ProfileInfo from './pages/buyer/ProfileInfo';
+import PriceList from './pages/buyer/PriceList';
+import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
 
 function App() {
   function LoginWrapper() {
@@ -80,7 +82,7 @@ function App() {
           <Route path="ai-insights" element={<AiInsights />} />
           <Route path="addcrops" element={<AddCrops />} />
           <Route path="messages" element={<Messages />} />
-          <Route path="settings" element={<ProfileInfo />} />
+          <Route path="settings" element={<FarmerProfileInfo />} />
         </Route>
 
          <Route path="/admin" element={<AdminLanding />} />
@@ -97,10 +99,12 @@ function App() {
         <Route path="/admin/settings" element={<Settings />} />
 
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
-          <Route path="shop" element={<BuyerShop />} />
+          <Route path="shop" element={<BuyerDashboard />} />
           <Route path="orders" element={<OrderHistory />} />
-          <Route path="billing" element={<BillingInfo buyerId={''} />} />          
-        </Route>
+          <Route path="favourites" element={<FavouritesPage />} />  
+          <Route path="pricelist" element={<PriceList />} />                 
+          <Route path="profile" element={<ProfileInfo buyerId={''}/>} />
+         </Route>
       </Routes>
     </BrowserRouter>
     </div>

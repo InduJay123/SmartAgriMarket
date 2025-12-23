@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import ProductPage from "./ProductPage";
 import type { Product } from "../../@types/Product";
 import { Filter } from "lucide-react";
-import { fetchProducts } from "../../lib/ProductService";
-import Cart from "./Cart";
+import { fetchProducts } from "../../api/ProductService";
+import ProductPage from "../../components/buyer/ProductPage";
+import Cart from "../../components/buyer/Cart";
 
 interface CartItem {
   id: string;
@@ -27,7 +27,7 @@ function BuyerDashboard() {
         const data = await fetchProducts();
         const normalizedData = data.map((p) => ({
           ...p,
-          price: Number(p.price) || 0, // Ensure price is always a number
+          price: Number(p.price) || 0,
         }));
         setProducts(normalizedData);
       } catch (err) {

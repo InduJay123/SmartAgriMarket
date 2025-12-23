@@ -27,3 +27,10 @@ export const addReview = async (productId: number, userId: number, rating: numbe
         return null;
     }
 };
+
+export const getReviewSummary = async (marketId: number) => {
+  const res = await axios.get(
+    `${API_BASE}/summary/${marketId}/`
+  );
+  return res.data;
+};

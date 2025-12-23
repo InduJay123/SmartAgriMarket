@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import ProductPopup from './ProductPopup';
 import PlaceOrder from './PlaceOrder';
 import { fetchFavourites, toggleFavourite } from '../../api/favourites';
+import { getReviewSummary } from '../../api/reviews';
+import avatar from '../../assets/avatar.svg?url'
 
 interface ProductGridProps {
   products: Product[];
@@ -15,6 +17,28 @@ function ProductGrid({ products }: ProductGridProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orderProduct, setOrderProduct] = useState<Product | null>(null);
   const [favourites, setFavourites] = useState<number[]>([]);
+  const [productRatings, setProductRatings] = useState<Record<number, { avg: number; total: number }>>({});
+
+  useEffect(() => {
+  const loadRatings = async () => {
+    const ratings: Record<number, { avg: number; total: number }> = {};
+
+    await Promise.all(
+      products.map(async (product) => {
+        const res = await getReviewSummary(product.market_id);
+        ratings[product.market_id] = res;
+      })
+    );
+
+    setProductRatings(ratings);
+  };
+
+  if (products.length) {
+    loadRatings();
+  }
+}, [products]);
+
+
   const openOrderPopup = (product: Product) => {
     setSelectedProduct(null);
     setOrderProduct(product);
@@ -52,8 +76,6 @@ function ProductGrid({ products }: ProductGridProps) {
     }
   };
 
-  
-
   if (products.length === 0) {
     return (
       <div className="bg-white rounded-xl shadow-sm p-12 text-center">
@@ -84,24 +106,32 @@ function ProductGrid({ products }: ProductGridProps) {
                 className={
                   favourites.includes(product.market_id)
                     ? 'fill-yellow-500 text-yellow-500 w-6 h-6'
-                    : 'text-gray-400 w-6 h-6'
+                    : 'text-black w-6 h-6'
                 }
               />
             </button>
 
             <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 shadow-md">
               <img
-                src={carbageImg}
+                src={product.farmer?.profile_image || avatar}
                 alt="farmer image"
                 className="w-6 h-6 rounded-full object-cover"
               />
-              <span className="text-xs font-medium text-foreground"> {product.farmer?.name} </span>
+              <span className="text-xs font-medium text-foreground"> {product.farmer?.fullname} </span>
               <div className="flex items-center gap-0.5">
-                <Star className="w-3 h-3 fill-rating-star text-yellow-500" />
-                <span className="text-xs font-semibold text-foreground">2.4</span>
+                <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
+                <span className="text-xs font-semibold text-foreground">
+                  {productRatings[product.market_id]?.avg?.toFixed(1) ?? "0.0"}
+                </span>
               </div>
             </div>
-      
+  
+            <p className="text-sm">
+              ⭐ {productRatings[product.market_id]?.avg ?? 0}
+              <span className="text-gray-500 ml-1">
+                ({productRatings[product.market_id]?.total ?? 0} reviews)
+              </span>
+            </p>
 
             {product.quantity < 20 && (
               <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -128,7 +158,6 @@ function ProductGrid({ products }: ProductGridProps) {
                 {product.unit}
               </span>
             </div>
-
             <div className='flex gap-2'>
               <button
                 onClick={() => setSelectedProduct(product)}
@@ -162,12 +191,12 @@ function ProductGrid({ products }: ProductGridProps) {
       {/* PRODUCT DETAILS MODAL */}
       {selectedProduct && (
         <ProductPopup
-          product={selectedProduct}
+          product={selectedProduct}        
           /*farmer={product.farmer}
           reviews={product.reviews}*/
           onClose={() => setSelectedProduct(null)}
           onPlaceOrder={(product) => {
-            openOrderPopup(product);  // open order popup with product
+            openOrderPopup(product);  
           }}
         />
       )}

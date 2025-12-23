@@ -20,7 +20,6 @@ const PriceList:React.FC = () => {
     fetchData();
 }, []);
 
-
     return(
         <div className="p-8">
             <h1 className="text-4xl text-blue-900 font-bold p-4">Daily Price Lists</h1>
@@ -37,7 +36,7 @@ const PriceList:React.FC = () => {
                             
                            <div className=" flex flex-wrap gap-6">
                                 <a href={doc.file_url} target="_blank" rel="noopener noreferrer"
-                                    className="bg-black text-white/90 px-8 py-1 rounded-md hover:bg-white hover:text-black hover:border hover:border-black"
+                                    className="bg-black text-white/90 px-8 sm:px-2 py-1 rounded-md hover:bg-white hover:text-black hover:border hover:border-black"
                                 >
                                     <div className="flex flex-wrap items-center gap-3 font-bold">
                                         <ExternalLink size={16}/> 

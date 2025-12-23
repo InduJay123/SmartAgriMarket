@@ -171,7 +171,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex flex-wrap gap-2">
-                <p className="text-2xl font-bold">{averageRating}</p>
+                <p className="text-2xl font-bold">{averageRating.toFixed(1)}</p>
 
                 <div>
                   <TotalRatings rating={Number(averageRating)} />

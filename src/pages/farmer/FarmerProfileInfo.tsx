@@ -3,7 +3,7 @@ import { useState } from "react";
 import Header from "../../components/farmer/Header";
 
 
-const ProfileInfo:React.FC = () => {
+const FarmerProfileInfo:React.FC = () => {
 
     const [formData, setFormData] = useState({
         farmName: "Naha's Farm",
@@ -99,4 +99,4 @@ const ProfileInfo:React.FC = () => {
     )
 }
 
-export default ProfileInfo;
+export default FarmerProfileInfo;

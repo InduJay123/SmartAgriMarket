@@ -87,7 +87,7 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
         </div>
 
         
-        <div className="relative">
+        <div className="relative mt-6">
                     <input id="crop-image" type="file" accept="image/*" 
                     onChange={handleImageUpload}
                     className="hidden"/>

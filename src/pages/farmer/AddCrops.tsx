@@ -51,10 +51,12 @@ const AddCrops: React.FC = () => {
       marketplaceData.append("predicted_date", String(formData.predictDate));
       marketplaceData.append("quantity", String(formData.quantity));
       marketplaceData.append("farming_method", String(formData.farmingMethod));
+      marketplaceData.append("farming_season", String(formData.farmingSeason));
+      marketplaceData.append("additional_details", String(formData.additionalDetails));
       marketplaceData.append("region", String(formData.region));
       marketplaceData.append("district", String(formData.district));
       marketplaceData.append("status", "Available");
-      marketplaceData.append("farmer_id", "1");
+      marketplaceData.append("farmer_id", "2");
       if(formData.image) marketplaceData.append("image", formData.image.toString()); // Supabase URL
 
       const marketResponse = await axios.post("http://127.0.0.1:8000/api/marketplace/", marketplaceData, { headers: { "Content-Type": "multipart/form-data" } });

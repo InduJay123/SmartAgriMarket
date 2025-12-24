@@ -81,8 +81,8 @@ const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
                             onChange={(e) => setFormData({ ...formData, farmingSeason: e.target.value })}
                             className="text-gray-700 w-full bg-gray-50 border rounded-xl px-4 py-1 mb-4">
                             <option value="" disabled> Select farming season... </option>
-                            <option value="yala"> Yala </option>
-                            <option value="maha"> Maha </option>                  
+                            <option value="Yala"> Yala </option>
+                            <option value="Maha"> Maha </option>                  
                         </select>
                     </div>
                 </div>

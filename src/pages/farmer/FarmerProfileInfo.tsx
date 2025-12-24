@@ -2,8 +2,7 @@ import {SettingsIcon } from "lucide-react";
 import { useState } from "react";
 import Header from "../../components/farmer/Header";
 
-
-const Settings:React.FC = () => {
+const FarmerProfileInfo:React.FC = () => {
 
     const [formData, setFormData] = useState({
         farmName: "Naha's Farm",
@@ -99,4 +98,4 @@ const Settings:React.FC = () => {
     )
 }
 
-export default Settings;
+export default FarmerProfileInfo;

@@ -6,8 +6,7 @@ import SidebarLayout from './layout/SidebarLayout';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
 import AiInsights from './pages/farmer/AiInsights';
 import AddCrops from './pages/farmer/AddCrops';
-import Settings from './pages/farmer/Settings';
-
+import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
 
 function App() {
 
@@ -36,7 +35,7 @@ function App() {
           <Route path='dashboard' element = {<FarmerDashboard/>}/>
           <Route path='analytics' element={<AiInsights/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
-          <Route path='settings' element={<Settings/>}/>
+          <Route path='settings' element={<FarmerProfileInfo/>}/>
         </Route>
       </Routes>
    </BrowserRouter>

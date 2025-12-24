@@ -148,9 +148,9 @@ function ProductGrid({ products }: ProductGridProps) {
               <p
                 className={`text-xs font-semibold px-2 rounded-xl text-black 
                   ${
-                    product.farming_season === "yala"
+                    product.farming_season === "Yala"
                       ? "bg-green-300"
-                      : product.farming_season === "maha"
+                      : product.farming_season === "Maha"
                       ? "bg-orange-300"
                       : "bg-gray-300"
                   }

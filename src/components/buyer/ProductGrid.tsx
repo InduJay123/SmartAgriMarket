@@ -139,12 +139,30 @@ function ProductGrid({ products }: ProductGridProps) {
               </div>
             )}
           </div>
+
           <div className="p-2">
-            <h3 className="text-lg font-bold text-gray-900">
-              {product.crop?.crop_name ?? 'Unknown'}
-            </h3>
+            <div className='flex flex-wrap items-center justify-between'>
+              <h3 className="text-lg font-bold text-gray-900">
+                {product.crop?.crop_name ?? 'Unknown'}
+              </h3>
+              <p
+                className={`text-xs font-semibold px-2 rounded-xl text-black 
+                  ${
+                    product.farming_season === "Yala"
+                      ? "bg-green-300"
+                      : product.farming_season === "Maha"
+                      ? "bg-orange-300"
+                      : "bg-gray-300"
+                  }
+                `}
+              >
+                {product.farming_season ?? "Unknown"}
+              </p>
+
+            </div>
+
             <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              {product.crop?.description || 'No description'}
+              {product.additional_details || 'No description'}
             </p>
 
             <div className="flex flex-wrap items-center justify-between mb-3">

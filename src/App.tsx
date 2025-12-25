@@ -35,7 +35,7 @@ function App() {
           <Route path='dashboard' element = {<FarmerDashboard/>}/>
           <Route path='analytics' element={<AiInsights/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
-          <Route path='settings' element={<FarmerProfileInfo/>}/>
+          <Route path='profile' element={<FarmerProfileInfo/>}/>
         </Route>
       </Routes>
    </BrowserRouter>

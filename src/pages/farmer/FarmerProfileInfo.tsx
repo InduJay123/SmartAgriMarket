@@ -1,6 +1,8 @@
 import {SettingsIcon } from "lucide-react";
 import { useState , useEffect} from "react";
 import Header from "../../components/farmer/Header";
+import FarmerProfileImageUpload from "../../components/farmer/FarmerProfileImageUpload";
+import { getFarmerProfile, updateFarmerProfile } from "../../api/farmer/farmerProfile";
 
 const FarmerProfileInfo:React.FC = () => {
     const USER_ID = 1;
@@ -13,6 +15,7 @@ const FarmerProfileInfo:React.FC = () => {
         address: "",
         region: "",
         about: "",
+        profileImage: "",
         price_alert: false,
         buyer_msg: false,
         harvest_rem: false,
@@ -22,17 +25,18 @@ const FarmerProfileInfo:React.FC = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const res = await fetch(`http://127.0.0.1:8000/api/farmer/profile/${USER_ID}/`);
-                const data = await res.json();
+                const data = await getFarmerProfile(USER_ID);
+                
 
                 setFormData({
-                    farmName: data.farmer_details?.farm_name || "X Farm",
-                    farmerName: data.fullname || "Farmer x",
-                    email: data.email || "example@gmail.com",
-                    contact: data.phone || "0xx xxx xxxx",
-                    region: data.region || "Colombo",
-                    address: data.farmer_details?.address || "No:x, xxxx, xxxxx",
+                    farmName: data.farmer_details?.farm_name || "",
+                    farmerName: data.fullname || "",
+                    email: data.email || "",
+                    contact: data.phone || "",
+                    region: data.region || "",
+                    address: data.farmer_details?.address || "",
                     about: data.farmer_details?.about || "",
+                    profileImage: data.farmer_details?.profile_image || "",
                     price_alert: data.farmer_details?.price_alert || false,
                     buyer_msg: data.farmer_details?.buyer_msg || false,
                     harvest_rem: data.farmer_details?.harvest_rem || false,
@@ -44,9 +48,8 @@ const FarmerProfileInfo:React.FC = () => {
                 setLoading(false);
             }
         };
-
         fetchProfile();
-        }, []);
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const target = e.target;
@@ -65,26 +68,25 @@ const FarmerProfileInfo:React.FC = () => {
         }));
     };
 
+    const handleImageChange = (url: string) => {
+        setFormData(prev => ({ ...prev, profileImage: url }));
+    };
 
     const handleSave = async () => {
         try {
-            await fetch(`http://127.0.0.1:8000/api/farmer/profile/${USER_ID}/`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+            await updateFarmerProfile(USER_ID,{
                 fullname: formData.farmerName,
                 phone: formData.contact,
                 region: formData.region,
                 farm_name: formData.farmName,
+                address: formData.address,
+                about: formData.about,
+                profile_image: formData.profileImage,
                 price_alert: formData.price_alert,
                 buyer_msg: formData.buyer_msg,
                 harvest_rem: formData.harvest_rem,
                 market_update: formData.market_update,
-            }),
             });
-
             alert("Profile updated successfully");
         } catch (error) {
             console.error("Update failed", error);
@@ -99,9 +101,14 @@ const FarmerProfileInfo:React.FC = () => {
     return(
         <div className="bg-gray-50 p-4">
             <Header icon={SettingsIcon} title="Settings" subTitle="Manage your farm profile and preferences"/>
+            
             <div className="grid lg:grid-cols-2 gap-6 mt-6 mb-2">
                 <div className="flex flex-col bg-white p-6 w-full shadow-md rounded-md border border-gray-200 items-start justify-start">
                     <h2 className="text-lg font-bold mb-4">Farm Information</h2>
+                    <FarmerProfileImageUpload
+                        image={formData.profileImage}
+                        onChange={handleImageChange}
+                    />
                     <form className="flex flex-col items-start justify-start space-y-4">
                         <div className="flex flex-col items-start w-full">
                             <label className="text-gray-700 font-medium mb-1 block">Farm Name</label>
@@ -188,6 +195,7 @@ const FarmerProfileInfo:React.FC = () => {
                 <textarea
                     className="w-full bg-gray-100 border border-gray-200 rounded-md text-gray-600 text-sm mb-4 p-4 resize-none min-h-[240px] max-h-[240px] overflow-auto"
                     value={formData.about}
+                    placeholder="Write something about your farm..."
                     onChange={(e) => setFormData({ ...formData, about: e.target.value })}
                     />
 

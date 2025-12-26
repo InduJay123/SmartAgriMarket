@@ -24,7 +24,6 @@ import AddCrops from './pages/farmer/AddCrops';
 import AiInsights from './pages/farmer/AiInsights';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
 import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
-import Messages from './pages/farmer/Messages';
 import Settings from './pages/admin/Settings';
 
 import './App.css'

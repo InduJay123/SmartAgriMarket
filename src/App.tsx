@@ -10,7 +10,6 @@ import Login from './pages/authentication/Login';
 import Signup from './pages/authentication/Signup';
 
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
-import SideBarLayout from './layout/SidebarLayout';
 
 import Admin from './pages/admin/Admin';
 import AIModel from './pages/admin/AIModel';

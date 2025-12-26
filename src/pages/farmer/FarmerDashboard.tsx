@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/farmer/Header";
 import TopCard from "../../components/farmer/TopCard";
 import EditCrop from "../../components/farmer/EditCrop";
+import ReviewPopup from "../../components/farmer/ReviewPopup";
 
 interface Crop {
     market_id: number;
@@ -13,12 +14,15 @@ interface Crop {
     predicted_date: number;
     price: number;
     unit: string;
+    farming_season: string;
     status: string;
     created_at: string;
     updated_at: string;
 }
 
 const FarmerDashboard: React.FC = () => {
+    const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+
     const stats = [
         {
             title: "Market Price",
@@ -206,8 +210,7 @@ const FarmerDashboard: React.FC = () => {
                 </div>
                 </div>
             ))}
-
-                
+               
                 <div className="mt-4 p-2 overflow-x-auto hidden sm:block">
                     <table className="min-w-[700px] w-full text-sm">
                         <thead className="text-sm text-gray-500 bg-gray-100 border-b">
@@ -216,6 +219,7 @@ const FarmerDashboard: React.FC = () => {
                                 <th className="px-6 py-4 text-left">Expected Quantity/kg</th>
                                 <th className="px-4 py-4 text-left">Expected Date</th>
                                 <th className="px-10 py-4 text-left">Price/Rs</th>
+                                <th className="px-10 py-4 text-left">Season</th>
                                 <th className="px-10 py-4 text-left">Status</th>
                                 <th className="px-10 py-4 text-center">Actions</th>
                             </tr>
@@ -232,10 +236,28 @@ const FarmerDashboard: React.FC = () => {
                                     <td className="text-sm px-4 py-4">{crop.quantity} {crop.unit} </td>
                                     <td className="text-sm px-4 py-4">{crop.predicted_date}</td>
                                     <td className="text-sm px-10 py-4">{crop.price}</td>
+                                    <td className="text-sm px-10 py-4">
+                                        <span
+                                            className={`px-2 py-1 w-full rounded-xl text-black ${
+                                            crop.farming_season === "Yala"
+                                                ? "bg-green-300"
+                                                : crop.farming_season === "Maha"
+                                                ? "bg-orange-300"
+                                                : "bg-gray-300"
+                                            }`}
+                                        >
+                                            {crop.farming_season ?? "Unknown"}
+                                        </span>
+                                    </td>
+
                                     <td className="text-sm px-10 py-4">{crop.status}</td>
                                     <td className="flex gap-10 px-8 py-4">
                                       
                                      <div className="flex items-center justify-end space-x-2">
+                                        <button onClick={() => setSelectedProductId(crop.market_id)}>
+                                            View Reviews
+                                        </button>
+
                                         <button  
                                             onClick={() => handleEditCrop(crop)}
                                             className="w-8 h-8 p-2 rounded-lg hover:bg-gray-200">
@@ -257,6 +279,13 @@ const FarmerDashboard: React.FC = () => {
                 {selectedCrop && (
                     <EditCrop crop={selectedCrop} onClose={() => {setSelectedCrop(null); refreshCrops();} }/>                     
                 )}
+                {selectedProductId && (
+                <ReviewPopup
+                    productId={selectedProductId}
+                    onClose={() => setSelectedProductId(null)}
+                />
+                )}
+
             </div>
             
         </div>

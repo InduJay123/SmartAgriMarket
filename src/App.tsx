@@ -84,14 +84,6 @@ function App() {
           <Route path="signup" element={<SignupWrapper />} /> 
         </Route>
 
-        <Route path="/farmer" element={<SideBarLayout />}>
-          <Route path='dashboard' element={<FarmerDashboard/>} />
-          <Route path="ai-insights" element={<AiInsights />} />
-          <Route path="addcrops" element={<AddCrops />} />
-          <Route path="messages" element={<Messages />} />
-          <Route path="settings" element={<FarmerProfileInfo />} />
-        </Route>
-
          <Route path="/admin" element={<AdminLanding />} />
 
         {/* Admin routes */}

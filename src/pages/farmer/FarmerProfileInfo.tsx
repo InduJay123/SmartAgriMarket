@@ -117,7 +117,7 @@ const FarmerProfileInfo:React.FC = () => {
                         </div>
                         <div className="flex flex-col items-start w-full">
                             <label className="text-gray-700 font-medium mb-1 block">Farmer Name</label>
-                            <input type="text" name="ownerName" value={formData.farmerName} onChange={handleChange}
+                            <input type="text" name="farmerName" value={formData.farmerName} onChange={handleChange}
                             className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>
                         <div className="flex flex-col items-start w-full">

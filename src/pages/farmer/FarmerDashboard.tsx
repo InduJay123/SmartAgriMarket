@@ -189,16 +189,19 @@ const FarmerDashboard: React.FC = () => {
                     </div>
 
                     <div className="flex gap-2">
-                    <button 
-                        onClick={() => handleEditCrop(crop)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200">
-                            <Edit className="w-4 h-4" />
-                    </button>
-                    <button 
-                        onClick={() => handleDeleteCrop(crop.market_id)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-red-600 hover:bg-red-100">
-                            <Trash2 className="w-4 h-4" />
-                    </button>
+                        <button onClick={() => setSelectedProductId(crop.market_id)}>
+                            Reviews
+                        </button>
+                        <button 
+                            onClick={() => handleEditCrop(crop)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200">
+                                <Edit className="w-4 h-4" />
+                        </button>
+                        <button 
+                            onClick={() => handleDeleteCrop(crop.market_id)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-red-600 hover:bg-red-100">
+                                <Trash2 className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
 
@@ -206,6 +209,7 @@ const FarmerDashboard: React.FC = () => {
                     <p><span className="font-semibold">Expected Qty:</span> {crop.quantity}{crop.unit}</p>
                     <p><span className="font-semibold">Expected Date:</span> {crop.predicted_date}</p>
                     <p><span className="font-semibold">Price:</span> Rs. {crop.price}</p>
+                    <p><span className="font-semibold">Season:</span>{crop.farming_season}</p>
                     <p><span className="font-semibold">Status:</span> {crop.status}</p>
                 </div>
                 </div>
@@ -255,7 +259,7 @@ const FarmerDashboard: React.FC = () => {
                                       
                                      <div className="flex items-center justify-end space-x-2">
                                         <button onClick={() => setSelectedProductId(crop.market_id)}>
-                                            View Reviews
+                                            Reviews
                                         </button>
 
                                         <button  

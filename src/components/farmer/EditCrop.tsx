@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { updateCrop } from "../../api/farmer/marketplace";
+import ProductImageUpload from "./ProductImageUpload";
 interface EditCropProps {
   crop: any;
   onClose: () => void;
 }
 
 const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
+  const [image, setImage] = useState<string | null>(crop.image || null);
+
   const [formData, setFormData] = useState({
     quantity: crop.quantity || "",
     price: crop.price || "",
@@ -31,7 +34,7 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
         region: crop.region,
         district: crop.district,
         farming_method: crop.farming_method,
-        image: crop.image,
+        image: image,
         additional_details: formData.additional_details || ""
       };
 
@@ -53,6 +56,14 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
             <h2 className="text-sm text-gray-400 mb-6">Update your crop information and pricing</h2>
           </div>
           <button onClick={onClose} className="text-black border-none"> X </button>
+        </div>
+
+        <div className="mb-4 flex justify-center">
+          <ProductImageUpload
+            marketId={crop.market_id}
+            image={image || undefined}
+            onChange={(url) => setImage(url)}
+          />
         </div>
 
         {/* Crop Name */}
@@ -113,7 +124,8 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
 
         <div className="mb-4">
           <label className="block mb-1 font-semibold text-gray-800">Additional Details</label>
-          <input name="additional_details" onChange={handleChange} type="text" value={formData.additional_details} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
+          <input name="additional_details" onChange={handleChange} type="text" value={formData.additional_details}
+            className="w-full border p-2 rounded-xl text-sm" />
         </div>
 
 

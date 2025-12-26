@@ -237,10 +237,10 @@ const FarmerDashboard: React.FC = () => {
                                             <span> {crop.crop_name} </span>
                                         </div>
                                     </td>
-                                    <td className="text-sm px-4 py-4">{crop.quantity} {crop.unit} </td>
-                                    <td className="text-sm px-4 py-4">{crop.predicted_date}</td>
+                                    <td className="text-sm px-6 py-4">{crop.quantity} {crop.unit} </td>
+                                    <td className="text-sm px-2 py-4">{crop.predicted_date}</td>
                                     <td className="text-sm px-10 py-4">{crop.price}</td>
-                                    <td className="text-sm px-10 py-4">
+                                    <td className="text-xs px-10 py-4">
                                         <span
                                             className={`px-2 py-1 w-full rounded-xl text-black ${
                                             crop.farming_season === "Yala"

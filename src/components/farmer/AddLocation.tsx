@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { MapPin, Upload, UploadIcon, Info } from "lucide-react";
 import type { CropFormData } from "../../@types/CropFormData";
-import { supabase } from "../../lib/supabaseClients";
-
+import { supabase } from "../../lib/supabase";
 
 interface LocationProps {
   formData: CropFormData;

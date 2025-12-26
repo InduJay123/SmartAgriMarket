@@ -23,6 +23,7 @@ import UploadPrice from './pages/admin/UploadPrice';
 import AddCrops from './pages/farmer/AddCrops';
 import AiInsights from './pages/farmer/AiInsights';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
 import Messages from './pages/farmer/Messages';
 import Settings from './pages/admin/Settings';
 
@@ -35,7 +36,7 @@ import OrderHistory from './pages/buyer/OrderHistory';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import ProfileInfo from './pages/buyer/ProfileInfo';
 import PriceList from './pages/buyer/PriceList';
-import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
+import SidebarLayout from './layout/SidebarLayout';
 
 function App() {
   function LoginWrapper() {
@@ -69,6 +70,13 @@ function App() {
     <div>
       <BrowserRouter>
       <Routes>
+        <Route path='/' element = {<Home/>} />
+        <Route path='/farmer' element = {<SidebarLayout/>} >
+          <Route path='dashboard' element = {<FarmerDashboard/>}/>
+          <Route path='analytics' element={<AiInsights/>} />
+          <Route path='addcrops' element={<AddCrops/>}/>
+          <Route path='profile' element={<FarmerProfileInfo/>}/>
+        </Route>
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Home />} />
           <Route path="contactus" element={<ContactUs />} />

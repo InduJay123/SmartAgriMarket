@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { name: "Home", icon: Home, path: "/farmer/dashboard" },
         { name: "AI Insights", icon: TrendingUp, path: "/farmer/analytics" },
         { name: "Add Crops", icon: PlusCircle, path: "/farmer/addcrops" },
-        { name: "Messages", icon: MessageSquare, path: "/farmer/messages" },
+        { name: "My Orders", icon: MessageSquare, path: "/farmer/orders" },
         { name: "My Profile", icon: User, path: "/farmer/profile" }
     ];
     

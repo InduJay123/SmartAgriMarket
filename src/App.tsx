@@ -22,6 +22,7 @@ import UploadPrice from './pages/admin/UploadPrice';
 import AddCrops from './pages/farmer/AddCrops';
 import AiInsights from './pages/farmer/AiInsights';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
+
 import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
 import Settings from './pages/admin/Settings';
 
@@ -35,6 +36,7 @@ import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import ProfileInfo from './pages/buyer/ProfileInfo';
 import PriceList from './pages/buyer/PriceList';
 import SidebarLayout from './layout/SidebarLayout';
+import FarmerOrders from './pages/farmer/FarmerOrders';
 
 function App() {
   function LoginWrapper() {
@@ -73,6 +75,7 @@ function App() {
           <Route path='dashboard' element = {<FarmerDashboard/>}/>
           <Route path='analytics' element={<AiInsights/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
+          <Route path='orders' element={<FarmerOrders />}/>
           <Route path='profile' element={<FarmerProfileInfo/>}/>
         </Route>
         <Route path="/" element={<PublicLayout />}>

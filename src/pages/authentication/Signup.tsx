@@ -3,6 +3,7 @@ import { UserPlus, User, Mail, Lock, Phone, MapPin } from "lucide-react";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import type { SignupFormData, UserRole } from "../../types/auth";
 import rightimg from "../../assets/man-seller-sells-fresh-organic-fruit-vegetable-street-shop-seasonal-outdoor-farmer-local-market_575670-344.avif"
+import { signupUser } from "../../api";
 
 interface SignupProps {
   onNavigateToLogin: () => void;
@@ -59,10 +60,26 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Signup submitted:", formData);
+    if (!validateForm()) return;
+
+    try {
+      const response = await signupUser({
+        fullname: formData.fullName,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role === "farmer" ? "Farmer" : "Buyer",
+      });
+
+      console.log("Signup successful:", response.data);
+      alert("Account created successfully!");
+      onNavigateToLogin();
+
+    } catch (error: any) {
+        console.error(error.response?.data || error.message);
+        alert("Signup failed: " + JSON.stringify(error.response?.data));
     }
   };
 

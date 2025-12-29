@@ -4,6 +4,7 @@ import type { LoginFormData, UserRole } from "../../types/auth";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import marketImg from "../../assets/legumes-frais-1140x510.png" 
 import { useNavigate } from "react-router-dom";
+import { loginUser, setAuthToken } from "../../api";
 
 
 interface LoginProps {
@@ -13,43 +14,64 @@ interface LoginProps {
 export default function Login({ onNavigateToSignup }: LoginProps) {
    const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
-    username: "",
+    email: "",
     password: "",
     role: "farmer",
   });
 
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    const newErrors: Partial<LoginFormData> = {};
-    if (!formData.username) newErrors.username = "Username is required";
-    if (!formData.password) newErrors.password = "Password is required";
+  if (!formData.email || !formData.password) {
+    setErrors({
+      email: !formData.email ? "Email is required" : undefined,
+      password: !formData.password ? "Password is required" : undefined,
+    });
+    return;
+  }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+  try {
+    const response = await loginUser({
+      email: formData.email,
+      password: formData.password,
+      role: formData.role === "farmer" ? "Farmer"
+            : formData.role === "buyer" ? "Buyer" 
+            : ""
+    });
+
+    console.log("Login successful:", response.data);
+
+    // store tokens
+    localStorage.setItem("accessToken", response.data.access);
+    localStorage.setItem("refreshToken", response.data.refresh);
+    localStorage.setItem("userRole", response.data.user.role);
+
+    // set auth token for future requests
+    setAuthToken(response.data.access);
+
+    // redirect
+    switch (response.data.user.role) {
+      case "Farmer":
+        navigate("/farmer/dashboard");
+        break;
+      case "Buyer":
+        navigate("/buyer/shop");
+        break;
+      case "Admin":
+        navigate("/admin/dashboard");
+        break;
+      default:
+        alert("Invalid role");
     }
 
-    console.log("Login submitted:", formData);
-  };
+  } catch (error: any) {
+    console.error(error.response?.data || error.message);
+    alert("Login failed: " + JSON.stringify(error.response?.data));
+  }
+};
 
-   const handleLogin = () => {
-      switch(formData.role){
-        case "farmer":
-          navigate("/farmer/dashboard");
-          break;
-        case "buyer":
-          navigate("/buyer/shop");
-          break;
-        case "admin":
-          navigate("/admin/dashboard");
-          break;
-        default:
-          alert("Please select the role..")
-      }
-    };
   return (
     <div className="min-h-screen grid md:grid-cols-2">
       {/* LEFT SECTION - LOGIN FORM */}
@@ -86,18 +108,18 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
               <div className="relative">
                 <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
-                  type="text"
-                  value={formData.username}
+                  type="email"
+                  value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
+                    setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="Enter your email"
                   className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none"
                 />
               </div>
-              {errors.username && (
+              {errors.email && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.username}
+                  {errors.email}
                 </p>
               )}
             </div>
@@ -136,7 +158,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
 
             {/* LOGIN BUTTON */}
             <button
-              onClick={handleLogin}
+              onClick={handleSubmit}
               type="submit"
               className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition"
             >

@@ -1,21 +1,23 @@
-const BASE_URL = "http://127.0.0.1:8000/api/farmer";
+const BASE_URL = "http://127.0.0.1:8000/api/user";
 
-export const getFarmerProfile = async (userId: number) => {
-  try {
-    const res = await fetch(`${BASE_URL}/profile/${userId}/`);
-    if (!res.ok) throw new Error("Failed to fetch farmer profile");
-    return await res.json();
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+const getAuthHeaders = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+});
+
+export const getFarmerProfile = async () => {
+  const res = await fetch(`${BASE_URL}/profile/`, {
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch farmer profile");
+  return res.json();   
 };
 
-export const updateFarmerProfile = async (userId: number, data: any) => {
+export const updateFarmerProfile = async (data: any) => {
   try {
-    const res = await fetch(`${BASE_URL}/profile/${userId}/`, {
+    const res = await fetch(`${BASE_URL}/profile/`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to update farmer profile");
@@ -26,10 +28,11 @@ export const updateFarmerProfile = async (userId: number, data: any) => {
   }
 };
 
-export const deleteFarmerProfileImage = async (userId: number) => {
+export const deleteFarmerProfileImage = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/profile/${userId}/delete-image/`, {
+    const res = await fetch(`${BASE_URL}/profile/delete-image/`, {
       method: "DELETE",
+      headers: getAuthHeaders(),
     });
     if (!res.ok) throw new Error("Failed to delete profile image");
     return await res.json();

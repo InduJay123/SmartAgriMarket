@@ -5,7 +5,6 @@ import FarmerProfileImageUpload from "../../components/farmer/FarmerProfileImage
 import { getFarmerProfile, updateFarmerProfile } from "../../api/farmer/farmerProfile";
 
 const FarmerProfileInfo:React.FC = () => {
-    const USER_ID = 1;
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         farmName: "",
@@ -25,9 +24,8 @@ const FarmerProfileInfo:React.FC = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const data = await getFarmerProfile(USER_ID);
+                const data = await getFarmerProfile();
                 
-
                 setFormData({
                     farmName: data.farmer_details?.farm_name || "",
                     farmerName: data.fullname || "",
@@ -74,7 +72,7 @@ const FarmerProfileInfo:React.FC = () => {
 
     const handleSave = async () => {
         try {
-            await updateFarmerProfile(USER_ID,{
+            await updateFarmerProfile({
                 fullname: formData.farmerName,
                 phone: formData.contact,
                 region: formData.region,
@@ -122,7 +120,7 @@ const FarmerProfileInfo:React.FC = () => {
                         </div>
                         <div className="flex flex-col items-start w-full">
                             <label className="text-gray-700 font-medium mb-1 block">Email Address</label>
-                            <input type="text" name="email" value={formData.email} onChange={handleChange}
+                            <input type="text" name="email" value={formData.email} readOnly onChange={handleChange}
                             className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>
                         <div className="flex flex-col items-start w-full">

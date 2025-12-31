@@ -70,7 +70,7 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
         email: formData.email,
         password: formData.password,
         role: formData.role === "farmer" ? "Farmer" : "Buyer",
-        full_name: formData.fullName,
+        fullname: formData.fullName,
         contact_number: formData.mobileNumber,
       };
 

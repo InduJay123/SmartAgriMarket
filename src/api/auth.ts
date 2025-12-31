@@ -1,4 +1,4 @@
-import api, { setAuthToken } from "./api";
+import api from "./api";
 
 interface LoginData {
   email: string;
@@ -23,16 +23,12 @@ export const signupUser = async (data: SignupData) => {
 
 // LOGIN
 export const loginUser = async (data: LoginData) => {
-  setAuthToken(null);
   const response = await api.post("/login/", data);
 
   // Save tokens
   localStorage.setItem("accessToken", response.data.access);
   localStorage.setItem("refreshToken", response.data.refresh);
   localStorage.setItem("userRole", response.data.user.role);
-
-  // Set token for future requests
-  setAuthToken(response.data.access);
 
   return response;
 };

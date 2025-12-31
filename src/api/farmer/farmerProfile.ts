@@ -1,43 +1,24 @@
-const BASE_URL = "http://127.0.0.1:8000/api/user";
+import api from "../api";
 
-const getAuthHeaders = () => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-});
-
+// Get logged-in farmer profile
 export const getFarmerProfile = async () => {
-  const res = await fetch(`${BASE_URL}/profile/`, {
-    headers: getAuthHeaders(),
-  });
-  if (!res.ok) throw new Error("Failed to fetch farmer profile");
-  return res.json();   
+  try {
+    const res = await api.get("/farmer/profile/");
+    console.log("PROFILE DATA FROM BACKEND:", res);
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
 };
 
+// Update logged-in farmer profile
 export const updateFarmerProfile = async (data: any) => {
-  try {
-    const res = await fetch(`${BASE_URL}/profile/`, {
-      method: "PUT",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Failed to update farmer profile");
-    return await res.json();
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const response = await api.put("/farmer/profile/", data);
+  return response.data;
 };
 
+// Delete profile image
 export const deleteFarmerProfileImage = async () => {
-  try {
-    const res = await fetch(`${BASE_URL}/profile/delete-image/`, {
-      method: "DELETE",
-      headers: getAuthHeaders(),
-    });
-    if (!res.ok) throw new Error("Failed to delete profile image");
-    return await res.json();
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const response = await api.delete("/farmer/profile/image/");
+  return response.data;
 };

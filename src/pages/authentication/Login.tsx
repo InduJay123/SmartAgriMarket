@@ -4,9 +4,7 @@ import type { LoginFormData, UserRole } from "../../types/auth";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import marketImg from "../../assets/legumes-frais-1140x510.png" 
 import { useNavigate } from "react-router-dom";
-import {  setAuthToken } from "../../api/api";
 import { loginUser } from "../../api/auth";
-
 
 interface LoginProps {
   onNavigateToSignup: () => void;
@@ -47,9 +45,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     localStorage.setItem("refreshToken", response.data.refresh);
     localStorage.setItem("userRole", response.data.user.role);
 
-    // set auth token for future requests
-    setAuthToken(response.data.access);
-
     // redirect
     switch (response.data.user.role) {
       case "Farmer":
@@ -68,23 +63,6 @@ const handleSubmit = async (e: React.FormEvent) => {
   } catch (error: any) {
     console.error(error.response?.data || error.message);
     alert("Login failed: " + JSON.stringify(error.response?.data));
-  }
-};
-const handleLogin = async () => {
-  try {
-    const response = await loginUser({ email, password, role });
-    const user = response.data.user;
-
-    console.log("Logged in user:", user);
-    // user.profile contains the relevant details
-    if(user.role === "Farmer"){
-      console.log("Farm Name:", user.profile.farm_name);
-    } else {
-      console.log("Buyer City:", user.profile.city);
-    }
-
-  } catch (error) {
-    console.error(error);
   }
 };
 
@@ -175,7 +153,6 @@ const handleLogin = async () => {
             {/* LOGIN BUTTON */}
             <button
               type="submit"
-              onClick={handleLogin}
               disabled={!formData.email || !formData.password}
               className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition"
             >

@@ -7,17 +7,15 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Set Authorization header for future requests
-export const setAuthToken = (token: string | null) => {
-  if (token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common["Authorization"];
-  }
-};
-
-// Load token from localStorage on page reload
-const token = localStorage.getItem("accessToken");
-if (token) setAuthToken(token);
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token && !config.url?.includes("/login/") && !config.url?.includes("/signup/")) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api;

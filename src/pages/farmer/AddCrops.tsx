@@ -8,6 +8,7 @@ import ChooseCrop from "../../components/farmer/ChooseCrop";
 import Details from "../../components/farmer/Details";
 import Pricing from "../../components/farmer/Pricing";
 import AddLocation from "../../components/farmer/AddLocation";
+import api from "../../api/api";
 
 const AddCrops: React.FC = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const AddCrops: React.FC = () => {
       cropData.append("image", formData.cropImage || "");
       cropData.append("category", "General");
 
-      const cropResponse = await axios.post("http://127.0.0.1:8000/api/crops/", cropData, { headers: { "Content-Type": "multipart/form-data" } });
+      const cropResponse = await api.post("/crops/", cropData, { headers: { "Content-Type": "multipart/form-data" } });
       const cropId = cropResponse.data.crop_id;
       if(!cropId){ alert("Crop creation failed"); return; }
 
@@ -56,10 +57,11 @@ const AddCrops: React.FC = () => {
       marketplaceData.append("region", String(formData.region));
       marketplaceData.append("district", String(formData.district));
       marketplaceData.append("status", "Available");
-      marketplaceData.append("farmer_id", "2");
-      if(formData.image) marketplaceData.append("image", formData.image.toString()); // Supabase URL
-
-      const marketResponse = await axios.post("http://127.0.0.1:8000/api/marketplace/", marketplaceData, { headers: { "Content-Type": "multipart/form-data" } });
+      if(formData.image) marketplaceData.append("image", formData.image.toString());
+      
+      await api.post("/marketplace/", marketplaceData, { 
+        headers: { "Content-Type": "multipart/form-data" } 
+      });
       alert("Success! Your crop has been added successfully!");
       setTimeout(() => navigate("/farmer/addcrops"), 1500);
 

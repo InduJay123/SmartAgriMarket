@@ -18,12 +18,12 @@ interface SignupData {
 
 // SIGNUP
 export const signupUser = async (data: SignupData) => {
-  return await api.post("/signup/", data);
+  return await api.post("/auth/signup/", data);
 };
 
 // LOGIN
 export const loginUser = async (data: LoginData) => {
-  const response = await api.post("/login/", data);
+  const response = await api.post("/auth/login/", data);
 
   // Save tokens
   localStorage.setItem("accessToken", response.data.access);

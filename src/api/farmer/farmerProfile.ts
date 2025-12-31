@@ -3,7 +3,7 @@ import api from "../api";
 // Get logged-in farmer profile
 export const getFarmerProfile = async () => {
   try {
-    const res = await api.get("/farmer/profile/");
+    const res = await api.get("/auth/farmer/profile/");
     console.log("PROFILE DATA FROM BACKEND:", res);
     return res.data;
   } catch (err) {
@@ -13,12 +13,12 @@ export const getFarmerProfile = async () => {
 
 // Update logged-in farmer profile
 export const updateFarmerProfile = async (data: any) => {
-  const response = await api.put("/farmer/profile/", data);
+  const response = await api.put("/auth/farmer/profile/", data);
   return response.data;
 };
 
 // Delete profile image
 export const deleteFarmerProfileImage = async () => {
-  const response = await api.delete("/farmer/profile/image/");
+  const response = await api.delete("/auth/farmer/profile/image/");
   return response.data;
 };

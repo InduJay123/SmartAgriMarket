@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CreditCard, MapPin, Phone, Mail, User, Save, Camera } from 'lucide-react';
+import { CreditCard, MapPin, Phone, Mail, User, Save} from 'lucide-react';
 import { getBuyerProfile, updateBuyerProfile } from '../../api/profile';
 import ProfileImageUpload from '../../components/buyer/ProfileImageUpload';
 
@@ -12,17 +12,14 @@ interface BuyerProfile {
   company_name?: string;
   company_email?: string;
   company_phone?: string;
+  profile_image: string;
   address?: string;
   city?: string;
   postal_code?: string;
   profile_image?: string;
 }
 
-interface ProfileInfoProps {
-  buyerId: string;
-}
-
-function ProfileInfo({ buyerId }: ProfileInfoProps) {
+function ProfileInfo() {
   const [profile, setProfile] = useState<BuyerProfile>({
     user_id: '',
     fullname: '',
@@ -32,41 +29,39 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
     company_name: '',
     company_email: '',
     company_phone: '',
+    profile_image: '',
     address: '',
     city: '',
     postal_code: '',
-    profile_image: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   const normalizeProfile = (data: any) => ({
-  user_id: data.user_id ?? '',
-  fullname: data.fullname ?? '',
-  username: data.username ?? '',
-  email: data.email ?? '',
-  phone: data.phone ?? '',
-
-  company_name: data.company_name ?? '',
-  company_email: data.company_email ?? '',
-  company_phone: data.company_phone ?? '',
-  address: data.address ?? '',
-  city: data.city ?? '',
-  postal_code: data.postal_code ?? '',
-  profile_image: data.profile_image ?? '',
+    user_id: data.user_id ?? '',
+    fullname: data.buyer_details?.fullname ?? '',
+    username: data.username ?? '',
+    email: data.email ?? '',
+    phone: data.phone ?? '',
+    company_name: data.company_name ?? '',
+    company_email: data.company_email ?? '',
+    company_phone: data.company_phone ?? '',
+    address: data.address ?? '',
+    city: data.city ?? '',
+    profile_image: data.buyer_details?.profile_image ?? '',
 });
 
-  // Fetch profile from backend
  useEffect(() => {
   async function fetchProfile() {
     setLoading(true);
     const data = await getBuyerProfile();
 
     if (data) {
-      setProfile(data);
+      setProfile(normalizeProfile(data));
     } else {
       setMessage("Failed to load profile");
+      setLoading(false);
     }
 
     setLoading(false);
@@ -76,23 +71,32 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
 }, []);
 
 
-  // Handle input changes
   const handleChange = (field: keyof BuyerProfile, value: string) => {
     setProfile(prev => ({ ...prev, [field]: value }));
   };
 
-  // Save profile to backend
   const handleSave = async () => {
     setSaving(true);
     setMessage('');
     try {
-      const data = await updateBuyerProfile(profile);
+      const payload = {
+        fullname: profile.fullname,
+        username: profile.username,
+        email: profile.email,
+        phone: profile.phone,
+        market_name: profile.company_name,
+        company_email: profile.company_email,
+        company_phone: profile.company_phone,
+        street_address: profile.address,
+        city: profile.city,
+      };
+      const data = await updateBuyerProfile(payload);
       setProfile(normalizeProfile(data));
       setMessage('Profile updated successfully!');
-    } catch (error) {
+    }catch (error) {
       console.error('Error updating profile:', error);
       setMessage('Failed to update profile.');
-    } finally {
+    }finally {
       setSaving(false);
     }
   };

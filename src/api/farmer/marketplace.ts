@@ -1,10 +1,18 @@
-import axios from "axios";
+import api from "../api";
 
-const BASE_URL = "http://127.0.0.1:8000/api/marketplace";
+export const fetchCrops = async () => {
+  try {
+    const res = await api.get("/marketplace/");
+    return res.data;
+  } catch (error: any) {
+    console.error("Fetch crops error:", error.response?.data || error.message);
+    throw error;
+  }
+};
 
 export const updateCrop = async (marketId: number, data: any) => {
   try {
-    const res = await axios.patch(`${BASE_URL}/${marketId}/`, data);
+    const res = await api.patch(`/marketplace/${marketId}/`, data);
     return res.data;
   } catch (error: any) {
     console.error("Update crop error:", error.response?.data || error.message);
@@ -14,20 +22,10 @@ export const updateCrop = async (marketId: number, data: any) => {
 
 export const deleteCrop = async (marketId: number) => {
   try {
-    const res = await axios.delete(`${BASE_URL}/${marketId}/`);
+    const res = await api.delete(`/marketplace/${marketId}/`);
     return res.data;
   } catch (error: any) {
     console.error("Delete crop error:", error.response?.data || error.message);
-    throw error;
-  }
-};
-
-export const fetchCrops = async () => {
-  try {
-    const res = await axios.get(BASE_URL + "/");
-    return res.data;
-  } catch (error: any) {
-    console.error("Fetch crops error:", error.response?.data || error.message);
     throw error;
   }
 };

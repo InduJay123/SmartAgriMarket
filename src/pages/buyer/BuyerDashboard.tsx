@@ -19,7 +19,6 @@ function BuyerDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Fetch products from API and ensure price is a number
   useEffect(() => {
     const getProducts = async () => {
       try {

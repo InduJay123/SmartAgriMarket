@@ -1,11 +1,11 @@
 import { Calendar, DollarSign, Edit, MessageSquare, PlusCircle, Trash2, TrendingUp} from "lucide-react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/farmer/Header";
 import TopCard from "../../components/farmer/TopCard";
 import EditCrop from "../../components/farmer/EditCrop";
 import ReviewPopup from "../../components/farmer/ReviewPopup";
+import { deleteCrop, fetchCrops } from "../../api/farmer/marketplace";
 
 interface Crop {
     market_id: number;
@@ -89,16 +89,16 @@ const FarmerDashboard: React.FC = () => {
     const [selectedCrop, setSelectedCrop] = useState(null);
 
     useEffect(() => {
-        const fetchCrops = async () => {
-            try{
-                const response = await axios.get("http://127.0.0.1:8000/api/marketplace/" );
-                console.log("Crop fetched", response.data);
-                setCrops(response.data);
-            }catch(error){
+        const loadCrops = async () => {
+            try {
+                const data = await fetchCrops();
+                setCrops(data);
+            } catch (error) {
                 console.error("Error fetching crops:", error);
             }
         };
-        fetchCrops();
+
+        loadCrops();
     }, []);
 
     
@@ -124,26 +124,28 @@ const FarmerDashboard: React.FC = () => {
 
     const refreshCrops = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/marketplace/");
-            setCrops(response.data);
+            const data = await fetchCrops();
+            setCrops(data);
         } catch (error) {
-            console.error("Error fetching crops:", error);
+            console.error("Error refreshing crops:", error);
         }
     };
 
+
     
     const handleDeleteCrop = async (marketId: number) => {
-    if (!window.confirm("Are you sure you want to delete this crop?")) return;
+        if (!window.confirm("Are you sure you want to delete this crop?")) return;
 
-    try {
-        await axios.delete(`http://127.0.0.1:8000/api/marketplace/${marketId}/`);
-        setCrops(prev => prev.filter(crop => crop.market_id !== marketId));
-        alert("Crop deleted successfully!");
-    } catch (error) {
-        console.error("Error deleting crop:", error);
-        alert("Failed to delete crop");
-    }
-};
+        try {
+            await deleteCrop(marketId);
+            setCrops(prev => prev.filter(crop => crop.market_id !== marketId));
+            alert("Crop deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting crop:", error);
+            alert("Failed to delete crop");
+        }
+    };
+
 
 
     return(

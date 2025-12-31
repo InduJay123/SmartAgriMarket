@@ -56,7 +56,7 @@ const AddCrops: React.FC = () => {
       marketplaceData.append("region", String(formData.region));
       marketplaceData.append("district", String(formData.district));
       marketplaceData.append("status", "Available");
-      marketplaceData.append("farmer_id", "2");
+      marketplaceData.append("farmer_id", "1");
       if(formData.image) marketplaceData.append("image", formData.image.toString()); // Supabase URL
 
       const marketResponse = await axios.post("http://127.0.0.1:8000/api/marketplace/", marketplaceData, { headers: { "Content-Type": "multipart/form-data" } });

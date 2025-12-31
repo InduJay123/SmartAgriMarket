@@ -10,7 +10,7 @@ export const fetchFavourites = async () => {
 };
 
 export const toggleFavourite = async (productId: number) => {
-  return axios.post('${BASE_URL}/api/favourites/toggle/', {
+  return axios.post(`${BASE_URL}/favourites/toggle/`, {
     product_id: productId,
     user_id: USER_ID
   });

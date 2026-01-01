@@ -34,6 +34,7 @@ import './App.css'
 
 import AdminLanding from './pages/AdminLanding';
 import ProfileInfo from './pages/farmer/ProfileInfo';
+import ChatBot from './components/chatbot/ChatBot';
 
 function App() {
   function LoginWrapper() {
@@ -102,6 +103,7 @@ function App() {
           <Route path="billing" element={<BillingInfo buyerId={''} />} />          
         </Route>
       </Routes>
+      <ChatBot />
     </BrowserRouter>
     </div>
   );

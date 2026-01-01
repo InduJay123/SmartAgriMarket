@@ -1,5 +1,5 @@
 // Sidebar.tsx
-import { Home, LogOut, MessageSquare, PlusCircle, Settings, TrendingUp, User } from "lucide-react";
+import { FileSpreadsheet, Home, LogOut, MessageSquare, PlusCircle, Settings, TrendingUp, User } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 interface SidebarProps {
@@ -17,6 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { name: "AI Insights", icon: TrendingUp, path: "/farmer/analytics" },
         { name: "Add Crops", icon: PlusCircle, path: "/farmer/addcrops" },
         { name: "My Orders", icon: MessageSquare, path: "/farmer/orders" },
+        { name: "Daily Price List", icon: FileSpreadsheet, path: "/farmer/pricelist" },
         { name: "My Profile", icon: User, path: "/farmer/profile" }
     ];
     

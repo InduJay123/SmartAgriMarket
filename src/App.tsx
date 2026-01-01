@@ -76,6 +76,7 @@ function App() {
           <Route path='analytics' element={<AiInsights/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
           <Route path='orders' element={<FarmerOrders />}/>
+          <Route path="pricelist" element={<PriceList />} />                 
           <Route path='profile' element={<FarmerProfileInfo/>}/>
         </Route>
         <Route path="/" element={<PublicLayout />}>

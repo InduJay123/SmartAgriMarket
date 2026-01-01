@@ -183,24 +183,13 @@ function ProductGrid({ products }: ProductGridProps) {
                 className={`w-full py-1.5 rounded-lg font-semibold flex items-center justify-center gap-2 ${
                   product.quantity === 0
                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    : 'bg-white text-green-800 border-green-900 hover:bg-green-700 hover:text-white active:scale-95'
+                    : 'bg-black text-white hover:bg-black/90  active:scale-95'
                 }`}
               >
                 <Eye size={18} />
                 {product.quantity === 0 ? 'Out of Stock' : 'View'}    
               </button>
-              <button
-                
-                disabled={product.quantity === 0}
-                className={`w-full py-1.5 rounded-lg font-semibold flex items-center justify-center gap-2 ${
-                  product.quantity === 0
-                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    : 'bg-black text-white hover:bg-black/90  active:scale-95'
-                }`}
-              >
-                <ShoppingCart size={18} />
-                {product.quantity === 0 ? 'Out of Stock' : 'Buy'}      
-              </button>
+             
             </div>
           </div>
         </div>

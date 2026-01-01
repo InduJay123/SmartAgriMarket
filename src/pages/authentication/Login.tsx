@@ -4,6 +4,7 @@ import type { LoginFormData, UserRole } from "../../types/auth";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import marketImg from "../../assets/legumes-frais-1140x510.png" 
 import { useNavigate } from "react-router-dom";
+import img from "../../assets/rural-garden-hills-farm-morning-cute-landscape-funny-cartoon-design-illustration-flat-style-isolated-on-white-background-vector-2GYTPWG.jpg";
 
 
 interface LoginProps {
@@ -51,7 +52,12 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
       }
     };
   return (
-    <div className="min-h-screen grid md:grid-cols-2">
+
+    
+    <section>
+      {/* <img src={img} alt="background" className="absolute w-full h-full object-cover z-0"/> */}
+    <div className="min-h-screen grid md:grid-cols-2 ">
+    
       {/* LEFT SECTION - LOGIN FORM */}
       <div className="flex items-center justify-center px-6 py-2">
         <div className="w-full max-w-md">
@@ -175,5 +181,6 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
         />
       </div>
     </div>
+    </section>
   );
 }

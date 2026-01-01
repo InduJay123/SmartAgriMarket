@@ -10,6 +10,7 @@ import mihitha from "../../assets/team/mihita.jpg";
 import iduni from "../../assets/team/iduni.jpg";
 import shalin from "../../assets/team/shalin.jpg";
 import methsara from "../../assets/team/methsara.jpg";
+import gihansir from "../../assets/team/gihansir.png";
 
 const Home: React.FC = () => {
 
@@ -142,7 +143,7 @@ const Home: React.FC = () => {
 
         <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-20 ${isSinhala ?"font-sans" : "font-sans"}`}>
           {[
-            { name: "Mr. Gihan Chathuranga", role: " Supervisor", img: "https://i.pravatar.cc/200?img=1" },
+            { name: "Mr. Gihan Chathuranga", role: " Supervisor", img: gihansir },
             { name: "Induni Jayamanne", role: "Team Leader / Fullstack Developer", img: iduni },
             { name: "Shalin Nimesh", role: "ML Model Developer", img: shalin },
              { name: "Nuwan Rathnayaka", role: "Fullstack Developer", img: nuwan },

@@ -23,8 +23,8 @@ import {
 import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
 import ActivityTable from "../../components/admin/ActivityTable";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 const AdminDashboard: React.FC = () => {
   const priceData = [
@@ -144,9 +144,7 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/v1/dashboard/stats"
-        );
+       const response = await api.get("/dashboard/stats");
         // console.log("Farmers fetched", response.data);
         setFarmers(response.data.verified_farmers);
         setPendingApprovals(response.data.pending_approvals);

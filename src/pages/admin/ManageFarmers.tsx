@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapPin, Search, Filter, AlertTriangle, Leaf, ShoppingCart, Users, Eye, Trash2 } from 'lucide-react';
 import TopCard from '../../components/admin/TopCard';
+import api from "../../services/api";
+
 
 const farmers = [
   { id: 1, name: 'M.A premadasa', location: 'Weeraketiya', crops: 'Pumpkin, Wheat', verified: true },
@@ -10,12 +12,16 @@ const farmers = [
   { id: 5, name: 'S.A Dayanga', location: 'Nuwara', crops: 'Carrot, Leeks', verified: true },
 ];
 
+
+ const [farmer, setFarmers] = useState(0);
+ const [pendingApprovals, setPendingApprovals] = useState(0);
+
 const ManageFarmers:React.FC = () => {
 
   const stats = [
         {
             title: "Verified Farmers",
-            value:"248",
+            value:farmer.toString(),
             subTitle:"",
             icon: Users,
             color:"text-green-300",
@@ -23,7 +29,7 @@ const ManageFarmers:React.FC = () => {
         },
         {
             title: "Pending Approvals",
-            value:"3",
+            value:pendingApprovals.toString(),
             subTitle:"",
             icon:AlertTriangle,
             color:"text-red-300" ,
@@ -47,6 +53,22 @@ const ManageFarmers:React.FC = () => {
         },
   ];
   const [showMap, setShowMap] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+       const response = await api.get("/dashboard/stats");
+        // console.log("Farmers fetched", response.data);
+        setFarmers(response.data.verified_farmers);
+        setPendingApprovals(response.data.pending_approvals);
+      } catch (error) {
+        console.error("Error fetching farmers:", error);
+      }
+    };
+
+    
+    fetchData();
+  }, []);
 
   return (
     <div className="space-y-6 pr-28">

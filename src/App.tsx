@@ -37,6 +37,8 @@ import ProfileInfo from './pages/buyer/ProfileInfo';
 import PriceList from './pages/buyer/PriceList';
 import SidebarLayout from './layout/SidebarLayout';
 import FarmerOrders from './pages/farmer/FarmerOrders';
+import ForgotPassword from './pages/authentication/ForgotPassword';
+import ResetPassword from './pages/authentication/ResetPassword';
 
 function App() {
 
@@ -84,9 +86,9 @@ function App() {
           <Route path="contactus" element={<ContactUs />} />
           <Route path="aboutus" element={<AboutUs />} />
           <Route path='login' element={<LoginWrapper/>} />
-          <Route path="signup" element={<SignupWrapper />} /> 
+          <Route path="signup" element={<SignupWrapper />} />
         </Route>
-
+         <Route path="/reset-password/:token" element={<ResetPassword />} />
          <Route path="/admin" element={<AdminLanding />} />
 
         {/* Admin routes */}

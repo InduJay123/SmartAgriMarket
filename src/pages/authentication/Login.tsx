@@ -5,30 +5,33 @@ import RoleSelector from "../../components/authentication/RoleSelector";
 import marketImg from "../../assets/legumes-frais-1140x510.png" 
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/auth";
+import ForgotPasswordModal from "./ForgotPassword";
 
 interface LoginProps {
   onNavigateToSignup: () => void;
 }
 
 export default function Login({ onNavigateToSignup }: LoginProps) {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [errors, setErrors] = useState<Partial<LoginFormData>>({});
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
     role: "farmer",
   });
 
-  const [errors, setErrors] = useState<Partial<LoginFormData>>({});
+  
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!formData.email || !formData.password) {
-    setErrors({
-      email: !formData.email ? "Email is required" : undefined,
-      password: !formData.password ? "Password is required" : undefined,
-    });
-    return;
+    if (!formData.email || !formData.password) {
+      setErrors({
+        email: !formData.email ? "Email is required" : undefined,
+        password: !formData.password ? "Password is required" : undefined,
+      });
+      return;
   }
 
   try {
@@ -40,21 +43,16 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     console.log("Login successful:", response.data);
 
-    // store tokens
     localStorage.setItem("accessToken", response.data.access);
     localStorage.setItem("refreshToken", response.data.refresh);
     localStorage.setItem("userRole", response.data.user.role);
 
-    // redirect
     switch (response.data.user.role) {
       case "Farmer":
         navigate("/farmer/dashboard");
         break;
       case "Buyer":
         navigate("/buyer/shop");
-        break;
-      case "Admin":
-        navigate("/admin/dashboard");
         break;
       default:
         alert("Invalid role");
@@ -145,8 +143,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
             {/* FORGOT PASSWORD */}
             <div className="flex justify-end">
-              <button className="text-sm text-green-700 hover:text-green-800">
-                Forgot password?
+              <button 
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-green-700 hover:text-green-800">
+                  Forgot password?
               </button>
             </div>
 
@@ -190,6 +191,11 @@ const handleSubmit = async (e: React.FormEvent) => {
           className="w-100 mb-6"
         />
       </div>
+
+      <ForgotPasswordModal
+        isOpen={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+      />
     </div>
   );
 }

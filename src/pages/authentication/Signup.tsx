@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserPlus, User, Mail, Lock, Phone, MapPin } from "lucide-react";
+import { UserPlus, User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from "lucide-react";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import type { SignupFormData, UserRole } from "../../types/auth";
 import rightimg from "../../assets/man-seller-sells-fresh-organic-fruit-vegetable-street-shop-seasonal-outdoor-farmer-local-market_575670-344.avif"
@@ -22,7 +22,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     farmLocation: "",
   });
 
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState<
     Partial<Record<keyof SignupFormData, string>>
   >({});
@@ -155,29 +156,46 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             </div>
 
             {/* PASSWORD */}
-            <InputField
-              label="Password"
-              icon={Lock}
-              type="password"
-              placeholder="Create a password"
-              value={formData.password}
-              onChange={(v: any) => setFormData({ ...formData, password: v })}
-              error={errors.password}
-            />
+            <div className="relative">
+              <InputField
+                label="Password"
+                type={showPassword ? "text" : "password"} // toggle type
+                icon={Lock}
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={(v: any) => setFormData({ ...formData, password: v })}
+                error={errors.password}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/6 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
 
             {/* CONFIRM PASSWORD */}
-            <InputField
-              label="Confirm Password"
-              icon={Lock}
-              type="password"
-              placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={(v: any) =>
-                setFormData({ ...formData, confirmPassword: v })
-              }
-              error={errors.confirmPassword}
-            />
-
+            <div className="relative mt-4">
+              <InputField
+                label="Confirm Password"
+                type={showConfirm ? "text" : "password"}
+                icon={Lock}
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={(v: any) =>
+                  setFormData({ ...formData, confirmPassword: v })
+                }
+                error={errors.confirmPassword}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/6 text-gray-500"
+                onClick={() => setShowConfirm(!showConfirm)}
+              >
+                {showConfirm ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
             {/* FARM LOCATION – only for farmers */}
             {formData.role === "farmer" && (
               <InputField

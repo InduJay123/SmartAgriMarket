@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { image, video } from "framer-motion/client";
-import { Leaf, Users, Sprout, TrendingUp } from "lucide-react";
+import { Leaf,  Sprout, TrendingUp } from "lucide-react";
 import video1 from "../../assets/Video Banner Stock Videos - Rural, Farming, Agriculture, Nature.mp4";
 import img from "../../assets/raphael-rychetsky-li9JfUHQfOY-unsplash.jpg";
 import { useTranslation } from "react-i18next";
@@ -10,6 +9,7 @@ import mihitha from "../../assets/team/mihita.jpg";
 import iduni from "../../assets/team/iduni.jpg";
 import shalin from "../../assets/team/shalin.jpg";
 import methsara from "../../assets/team/methsara.jpg";
+import gihan from "../../assets/team/gihan.jpg";
 
 const Home: React.FC = () => {
 
@@ -140,9 +140,9 @@ const Home: React.FC = () => {
       <section className="py-20 bg-gray-100" id="team">
         <h2 className="text-4xl font-bold text-center mb-12">{t("Meet Our Team")}</h2>
 
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-20 ${isSinhala ?"font-sans" : "font-sans"}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-6 gap-8 px-6 md:px-20 ${isSinhala ?"font-sans" : "font-sans"}`}>
           {[
-            { name: "Mr. Gihan Chathuranga", role: " Supervisor", img: "https://i.pravatar.cc/200?img=1" },
+            { name: "Mr. Gihan Chathuranga", role: " Supervisor", img: gihan },
             { name: "Induni Jayamanne", role: "Team Leader / Fullstack Developer", img: iduni },
             { name: "Shalin Nimesh", role: "ML Model Developer", img: shalin },
              { name: "Nuwan Rathnayaka", role: "Fullstack Developer", img: nuwan },

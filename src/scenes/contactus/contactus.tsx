@@ -28,25 +28,25 @@ export default function ContactUs() {
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center text-white">
 
         {/* Contact Form Card */}
-        <div className="mt-16 bg-green-50/90 opacity-90 backdrop-blur-lg rounded-3xl shadow-2xl p-10 md:p-14 text-gray-900">
+        <div className="mt-16 bg-green-50/40 opacity-80 backdrop-blur-lg rounded-3xl shadow-2xl border border-black p-8 md:p-12 text-gray-900">
           <h2 className="text-3xl font-bold text-custom-green mb-6 text-center">
             {t("Get in Touch With Us")}
           </h2>
 
-          <p className="text-gray-700 text-lg mb-8 max-w-3xl mx-auto">
+          <p className="text-gray-700 text-md mb-6 max-w-3xl mx-auto">
             {t("Have questions about our system, partnership opportunities, or technical support?")}
-            {t("We’re here to help you!")}
+            {t(" We’re here to help you!")}
             {t("Fill out the form below, and our team will contact you within 24–48 hours.")}
           </p>
 
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             {/* Full Name */}
             <div className="flex flex-col text-left">
               <label className="font-semibold text-gray-700 mb-2">{t("Full Name")}</label>
               <input
                 type="text"
-                className="p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
+                className="py-2 px-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
                 placeholder={t("Enter your name")} />
             </div>
 
@@ -55,7 +55,7 @@ export default function ContactUs() {
               <label className="font-semibold text-gray-700 mb-2">{t("Email Address")}</label>
               <input
                 type="email"
-                className="p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
+                className="py-2 px-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
                 placeholder={t("Enter your email")} />
             </div>
 
@@ -64,7 +64,7 @@ export default function ContactUs() {
               <label className="font-semibold text-gray-700 mb-2">{t("Subject")}</label>
               <input
                 type="text"
-                className="p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
+                className="py-2 px-4  border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
                 placeholder={t("Write your subject")} />
             </div>
 
@@ -72,7 +72,7 @@ export default function ContactUs() {
             <div className="flex flex-col text-left md:col-span-2">
               <label className="font-semibold text-gray-700 mb-2">{t("Message")}</label>
               <textarea
-                className="p-3 h-32 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
+                className="py-2 px-4 h-30 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700"
                 placeholder={t("Write your message here...")}
               ></textarea>
             </div>

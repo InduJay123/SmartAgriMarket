@@ -171,7 +171,7 @@ function ProductGrid({ products }: ProductGridProps) {
                 </span>
               </span>
               <span className="text-sm font-semibold text-gray-600">
-                Rs.{product.price. toFixed(2)}
+                Rs.{product.price}
               </span>
             </div>
             <div className='flex gap-2'>

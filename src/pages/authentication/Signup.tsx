@@ -147,7 +147,7 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
               <InputField
                 label="Mobile Number"
                 icon={Phone}
-                placeholder="10–15 digits"
+                placeholder="10 digits"
                 value={formData.mobileNumber}
                 onChange={(v: any) => setFormData({ ...formData, mobileNumber: v })}
                 error={errors.mobileNumber}
@@ -181,9 +181,9 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             {/* FARM LOCATION – only for farmers */}
             {formData.role === "farmer" && (
               <InputField
-                label="Farm Location"
+                label="Farm Name"
                 icon={MapPin}
-                placeholder="City, District"
+                placeholder="Farm Name"
                 value={formData.farmLocation}
                 onChange={(v: any) => setFormData({ ...formData, farmLocation: v })}
                 error={errors.farmLocation}

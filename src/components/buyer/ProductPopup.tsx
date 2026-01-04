@@ -25,14 +25,13 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [buyer, setBuyer] = useState<{ fullname: string; profile_image: string } | null>(null);
-  
+  const [currentUser, setCurrentUser] = useState<{ fullname: string; profile_image: string } | null>(null);
   const totalReviews = reviews.length;
 
   const averageRating = totalReviews === 0 ? 0 : (
-          reviews.reduce((sum, review) => sum + review.rating, 0) /
-          totalReviews
-        );
+    reviews.reduce((sum, review) => sum + review.rating, 0) /
+    totalReviews
+  );
         
   useEffect(() => {
     if (!product?.market_id) return;
@@ -45,7 +44,6 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
         console.error("Failed to fetch reviews:", error);
       }
     };
-
     fetchData();
   }, [product]);
 
@@ -54,7 +52,6 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
 
     const newReview = await addReview(
       product.market_id,
-      1,
       rating, 
       comment
     );
@@ -62,17 +59,27 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
       setReviews([newReview, ...reviews]);
       setComment("");
       setRating(0); 
+    } else {
+      alert("Failed to add review");
     }
   };
 
   useEffect(() => {
-      const fetchBuyer = async () => {
-        const userId = 1; 
-        const data = await getBuyerProfile(userId);
-        setBuyer(data);
-      };
-      fetchBuyer();
-    }, []);
+  const fetchCurrentUser = async () => {
+    try {
+      const data = await getBuyerProfile();
+      console.log("Fetched user:", data);
+      setCurrentUser({
+        fullname: data.buyer_details?.fullname || data.username,
+        profile_image: data.buyer_details?.profile_image || null
+      });
+
+    } catch (err) {
+      console.error("Failed to fetch current user:", err);
+    }
+  };
+  fetchCurrentUser();
+}, []);
     
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -101,15 +108,15 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
           />
 
           <div>
-            <h3 className="text-lg font-semibold">{product.crop?.crop_name ?? "Unknown Crop"}</h3>
+            <h3 className="text-xl font-semibold">{product.crop?.crop_name ?? "Unknown Crop"}</h3>
             <p className="text-sm text-gray-600">{product.crop?.description ?? "No description available"}</p>
 
-            <div className="flex flex-wrap items-center gap-6">
-              <p className="text-green-700 font-bold mt-2 text-xl">
-                Rs. {product.price}/{product.unit}
+            <div className="flex-col items-center gap-6">
+              <p className="text-black font-bold mt-2 text-xl">
+                Available: <span className="font-bold text-green-700">{product.quantity} kg</span>
               </p>
-              <p className="text-sm mt-1">
-                Available: <span className="font-bold">{product.quantity} kg</span>
+              <p className="text-black font-bold mt-2 text-lg">
+                Rs. {product.price}/{product.unit}
               </p>
             </div>
           </div>
@@ -123,16 +130,14 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
         <div className="p-4 border rounded-xl bg-gray-50">
           <div className="flex items-center gap-4">
             <img
-              src={product.image_url ||
-                product.image ||
-                product.crop?.image}
+              src={product.farmer?.profile_image || avatar}
               alt="farmer image"
               className="w-16 h-16 rounded-full object-cover"
             />
 
             <div>
               <div className="flex-col items-center gap-2">
-                <h4 className="font-bold"> {product.farmer?.name} </h4>
+                <h4 className="font-bold"> {product.farmer?.fullname} </h4>
                 <div className="flex items-center gap-1 bg-green-100 px-1 rounded-xl">
                   <Star className="w-4 h-4 fill-yellow-500" />
                   <span className="font-semibold text-green-700">3.2</span>
@@ -142,8 +147,8 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
               {/* Farmer info icons */}
               <div className="grid grid-cols-2 mt-4 gap-2 text-sm text-gray-700">
                 <span className="flex items-center gap-2"><MapPin size={16} /> {product.farmer?.region} </span>
-                <span className="flex items-center gap-2"><Calendar size={16} /> Member since {product.farmer?.created_at? new Date(product.farmer.created_at).getFullYear() : "-"}</span>
-                <span className="flex items-center gap-2"><Phone size={16} /> {product.farmer?.phone} </span>
+                <span className="flex items-center gap-2"><Calendar size={16} /> Member since {product.farmer?.date_joined ? new Date(product.farmer.date_joined).getFullYear() : "-"}</span>
+                <span className="flex items-center gap-2"><Phone size={16} /> {product.farmer?.contact_number} </span>
                 <span className="flex items-center gap-2"><ShoppingBag size={16} /> 200 sales</span>
               </div>
             </div>
@@ -217,7 +222,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center gap-4">         
             <img
-              src={buyer?.profile_image || avatar}
+              src={currentUser?.profile_image || avatar}
               alt="Profile"
               className="w-8 h-8 rounded-full object-cover"
             />               
@@ -225,7 +230,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder={buyer?.fullname|| "Write your review..."}
+            placeholder={currentUser?.fullname|| "Write your review..."}
             className="flex-1 border px-2 rounded-xl"
           />
         </div>
@@ -242,8 +247,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
 
         </div>
     </div>
-
-        <div className="mt-8">
+        {/*<div className="mt-8">
           <button
             onClick={() => {
               onPlaceOrder(product);  
@@ -252,7 +256,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
             >
             <span>🧺</span> Place Order
           </button>
-        </div>
+        </div>*/}
       </div>
     </div>
   );

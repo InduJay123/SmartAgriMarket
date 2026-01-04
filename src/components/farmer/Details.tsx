@@ -8,6 +8,18 @@ interface DetailsProps {
 }
 
 const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
+    
+    const getSeason = (dateStr: string) => {
+        const date = new Date(dateStr);
+        const month = date.getMonth() + 1; 
+
+        if (month >= 5 && month <= 8) {
+            return "Yala";
+        } else {
+            return "Maha";
+        }
+    };
+
     return(
         <div>
             <h1 className="text-5xl">{emoji.getUnicode("ear_of_rice")}</h1>
@@ -45,7 +57,15 @@ const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
                         </div>
                         <input id="harvestDate" type="date" placeholder="500"
                             value={formData.predictDate ?? ""}
-                            onChange={(e) => setFormData({ ...formData, predictDate: e.target.value })}
+                            onChange={(e) => {
+                                const selectedDate = e.target.value;
+                                const season = getSeason(selectedDate);
+
+                                setFormData({ ...formData, 
+                                    predictDate: e.target.value, 
+                                    farmingSeason: season,
+                                });
+                            }}
                             className="bg-gray-50 text-gray-600 border rounded-xl px-4 py-1"
                         />
                     </div>
@@ -70,20 +90,17 @@ const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
                             <option value="greenHouse"> Green House </option>                    
                         </select>
                     </div>
-                    <div>
+                    <div>            
                         <div className="flex flex-wrap items-center justify-start gap-2 mt-4 mb-2">
                             <Shovel size={18} className="text-green-900"/>
-                            <label htmlFor="farmingSeason">  Season </label>   
-                        </div>              
-                        <select 
-                            id="farmingSeason"
-                            value={formData.farmingSeason?? ""}
-                            onChange={(e) => setFormData({ ...formData, farmingSeason: e.target.value })}
-                            className="text-gray-700 w-full bg-gray-50 border rounded-xl px-4 py-1 mb-4">
-                            <option value="" disabled> Select farming season... </option>
-                            <option value="Yala"> Yala </option>
-                            <option value="Maha"> Maha </option>                  
-                        </select>
+                            <label> Season </label>
+                        </div>
+                        <input
+                            type="text"
+                            value={formData.farmingSeason ?? ""}
+                            readOnly
+                            className="text-gray-700 w-full bg-gray-50 border rounded-xl px-4 py-1 mb-4"
+                        />
                     </div>
                 </div>
                 

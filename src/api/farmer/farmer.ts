@@ -1,5 +1,11 @@
 import api from "../api";
 
+export const postFormData = (endpoint: string, data: FormData) => {
+  return api.post(endpoint, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
+
 // GET farmer profile
 export const getFarmerProfile = async () => {
   return await api.get("/profile/");

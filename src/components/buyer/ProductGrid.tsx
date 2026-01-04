@@ -1,16 +1,14 @@
-import { Eye, ShoppingCart, Star } from 'lucide-react';
+import { Eye, Star } from 'lucide-react';
 import type { Product } from '../../@types/Product';
 import carbageImg from '../../assets/carbage.png';
 import { useEffect, useState } from 'react';
 import ProductPopup from './ProductPopup';
-import PlaceOrder from './PlaceOrder';
 import { fetchFavourites, toggleFavourite } from '../../api/favourites';
 import { getReviewSummary } from '../../api/reviews';
 import avatar from '../../assets/avatar.svg?url'
 
 interface ProductGridProps {
   products: Product[];
-
 }
 
 function ProductGrid({ products }: ProductGridProps) {
@@ -183,14 +181,13 @@ function ProductGrid({ products }: ProductGridProps) {
                 className={`w-full py-1.5 rounded-lg font-semibold flex items-center justify-center gap-2 ${
                   product.quantity === 0
                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    : 'bg-white text-green-800 border-green-900 hover:bg-green-700 hover:text-white active:scale-95'
+                    : 'bg-black text-white hover:bg-black/90  active:scale-95'
                 }`}
               >
                 <Eye size={18} />
                 {product.quantity === 0 ? 'Out of Stock' : 'View'}    
               </button>
-              <button
-                
+              {/*<button               
                 disabled={product.quantity === 0}
                 className={`w-full py-1.5 rounded-lg font-semibold flex items-center justify-center gap-2 ${
                   product.quantity === 0
@@ -200,7 +197,7 @@ function ProductGrid({ products }: ProductGridProps) {
               >
                 <ShoppingCart size={18} />
                 {product.quantity === 0 ? 'Out of Stock' : 'Buy'}      
-              </button>
+              </button>*/}
             </div>
           </div>
         </div>
@@ -219,12 +216,12 @@ function ProductGrid({ products }: ProductGridProps) {
         />
       )}
 
-      {orderProduct && (
+      {/*orderProduct && (
         <PlaceOrder
           product={orderProduct}
           onClose={() => setOrderProduct(null)}
         />
-      )}
+      )*/}
     </div>
 
   );

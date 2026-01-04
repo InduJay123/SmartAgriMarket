@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "./api";
 
 const API_BASE = "http://127.0.0.1:8000/api/reviews";
 
@@ -13,11 +14,10 @@ export const getReviews = async (productId:  number) => {
     }
 };
 
-export const addReview = async (productId: number, userId: number, rating: number, comment: string) => {
+export const addReview = async (productId: number, rating: number, comment: string) => {
     try {
-        const response = await axios.post(`${API_BASE}/add/`, {
+        const response = await api.post(`/reviews/add/`, {
             product: productId,
-            user: userId,
             rating,
             comment
         });

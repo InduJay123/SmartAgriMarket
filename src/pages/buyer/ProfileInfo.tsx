@@ -16,7 +16,6 @@ interface BuyerProfile {
   address?: string;
   city?: string;
   postal_code?: string;
-  profile_image?: string;
 }
 
 function ProfileInfo() {

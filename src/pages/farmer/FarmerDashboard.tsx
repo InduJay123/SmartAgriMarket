@@ -69,6 +69,7 @@ const FarmerDashboard: React.FC = () => {
         "Potato": "🥔",
         "Carrot": "🥕",
         "Banana": "🍌",
+        "Beans": "🫘",
         "Apple": "🍎",
         "Orange": "🍊",
         "Mango": "🥭",
@@ -80,6 +81,7 @@ const FarmerDashboard: React.FC = () => {
         "Coconut": "🥥",
         "Lemon": "🍋",
         "Strawberry": "🍓",
+        "Papaya": "🥭",
         "Pineapple": "🍍",
         "Onion":  "🧅"
     };
@@ -92,15 +94,13 @@ const FarmerDashboard: React.FC = () => {
         const loadCrops = async () => {
             try {
                 const data = await fetchCrops();
-                setCrops(data);
+                setCrops(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error("Error fetching crops:", error);
             }
         };
-
         loadCrops();
     }, []);
-
     
     const getCropEmoji = (name: string | undefined) => {
         if (!name) return "🌾"; // fallback
@@ -114,13 +114,8 @@ const FarmerDashboard: React.FC = () => {
         return emoji || "🌾"; // fallback emoji
     };
 
-    const handleAddCrop = () => {
-        navigate('/farmer/addcrops');
-    };
-
-    const handleEditCrop = (crop) => {
-        setSelectedCrop(crop);    
-    };
+    const handleAddCrop = () => { navigate('/farmer/addcrops') };
+    const handleEditCrop = (crop) => { setSelectedCrop(crop)};
 
     const refreshCrops = async () => {
         try {
@@ -130,9 +125,7 @@ const FarmerDashboard: React.FC = () => {
             console.error("Error refreshing crops:", error);
         }
     };
-
-
-    
+   
     const handleDeleteCrop = async (marketId: number) => {
         if (!window.confirm("Are you sure you want to delete this crop?")) return;
 

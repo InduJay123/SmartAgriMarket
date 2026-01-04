@@ -13,10 +13,12 @@ const farmers = [
 ];
 
 
+ 
+const ManageFarmers:React.FC = () => {
+
  const [farmer, setFarmers] = useState(0);
  const [pendingApprovals, setPendingApprovals] = useState(0);
 
-const ManageFarmers:React.FC = () => {
 
   const stats = [
         {
@@ -64,6 +66,10 @@ const ManageFarmers:React.FC = () => {
       } catch (error) {
         console.error("Error fetching farmers:", error);
       }
+
+
+
+      
     };
 
     

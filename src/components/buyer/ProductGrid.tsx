@@ -159,19 +159,19 @@ function ProductGrid({ products }: ProductGridProps) {
 
             </div>
 
-            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              {product.additional_details || 'No description'}
+            <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+              {product.additional_details || ''}
             </p>
 
             <div className="flex flex-wrap items-center justify-between mb-3">
-              <span className="text-2xl font-bold text-gray-900">
-                Rs.{product.price}
-              </span>
-
-              <span className="text-sm text-gray-500">
+              <span className="text-md font-bold text-gray-600">
                 Available:{' '}
-                <span className="font-semibold">{product.quantity}</span>/
-                {product.unit}
+                <span className="font-bold text-xl text-green-900">
+                  {product.quantity}/{product.unit}
+                </span>
+              </span>
+              <span className="text-sm font-semibold text-gray-600">
+                Rs.{product.price. toFixed(2)}
               </span>
             </div>
             <div className='flex gap-2'>

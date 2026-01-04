@@ -40,7 +40,14 @@ function BuyerDashboard() {
     getProducts();
   }, []);
 
-  const categories = ["All", "Yala", "Maha"];
+  const seasons = ["all", "Yala", "Maha"];
+  const [selectedSeason, setSelectedSeason] = useState("all");
+
+  const filteredProducts = products.filter(p => 
+    selectedSeason === "all" || p.farming_season === selectedSeason
+  );
+
+
   // Add product to cart
   const handleAddToCart = (productId: number) => {
     const product = products.find((p) => p.market_id === productId);
@@ -120,28 +127,26 @@ function BuyerDashboard() {
           <Filter size={20} className="text-gray-500" />
         </div>
 
-        <label className="block text-sm font-medium mb-3">Categories</label>
+        <label className="block text-sm font-medium mb-3">Seasons</label>
         <div className="flex flex-wrap gap-2 mb-4">
-          {categories.map((cat, index) => (
-            <button
-              key={`${cat}-${index}`}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                selectedCategory === cat
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-700"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {seasons.map((season, index) => (
+          <button
+            key={`${season}-${index}`}
+            onClick={() => setSelectedSeason(season)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              selectedSeason === season
+                ? "bg-green-600 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {season}
+          </button>
+        ))}
         </div>
 
         {/* Product List */}
         <ProductPage
-          products={products.filter(
-            (p) => selectedCategory === "all" || p.category === selectedCategory
-          )}
+          products={filteredProducts}
           addToCart={handleAddToCart}
           loading={loading}
           cartItems={cartItems}

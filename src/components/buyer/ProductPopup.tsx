@@ -111,7 +111,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
 
           <div>
             <h3 className="text-xl font-semibold">{product.crop?.crop_name ?? "Unknown Crop"}</h3>
-            <p className="text-sm text-gray-600">{product.crop?.description ?? "No description available"}</p>
+            <p className="text-sm text-gray-600">{product.additional_details ?? "No description available"}</p>
 
             <div className="flex-col items-center gap-6">
               <p className="text-black font-bold mt-2 text-xl">
@@ -125,7 +125,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
         </div>
 
         {/* Farmer Section */}
-        <h3 className="text-md font-semibold mt-4 mb-2 flex items-center gap-2">
+        <h3 className="text-md font-semibold mt-1 mb-2 flex items-center gap-2">
           <span className="text-green-600 text-lg">🧑‍🌾</span> About the Farmer
         </h3>
 
@@ -138,7 +138,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
             />
 
             <div>
-              <div className="flex-col items-center gap-2">
+              <div className="flex items-center gap-2">
                 <h4 className="font-bold"> {product.farmer?.fullname} </h4>
                 <div className="flex items-center gap-1 bg-green-100 px-1 rounded-xl">
                   <Star className="w-4 h-4 fill-yellow-500" />

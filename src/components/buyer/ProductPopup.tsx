@@ -16,7 +16,7 @@ interface ProductPopupProps {
 interface Review {
   id: number;
   user_name: string;
-  profile_image: string;
+  profile_image: string | null;
   rating: number;
   comment: string;
 }
@@ -59,6 +59,8 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
       setReviews([newReview, ...reviews]);
       setComment("");
       setRating(0); 
+      const updateReviews = await getReviews(product.market_id);
+      setReviews(updateReviews || []);
     } else {
       alert("Failed to add review");
     }

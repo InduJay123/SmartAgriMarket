@@ -1,17 +1,21 @@
-import axios from 'axios';
-const USER_ID = 1;
-const BASE_URL = "http://127.0.0.1:8000/api";
+import api from './api';
 
 export const fetchFavourites = async () => {
-  const res = await axios.get(
-    `${BASE_URL}/favourites/?user_id=${USER_ID}`
-  );
-  return res.data;
+  try {
+    const res = await api.get(`/marketplace/favourites/`);
+    return res.data; 
+  }catch (err) {
+    console.error("Error fetching favourites:", err);
+    return [];
+  }
 };
 
-export const toggleFavourite = async (productId: number) => {
-  return axios.post('${BASE_URL}/api/favourites/toggle/', {
-    product_id: productId,
-    user_id: USER_ID
-  });
+export const toggleFavourite = async (marketId: number) => {
+  try {
+    const res = await api.post(`/marketplace/favourites/toggle/${marketId}/`);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 };

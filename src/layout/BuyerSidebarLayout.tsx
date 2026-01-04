@@ -12,8 +12,7 @@ const BuyerSideBarLayout: React.FC = () => {
 
   useEffect(() => {
     const fetchBuyer = async () => {
-      const userId = 1; // replace with actual logged-in user ID
-      const data = await getBuyerProfile(userId);
+      const data = await getBuyerProfile();
       setBuyer(data);
     };
     fetchBuyer();
@@ -84,7 +83,7 @@ const BuyerSideBarLayout: React.FC = () => {
       {/* PAGE CONTENT */}
       <div className="flex flex-1 min-h-0">
         <Sidebar isOpen={showSidebar} onClose={() => setShowSidebar(false)} />
-        <main className="flex-1 overflow-auto min-h-0 pl-10 pr-40">
+        <main className="flex-1 overflow-auto min-h-0 ml-10 pr-40">
           <Outlet />
         </main>
       </div>   

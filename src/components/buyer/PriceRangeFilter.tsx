@@ -137,7 +137,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
               step="0.5"
               value={localMin.toFixed(2)}
               onChange={(e) => handleMinChange(parseFloat(e.target.value) || 0)}
-              className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -155,7 +155,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
               step="0.5"
               value={localMax.toFixed(2)}
               onChange={(e) => handleMaxChange(parseFloat(e.target.value) || maxPrice)}
-              className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
             />
           </div>
         </div>

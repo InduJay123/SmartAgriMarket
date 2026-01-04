@@ -11,7 +11,7 @@ function FavouritesPage() {
     const loadFavourites = async () => {
       try {
         const favs = await fetchFavourites();
-        setFavouriteProducts(favs); // backend should return product objects
+        setFavouriteProducts(favs);
       } catch (err) {
         console.error(err);
       }

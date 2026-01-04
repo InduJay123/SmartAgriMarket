@@ -60,15 +60,15 @@ function ProductGrid({ products }: ProductGridProps) {
     loadFavourites();
   }, []);
   
-  const handleToggleFavourite = async (productId: number) => {
+  const handleToggleFavourite = async (market_id: number) => {
     try {
-      const res = await toggleFavourite(productId);
+      const res = await toggleFavourite(market_id);
       setFavourites(prev =>
-        prev.includes(productId)
-          ? prev.filter(id => id !== productId)
-          : [...prev, productId]
+        prev.includes(market_id)
+          ? prev.filter(id => id !== market_id)
+          : [...prev, market_id]
       );
-      console.log(res.data.message);
+      console.log(res.message);
     } catch (err) {
       console.error(err);
     }

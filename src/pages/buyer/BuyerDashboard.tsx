@@ -40,9 +40,7 @@ function BuyerDashboard() {
     getProducts();
   }, []);
 
-  // Categories for filter
-  const categories = ["all", ...Array.from(new Set(products.map((p) => p.category)))];
-
+  const categories = ["All", "Yala", "Maha"];
   // Add product to cart
   const handleAddToCart = (productId: number) => {
     const product = products.find((p) => p.market_id === productId);
@@ -98,7 +96,7 @@ function BuyerDashboard() {
   }
 
   return (
-    <div className="space-y-6 pt-4">
+    <div className="space-y-4 pt-4">
       {/* Banner */}
       <div className="relative rounded-2xl overflow-hidden h-64">
         <img
@@ -117,7 +115,7 @@ function BuyerDashboard() {
 
       {/* Filter */}
       <div className="bg-white rounded-xl shadow-sm p-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-2">
           <h3 className="text-lg font-bold">Filter Products</h3>
           <Filter size={20} className="text-gray-500" />
         </div>

@@ -15,7 +15,7 @@ export const getBuyerProfile = async () => {
 // Update buyer profile
 export const updateBuyerProfile = async (data: any) => {
   try {
-    const response = await api.put(`/auth/buyer/profile/`, data);
+    const response = await api.patch(`/auth/buyer/profile/`, data);
     return response.data;
   } catch (error) {
     console.error("Error updating buyer profile:", error);

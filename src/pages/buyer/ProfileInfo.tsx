@@ -38,18 +38,22 @@ function ProfileInfo() {
   const [message, setMessage] = useState('');
 
   const normalizeProfile = (data: any) => ({
-    user_id: data.user_id ?? '',
+    user_id: data.id ?? '',
     fullname: data.buyer_details?.fullname ?? '',
     username: data.username ?? '',
     email: data.email ?? '',
     phone: data.phone ?? '',
-    company_name: data.company_name ?? '',
-    company_email: data.company_email ?? '',
-    company_phone: data.company_phone ?? '',
-    address: data.address ?? '',
-    city: data.city ?? '',
+
+    company_name: data.buyer_details?.company_name ?? '',
+    company_email: data.buyer_details?.company_email ?? '',
+    company_phone: data.buyer_details?.company_phone ?? '',
+
+    address: data.buyer_details?.street_address ?? '',
+    city: data.buyer_details?.city ?? '',
+    postal_code: data.buyer_details?.postal_code ?? '',
+
     profile_image: data.buyer_details?.profile_image ?? '',
-});
+  });
 
  useEffect(() => {
   async function fetchProfile() {
@@ -83,11 +87,14 @@ function ProfileInfo() {
         username: profile.username,
         email: profile.email,
         phone: profile.phone,
-        market_name: profile.company_name,
-        company_email: profile.company_email,
-        company_phone: profile.company_phone,
-        street_address: profile.address,
-        city: profile.city,
+
+        company_name: profile.company_name || "",
+        company_email: profile.company_email || "",
+        company_phone: profile.company_phone || "",
+
+        address: profile.address || "",
+        city: profile.city || "",
+        postal_code: profile.postal_code || "",
       };
       const data = await updateBuyerProfile(payload);
       setProfile(normalizeProfile(data));

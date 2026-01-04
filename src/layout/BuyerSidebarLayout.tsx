@@ -11,12 +11,15 @@ const BuyerSideBarLayout: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBuyer = async () => {
-      const data = await getBuyerProfile();
-      setBuyer(data);
-    };
-    fetchBuyer();
-  }, []);
+  const fetchBuyer = async () => {
+    const data = await getBuyerProfile();
+    setBuyer({
+      fullname: data?.buyer_details?.fullname,
+      profile_image: data?.buyer_details?.profile_image,
+    });
+  };
+  fetchBuyer();
+}, []);
 
   return (
     <div className="w-screen bg-gray-50 flex flex-col justify-between">

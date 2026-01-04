@@ -31,7 +31,7 @@ const PriceList:React.FC = () => {
                             <div className ="border p-6 rounded-lg shadow-md flex flex-wrap items-center justify-between mb-4">
                                 <div>
                                 <strong>{doc.filename}</strong>
-                                <p>Uploaded by: {doc.uploaded_by} </p>
+                                <p>Uploaded by: {doc.uploaded_by || "Admin"}  </p>
                             </div>
                             
                            <div className=" flex flex-wrap gap-6">

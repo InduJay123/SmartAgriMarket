@@ -32,7 +32,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
   const maxPercentage = (localMax / maxPrice) * 100;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <div className="flex items-center gap-2">
         <DollarSign size={16} className="text-gray-700" />
         <label className="text-sm font-medium text-gray-700">Price Range</label>

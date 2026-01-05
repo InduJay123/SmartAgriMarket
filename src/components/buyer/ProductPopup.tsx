@@ -6,6 +6,7 @@ import StarDisplay from "./StartDisplay";
 import TotalRatings from "./TotalRatings";
 import avatar from '../../assets/avatar.svg?url'
 import { getBuyerProfile } from "../../api/profile";
+import FarmerRating from "./FarmerRating";
 
 interface ProductPopupProps {
   product: any; 
@@ -142,7 +143,8 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
                 <h4 className="font-bold"> {product.farmer?.fullname} </h4>
                 <div className="flex items-center gap-1 bg-green-100 px-1 rounded-xl">
                   <Star className="w-4 h-4 fill-yellow-500" />
-                  <span className="font-semibold text-green-700">3.2</span>
+                  <FarmerRating farmerId={product.farmer_id} />
+
                 </div>
               </div>
 

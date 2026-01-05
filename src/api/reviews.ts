@@ -31,3 +31,14 @@ export const getReviewSummary = async (marketId: number) => {
   );
   return res.data;
 };
+
+
+export const getFarmerRatingSummary = async (farmerId: number) => {
+  try {
+    const res = await api.get(`/reviews/farmer/summary/${farmerId}/`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching farmer rating summary:", err);
+    return null;
+  }
+};

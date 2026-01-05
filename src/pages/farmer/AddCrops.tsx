@@ -70,7 +70,7 @@ const AddCrops: React.FC = () => {
       await postFormData("/marketplace/marketplace/", marketplaceData);
 
       alert("Success! Your crop has been added successfully!");
-      setTimeout(() => navigate("/farmer/addcrops"), 1500);
+      setTimeout(() => navigate("/farmer/dashboard/"), 1500);
 
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) console.error(error.response?.data);

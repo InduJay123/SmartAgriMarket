@@ -158,11 +158,6 @@ function ProductGrid({ products }: ProductGridProps) {
               </p>
 
             </div>
-
-            <p className="text-xs text-gray-600 mb-3 line-clamp-2">
-              {product.additional_details || ''}
-            </p>
-
             <div className="flex flex-wrap items-center justify-between mb-3">
               <span className="text-md font-bold text-gray-600">
                 Available:{' '}

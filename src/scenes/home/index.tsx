@@ -434,7 +434,7 @@ const isSinhala = i18n.language === "si";
 
         <li className="flex gap-2 items-center">
           <i className="fas fa-envelope"></i>
-          <span>support@smartagri.lk</span>
+          <span>smartagrimarket@gmail.com</span>
         </li>
 
         <li className="flex gap-2 items-center">

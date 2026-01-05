@@ -39,6 +39,7 @@ import SidebarLayout from './layout/SidebarLayout';
 import FarmerOrders from './pages/farmer/FarmerOrders';
 import ForgotPassword from './pages/authentication/ForgotPassword';
 import ResetPassword from './pages/authentication/ResetPassword';
+import ScrollToTop from './scenes/navbar/ScrollTop';
 
 function App() {
 
@@ -72,6 +73,7 @@ function App() {
   return (
     <div>
       <BrowserRouter>
+      <ScrollToTop/>
       <Routes>
         <Route path='/' element = {<Home/>} />
         <Route path='/farmer' element = {<SidebarLayout/>} >

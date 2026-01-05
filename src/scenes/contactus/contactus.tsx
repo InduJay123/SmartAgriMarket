@@ -110,7 +110,8 @@ export default function ContactUs() {
         </div>
       </div>
 
-    </section><footer
+    </section>
+    <footer
       className={`bg-custom-green text-white py-14 ${isSinhala ? "font-sans" : "font-sans"}`}
     >
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
@@ -195,7 +196,7 @@ export default function ContactUs() {
 
               <li className="flex gap-2 items-center">
                 <i className="fas fa-envelope"></i>
-                <span>support@smartagri.lk</span>
+                <span>smartagrimarket@gmail.com</span>
               </li>
 
               <li className="flex gap-2 items-center">

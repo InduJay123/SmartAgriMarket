@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import logo from "../../assets/ChatGPT Image Nov 29, 2025, 12_24_03 PM.png";
 
 export default function Navbar() {
 
@@ -122,7 +121,7 @@ export default function Navbar() {
 
       <button
         onClick={() => navigate("/signup")}
-        className="px-6 py-2 rounded-md border border-gray-400 hover:bg-gray-200"
+        className="px-6 py-2 rounded-md text-white border border-gray-200 hover:bg-gray-200"
       >
         {t('Sign Up')}
       </button>

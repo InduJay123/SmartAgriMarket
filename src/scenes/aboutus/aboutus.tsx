@@ -143,13 +143,11 @@ const Home: React.FC = () => {
         <div className={`grid grid-cols-1 md:grid-cols-6 gap-8 px-6 md:px-20 ${isSinhala ?"font-sans" : "font-sans"}`}>
           {[
             { name: "Mr. Gihan Chathuranga", role: " Supervisor", img: gihan },
-            { name: "Induni Jayamanne", role: "Team Leader / Fullstack Developer", img: iduni },
-            { name: "Shalin Nimesh", role: "ML Model Developer", img: shalin },
-             { name: "Nuwan Rathnayaka", role: "Fullstack Developer", img: nuwan },
-             { name: "Mihitha Bandara", role: "ML Model Developer", img: mihitha },
-             { name: "Methsara Malindu", role: "Fullstack Developer", img: methsara },
-
-
+            { name: "Induni Jayamanne", role: "Fullstack Developer  Team Leader", img: iduni },
+            { name: "Shalin Nimesh Malshan", role: "ML Model Developer", img: shalin },
+            { name: "Nuwan Rathnayaka", role: "Fullstack Developer", img: nuwan },
+            { name: "Mihitha Bandara", role: "ML Model Developer", img: mihitha },
+            { name: "Methsara Malindu", role: "Fullstack Developer", img: methsara },
 
           ].map((member, index) => (
             <motion.div
@@ -165,8 +163,8 @@ const Home: React.FC = () => {
                 className="w-32 h-32 mx-auto rounded-full object-cover mb-4 border-4 border-green-500"
               />
 
-              <h3 className="text-2xl font-bold">{member.name}</h3>
-              <p className="text-gray-600">{member.role}</p>
+              <h3 className="text-xl font-bold">{member.name}</h3>
+              <p className="text-gray-600 text-sm">{member.role}</p>
             </motion.div>
           ))}
         </div>
@@ -257,7 +255,7 @@ const Home: React.FC = () => {
 
               <li className="flex gap-2 items-center">
                 <i className="fas fa-envelope"></i>
-                <span>support@smartagri.lk</span>
+                <span>smartagrimarket@gmail.com</span>
               </li>
 
               <li className="flex gap-2 items-center">
@@ -275,10 +273,6 @@ const Home: React.FC = () => {
         </div>
       </footer>
     </div>
-
-    
-
-
   );
 };
 

@@ -4,6 +4,7 @@ import { Filter } from "lucide-react";
 import { fetchProducts } from "../../api/ProductService";
 import ProductPage from "../../components/buyer/ProductPage";
 import Cart from "../../components/buyer/Cart";
+import Chat from "../../components/Chat";
 
 interface CartItem {
   id: string;
@@ -143,7 +144,6 @@ function BuyerDashboard() {
           </button>
         ))}
         </div>
-
         {/* Product List */}
         <ProductPage
           products={filteredProducts}

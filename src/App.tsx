@@ -40,6 +40,7 @@ import FarmerOrders from './pages/farmer/FarmerOrders';
 import ForgotPassword from './pages/authentication/ForgotPassword';
 import ResetPassword from './pages/authentication/ResetPassword';
 import ScrollToTop from './scenes/navbar/ScrollTop';
+import BuyerMessages from './components/buyer/BuyerMessages';
 
 function App() {
 
@@ -108,7 +109,8 @@ function App() {
           <Route path="shop" element={<BuyerDashboard />} />
           <Route path="orders" element={<OrderHistory />} />
           <Route path="favourites" element={<FavouritesPage />} />  
-          <Route path="pricelist" element={<PriceList />} />                 
+          <Route path="pricelist" element={<PriceList />} />
+          <Route path="messages" element={<BuyerMessages/>} />                 
           <Route path="profile" element={<ProfileInfo buyerId={''}/>} />
          </Route>
       </Routes>

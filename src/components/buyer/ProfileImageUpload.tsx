@@ -76,11 +76,11 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
   };
 
   return (
-    <div className="relative w-24 h-24 group">
+    <div className="relative group">
       <img
         src={preview || avatar}
         alt="Profile"
-        className="w-24 h-24 object-cover rounded-full border border-gray-300"
+        className="w-28 h-28 object-cover rounded-full border border-gray-300"
       />
 
       {/* Edit overlay on hover */}

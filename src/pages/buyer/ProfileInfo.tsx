@@ -48,7 +48,7 @@ function ProfileInfo() {
     company_email: data.buyer_details?.company_email ?? '',
     company_phone: data.buyer_details?.company_phone ?? '',
 
-    address: data.buyer_details?.street_address ?? '',
+    address: data.buyer_details?.address ?? '',
     city: data.buyer_details?.city ?? '',
     postal_code: data.buyer_details?.postal_code ?? '',
 
@@ -129,61 +129,64 @@ function ProfileInfo() {
 
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>
-        <div className="space-y-5">
-          <ProfileImageUpload  
-            image={profile.profile_image}
-            onChange={(url) =>
-              setProfile((prev) => ({
-                ...prev,
-                profile_image: url,
-              }))
-            }/>
+        <div className='flex flex-wrap items-center gap-10'>
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-              <User size={16} />
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={profile.fullname}
-              onChange={(e) => handleChange('fullname', e.target.value)}
-              placeholder="Enter your full name"
-              className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Mail size={16} />
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={profile.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                placeholder="your.email@example.com"
-                className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-              />
+            <ProfileImageUpload  
+              image={profile.profile_image}
+              onChange={(url) =>
+                setProfile((prev) => ({
+                  ...prev,
+                  profile_image: url,
+                }))
+              }/>    
             </div>
+            <div className='space-y-4'>
+              <div className="w-full">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <User size={16} />
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={profile.fullname}
+                  onChange={(e) => handleChange('fullname', e.target.value)}
+                  placeholder="Enter your full name"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition box-border"
+                />
+              </div>
 
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Phone size={16} />
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={profile.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+94 71 2345678"
-                className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <Mail size={16} />
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={profile.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="your.email@example.com"
+                    className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <Phone size={16} />
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={profile.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    placeholder="+94 71 2345678"
+                    className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
       {/* Market / Company Information */}
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Market / Company Information</h3>

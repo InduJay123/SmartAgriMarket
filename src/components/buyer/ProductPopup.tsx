@@ -1,4 +1,4 @@
-import { X, Star, MapPin, Phone, Calendar, ShoppingBag, Send } from "lucide-react";
+import { X, Star, MapPin, Phone, Calendar, ShoppingBag, Send, MessageCircle, MessageCircleMore } from "lucide-react";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "../../api/reviews";
 import StarRating from "./StartRating";
@@ -7,6 +7,7 @@ import TotalRatings from "./TotalRatings";
 import avatar from '../../assets/avatar.svg?url'
 import { getBuyerProfile } from "../../api/profile";
 import FarmerRating from "./FarmerRating";
+import ChatModal from "./ChatModel";
 
 interface ProductPopupProps {
   product: any; 
@@ -27,6 +28,8 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
   const [comment, setComment] = useState("");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [currentUser, setCurrentUser] = useState<{ fullname: string; profile_image: string } | null>(null);
+  const [openChat, setOpenChat] = useState(false);
+
   const totalReviews = reviews.length;
 
   const averageRating = totalReviews === 0 ? 0 : (
@@ -139,13 +142,22 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
             />
 
             <div>
-              <div className="flex items-center gap-2">
-                <h4 className="font-bold"> {product.farmer?.fullname} </h4>
-                <div className="flex items-center gap-1 bg-green-100 px-1 rounded-xl">
-                  <Star className="w-4 h-4 fill-yellow-500" />
-                  <FarmerRating farmerId={product.farmer_id} />
-
+              <div className="flex items-center justify-between">
+                <div className="flex">
+                  <h4 className="font-bold"> {product.farmer?.fullname} </h4>
+                  <div className="flex items-center gap-1 bg-green-100 px-1 rounded-xl">
+                    <Star className="w-4 h-4 fill-yellow-500" />
+                    <FarmerRating farmerId={product.farmer_id} />           
+                  </div>
                 </div>
+
+                 <button
+                    onClick={() => setOpenChat(true)}
+                    className="p-2 rounded-full bg-red-800 hover:bg-green-200"
+                    title="Message Farmer"
+                  >
+                    <MessageCircleMore size={18} className="text-white" />
+                  </button>
               </div>
 
               {/* Farmer info icons */}
@@ -262,6 +274,13 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
           </button>
         </div>*/}
       </div>
+      {openChat && (
+        <ChatModal
+          farmerUserId={product.farmer_id}
+          onClose={() => setOpenChat(false)}
+        />
+      )}
+
     </div>
   );
 }

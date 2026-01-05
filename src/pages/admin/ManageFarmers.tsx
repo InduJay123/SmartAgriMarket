@@ -4,20 +4,37 @@ import TopCard from '../../components/admin/TopCard';
 import api from "../../services/api";
 
 
-const farmers = [
-  { id: 1, name: 'M.A premadasa', location: 'Weeraketiya', crops: 'Pumpkin, Wheat', verified: true },
-  { id: 2, name: 'P.V.G Nalin', location: 'Walasmulla', crops: 'Beetroot, Cucumber', verified: true },
-  { id: 3, name: 'A.K kristi', location: 'Meegasara', crops: 'Sugarcane, Potato', verified: false },
-  { id: 4, name: 'J.J Janith', location: 'Hakmana', crops: 'Snake gourd, Beetroot', verified: true },
-  { id: 5, name: 'S.A Dayanga', location: 'Nuwara', crops: 'Carrot, Leeks', verified: true },
-];
+interface Farmer {
+  id: number;
+  name: string;
+  location: string;
+  crops: string;
+  verified: boolean;
+}
+
+// const farmers: Farmer[] = [
+//   { id: 1, name: 'M.A premadasa', location: 'Weeraketiya', crops: 'Pumpkin, Wheat', verified: true },
+//   { id: 2, name: 'P.V.G Nalin', location: 'Walasmulla', crops: 'Beetroot, Cucumber', verified: true },
+//   { id: 3, name: 'A.K kristi', location: 'Meegasara', crops: 'Sugarcane, Potato', verified: false },
+//   { id: 4, name: 'J.J Janith', location: 'Hakmana', crops: 'Snake gourd, Beetroot', verified: true },
+//   { id: 5, name: 'S.A Dayanga', location: 'Nuwara', crops: 'Carrot, Leeks', verified: true },
+// ];
+
+
+
+
+
 
 
  
 const ManageFarmers:React.FC = () => {
 
- const [farmer, setFarmers] = useState(0);
+ const [farmer, setFarmer] = useState(0);
  const [pendingApprovals, setPendingApprovals] = useState(0);
+
+ const [farmers, setFarmers] = useState<Farmer[]>([]);
+const [loading, setLoading] = useState(true);
+
 
 
   const stats = [
@@ -56,25 +73,46 @@ const ManageFarmers:React.FC = () => {
   ];
   const [showMap, setShowMap] = useState(false);
 
+  
+
+  
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
        const response = await api.get("/dashboard/stats");
         // console.log("Farmers fetched", response.data);
-        setFarmers(response.data.verified_farmers);
+        setFarmer(response.data.verified_farmers);
         setPendingApprovals(response.data.pending_approvals);
       } catch (error) {
         console.error("Error fetching farmers:", error);
       }
-
-
-
-      
+  
     };
 
     
     fetchData();
   }, []);
+
+
+  useEffect(() => {
+  const fetchFarmers = async () => {
+    try {
+      const res = await api.get("/admin/farmers");
+      setFarmers(res.data);
+    } catch (err) {
+      console.error("Failed to load farmers", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchFarmers();
+}, []);
+
+
+
 
   return (
     <div className="space-y-6 pr-28">

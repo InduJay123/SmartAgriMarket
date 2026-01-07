@@ -13,8 +13,8 @@
  * - Support complex multi-turn conversations
  */
 
-import { IntentEngine, IntentMatch } from './IntentEngine';
-import { ContextManager, AVAILABLE_CROPS, TIMEFRAMES, MARKETS } from './ContextManager';
+import { IntentEngine, type IntentMatch } from './IntentEngine';
+import { ContextManager, AVAILABLE_CROPS, MARKETS } from './ContextManager';
 
 export interface ConversationState {
   waitingFor?: 'crop' | 'timeframe' | 'market' | 'confirmation';
@@ -150,8 +150,8 @@ export class ConversationManager {
    */
   private async handleLowConfidenceIntent(
     match: IntentMatch,
-    allMatches: IntentMatch[],
-    message: string
+    _allMatches: IntentMatch[],
+    _message: string
   ): Promise<BotResponse> {
     return {
       text: `I'm not quite sure what you're asking. Here are some things I can help with:\n\n` +
@@ -239,7 +239,7 @@ export class ConversationManager {
     const responses = {
       crop: {
         text: `Which crop are you interested in? 🌾\n\nAvailable: ${
-          AVAILABLE_CROPS.filter((c, i) => i % 2 === 0).slice(0, 6).join(', ')
+          AVAILABLE_CROPS.filter((_, i) => i % 2 === 0).slice(0, 6).join(', ')
         }, etc.`,
         suggestedResponses: ['Tomato', 'Carrot', 'Potato', 'Onion']
       },
@@ -262,7 +262,7 @@ export class ConversationManager {
   /**
    * Handle explanation requests
    */
-  private handleExplanationIntent(message: string): BotResponse {
+  private handleExplanationIntent(_message: string): BotResponse {
     const lastPrediction = this.contextManager.getLastPrediction();
     
     if (!lastPrediction) {

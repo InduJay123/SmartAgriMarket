@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { MessageCircle, X, Send, Bot, User, Minimize2, GripHorizontal, TrendingUp, BarChart3, Loader2, Brain, Target } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User, Minimize2, GripHorizontal, BarChart3, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MLDashboard from './MLDashboard';
-import { predictPrice, AVAILABLE_CROPS } from '../../lib/MLService';
+import { predictPrice } from '../../lib/MLService';
 import { ConversationManager } from '../../lib/chatbot/ConversationManager';
 import { ContextManager } from '../../lib/chatbot/ContextManager';
 
@@ -20,12 +20,12 @@ interface Message {
 
 interface Position {
   x: number;
-  y: number;s
-const CHAT_HISTORY_KEY = 'smartagri_chat_history';
-const CONTEXT_KEY = 'smartagri_context
+  y: number;
+}
 
-// Local storage key for chat history
+// Local storage keys
 const CHAT_HISTORY_KEY = 'smartagri_chat_history';
+const CONTEXT_KEY = 'smartagri_context';
 const MAX_STORED_MESSAGES = 50;
 
 // Load chat history from local storage
@@ -110,7 +110,6 @@ export default function ChatBot() {
   
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isPredicting, setIsPredicting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -246,7 +245,6 @@ export default function ChatBot() {
   // Handle price prediction API call
   const handlePricePrediction = async (crop: string, timeframe?: string, market?: string): Promise<any> => {
     try {
-      setIsPredicting(true);
       const response = await predictPrice({
         crop_type: crop,
         season: 'northeast_monsoon',
@@ -273,7 +271,7 @@ export default function ChatBot() {
         error: true
       };
     } finally {
-      setIsPredicting(false);
+      // Prediction complete
     }
   };
 
@@ -404,7 +402,7 @@ export default function ChatBot() {
       return "No prediction data available to explain.";
     }
 
-    const { crop, predicted_price, timeframe } = predictionData;
+    const { crop, predicted_price } = predictionData;
     
     return `🔍 **Explanation for ${crop} price prediction**\n\n` +
       `The predicted price of Rs. ${predicted_price?.toFixed(2)} is based on:\n\n` +
@@ -432,17 +430,17 @@ export default function ChatBot() {
       `Want to try a different prediction?`;
   };
 
-  // Clear chat history
-  const clearChatHistory = () => {
-    const initialMessage: Message = {
-      id: Date.now().toString(),
-      text: "Chat history cleared! 🧹 How can I help you today?",
-      sender: 'bot',
-      timestamp: new Date(),
-    };
-    setMessages([initialMessage]);
-    localStorage.removeItem(CHAT_HISTORY_KEY);
-  };
+  // Clear chat history (commented out - can be used for reset button)
+  // const clearChatHistory = () => {
+  //   const initialMessage: Message = {
+  //     id: Date.now().toString(),
+  //     text: "Chat history cleared! 🧹 How can I help you today?",
+  //     sender: 'bot',
+  //     timestamp: new Date(),
+  //   };
+  //   setMessages([initialMessage]);
+  //   localStorage.removeItem(CHAT_HISTORY_KEY);
+  // };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

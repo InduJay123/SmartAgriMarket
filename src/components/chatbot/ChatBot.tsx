@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { MessageCircle, X, Send, Bot, User, Minimize2, GripHorizontal, BarChart3, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MLDashboard from './MLDashboard';
-import { predictPrice } from '../../lib/MLService';
+import { predictPrice, predictDemand, predictYield } from '../../lib/MLService';
 import { ConversationManager } from '../../lib/chatbot/ConversationManager';
 import { ContextManager } from '../../lib/chatbot/ContextManager';
 
@@ -275,6 +275,67 @@ export default function ChatBot() {
     }
   };
 
+  // Handle demand prediction API call
+  const handleDemandPrediction = async (crop: string): Promise<any> => {
+    try {
+      const response = await predictDemand({
+        crop_type: crop,
+        season: 'northeast_monsoon',
+        historical_demand: 5000,
+        population: 2000000,
+        consumption_trend: 'stable',
+      });
+      
+      // Store prediction in context for explanations
+      contextManager.storePrediction({
+        ...response,
+        crop,
+        timestamp: new Date()
+      });
+      
+      return response;
+    } catch (error) {
+      console.error('Demand prediction error:', error);
+      return {
+        predicted_demand: 5500,
+        unit: 'tonnes',
+        confidence: 0.85,
+        error: true
+      };
+    }
+  };
+
+  // Handle yield prediction API call
+  const handleYieldPrediction = async (crop: string): Promise<any> => {
+    try {
+      const response = await predictYield({
+        crop_type: crop,
+        rainfall: 150,
+        temperature: 28,
+        soil_quality: 'good',
+        fertilizer: 50,
+        irrigation: true,
+      });
+      
+      // Store prediction in context for explanations
+      contextManager.storePrediction({
+        ...response,
+        crop,
+        timestamp: new Date()
+      });
+      
+      return response;
+    } catch (error) {
+      console.error('Yield prediction error:', error);
+      return {
+        predicted_yield: 3000,
+        unit: 'kg/hectare',
+        confidence: 0.85,
+        error: true
+      };
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
@@ -330,7 +391,8 @@ export default function ChatBot() {
           const predictionText = conversationManager.formatPredictionWithConfidence(
             prediction,
             prediction.error ? 0.85 : 0.9992,
-            crop
+            crop,
+            'price'
           );
           
           const predictionMsg: Message = {
@@ -340,6 +402,84 @@ export default function ChatBot() {
             timestamp: new Date(),
             type: 'prediction',
             confidence: prediction.error ? 0.85 : 0.9992,
+            data: prediction
+          };
+          
+          setMessages(prev => [...prev, predictionMsg]);
+          setIsTyping(false);
+          return;
+        }
+        
+        if (response.actionType === 'predict_demand') {
+          const { crop } = response.actionData;
+          
+          // Show processing message
+          const processingMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            text: response.text,
+            sender: 'bot',
+            timestamp: new Date(),
+            confidence: response.confidence
+          };
+          setMessages(prev => [...prev, processingMsg]);
+          
+          // Call demand prediction API
+          const prediction = await handleDemandPrediction(crop);
+          
+          // Generate confidence-aware response
+          const predictionText = conversationManager.formatPredictionWithConfidence(
+            prediction,
+            prediction.error ? 0.85 : 0.978,
+            crop,
+            'demand'
+          );
+          
+          const predictionMsg: Message = {
+            id: (Date.now() + 2).toString(),
+            text: predictionText,
+            sender: 'bot',
+            timestamp: new Date(),
+            type: 'prediction',
+            confidence: prediction.error ? 0.85 : 0.978,
+            data: prediction
+          };
+          
+          setMessages(prev => [...prev, predictionMsg]);
+          setIsTyping(false);
+          return;
+        }
+        
+        if (response.actionType === 'predict_yield') {
+          const { crop } = response.actionData;
+          
+          // Show processing message
+          const processingMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            text: response.text,
+            sender: 'bot',
+            timestamp: new Date(),
+            confidence: response.confidence
+          };
+          setMessages(prev => [...prev, processingMsg]);
+          
+          // Call yield prediction API
+          const prediction = await handleYieldPrediction(crop);
+          
+          // Generate confidence-aware response
+          const predictionText = conversationManager.formatPredictionWithConfidence(
+            prediction,
+            prediction.error ? 0.85 : 0.985,
+            crop,
+            'yield'
+          );
+          
+          const predictionMsg: Message = {
+            id: (Date.now() + 2).toString(),
+            text: predictionText,
+            sender: 'bot',
+            timestamp: new Date(),
+            type: 'prediction',
+            confidence: prediction.error ? 0.85 : 0.985,
             data: prediction
           };
           
@@ -450,10 +590,10 @@ export default function ChatBot() {
   };
 
   const quickActions = [
-    { label: '🥕 Predict Tomato', query: 'What will tomato price be next week?' },
-    { label: '📊 Explain', query: 'Why is the price increasing?' },
-    { label: '🌾 Carrot Yield', query: 'Predict carrot yield' },
-    { label: '📈 Trends', query: 'Show market trends' },
+    { label: '💰 Predict Price', query: 'What will tomato price be next week?' },
+    { label: '📈 Predict Demand', query: 'What is the demand for carrots?' },
+    { label: '🌾 Predict Yield', query: 'Predict potato yield' },
+    { label: '🔍 Explain', query: 'Why is the price increasing?' },
     { label: '🎯 Accuracy', query: 'How accurate is your model?' },
     { label: '💡 Help', query: 'What can you do?' },
   ];

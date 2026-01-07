@@ -29,6 +29,7 @@ export interface BotResponse {
   actionType?: 'predict_price' | 'predict_yield' | 'predict_demand' | 'explain' | 'show_dashboard';
   actionData?: any;
   suggestedResponses?: string[];
+  predictionType?: 'price' | 'yield' | 'demand';
 }
 
 export class ConversationManager {
@@ -216,7 +217,7 @@ export class ConversationManager {
     }
 
     // All entities present - prepare API call
-    const predictionType = intent.apiAction.replace('predict_', '');
+    const predictionType = intent.apiAction.replace('predict_', '') as 'price' | 'yield' | 'demand';
     
     return {
       text: `🤖 Analyzing ${predictionType} prediction for ${entities.crop}...\n\n` +
@@ -224,6 +225,7 @@ export class ConversationManager {
       confidence: 0.95,
       requiresAction: true,
       actionType: intent.apiAction,
+      predictionType: predictionType,
       actionData: {
         crop: entities.crop,
         timeframe: entities.timeframe || 'next week',
@@ -289,7 +291,8 @@ export class ConversationManager {
   public formatPredictionWithConfidence(
     prediction: any,
     modelConfidence: number,
-    crop: string
+    crop: string,
+    predictionType: 'price' | 'yield' | 'demand' = 'price'
   ): string {
     let confidenceText = '';
     let emoji = '';
@@ -312,14 +315,43 @@ export class ConversationManager {
       ? `\n\n⚠️ **Note**: This prediction has ${confidenceText.toLowerCase()}. Market conditions can vary.`
       : '';
 
-    return `${emoji} **AI Prediction for ${crop.charAt(0).toUpperCase() + crop.slice(1)}**\n\n` +
-      `💰 Predicted Price: **Rs. ${prediction.predicted_price?.toFixed(2) || 'N/A'}** per kg\n` +
-      `📊 Confidence: **${(modelConfidence * 100).toFixed(1)}%** (${confidenceText})\n\n` +
-      `Key Factors:\n` +
-      `• Seasonal patterns\n` +
-      `• Current supply-demand balance\n` +
-      `• Recent price trends\n` +
-      `${uncertaintyNote}\n\n` +
+    const cropName = crop.charAt(0).toUpperCase() + crop.slice(1);
+
+    // Format based on prediction type
+    if (predictionType === 'demand') {
+      return `${emoji} **AI Demand Prediction for ${cropName}**\n\n` +
+        `📈 Predicted Demand: **${prediction.predicted_demand?.toFixed(2) || 'N/A'} ${prediction.unit || 'tonnes'}**\n` +
+        `📊 Confidence: **${(modelConfidence * 100).toFixed(1)}%** (${confidenceText})\n\n` +
+        `Key Factors:\n` +
+        `• Consumer preferences\n` +
+        `• Population demographics\n` +
+        `• Price sensitivity\n` +
+        `• Seasonal factors\n` +
+        `${uncertaintyNote}\n\n` +
+        `💡 Want to know why? Ask "Why is demand this high?" or "Explain this prediction"`;
+    } else if (predictionType === 'yield') {
+      return `${emoji} **AI Yield Prediction for ${cropName}**\n\n` +
+        `🌾 Predicted Yield: **${prediction.predicted_yield?.toFixed(2) || 'N/A'} ${prediction.unit || 'kg/hectare'}**\n` +
+        `📊 Confidence: **${(modelConfidence * 100).toFixed(1)}%** (${confidenceText})\n\n` +
+        `Key Factors:\n` +
+        `• Soil quality\n` +
+        `• Weather conditions\n` +
+        `• Farming practices\n` +
+        `• Crop variety\n` +
+        `${uncertaintyNote}\n\n` +
+        `💡 Want to know why? Ask "Why this yield?" or "Explain this prediction"`;
+    } else {
+      // Price prediction
+      return `${emoji} **AI Price Prediction for ${cropName}**\n\n` +
+        `💰 Predicted Price: **Rs. ${prediction.predicted_price?.toFixed(2) || 'N/A'}** per kg\n` +
+        `📊 Confidence: **${(modelConfidence * 100).toFixed(1)}%** (${confidenceText})\n\n` +
+        `Key Factors:\n` +
+        `• Seasonal patterns\n` +
+        `• Current supply-demand balance\n` +
+        `• Recent price trends\n` +
+        `${uncertaintyNote}\n\n` +
+        `💡 Want to know why? Ask "Why is this the price?" or "Explain this prediction"`;
+    }
       `💡 Want to know why? Ask "Why is this the price?" or "Explain this prediction"`;
   }
 

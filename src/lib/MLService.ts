@@ -26,8 +26,10 @@ export interface PricePredictionResponse {
 
 export interface DemandPredictionRequest {
   crop_type: string;
-  year?: number;
-  month?: number;
+  season: string;
+  historical_demand: number;
+  population: number;
+  consumption_trend: string;
 }
 
 export interface DemandPredictionResponse {

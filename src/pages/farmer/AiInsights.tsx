@@ -79,6 +79,44 @@ const AiInsights: React.FC = () => {
     setError(null);
 
     try {
+      // Make single API calls for price and demand (much faster than calling for each day)
+      const baseSupply = 1000;
+      const baseDemand = 1200;
+
+      // Use Promise.allSettled to handle partial failures gracefully
+      const [priceResult, demandResult] = await Promise.allSettled([
+        predictPrice({
+          crop_type: selectedCrop,
+          season: season,
+          supply: baseSupply,
+          demand: baseDemand,
+          market_trend: marketTrend,
+        }),
+        predictDemand({
+          crop_type: selectedCrop,
+          season: season,
+          historical_demand: baseDemand,
+          population: 22000000,
+          consumption_trend: consumptionTrend,
+        }),
+      ]);
+
+      // Extract responses, using defaults if failed
+      const priceResponse = priceResult.status === 'fulfilled' ? priceResult.value : null;
+      const demandResponse = demandResult.status === 'fulfilled' ? demandResult.value : null;
+
+      // If both failed, throw error to use simulated data
+      if (!priceResponse && !demandResponse) {
+        throw new Error('Both API calls failed');
+      }
+
+      // Store the results
+      if (priceResponse) setPriceResult(priceResponse);
+      if (demandResponse) setDemandResult(demandResponse);
+
+      // Generate forecast data based on the predictions with realistic variations
+      const basePrice = priceResponse?.predicted_price || 150;
+      const baseDemandValue = demandResponse?.predicted_demand || 900;
       const forecasts: ForecastData[] = [];
       const today = new Date();
 
@@ -86,61 +124,25 @@ const AiInsights: React.FC = () => {
         const forecastDate = new Date(today);
         forecastDate.setDate(today.getDate() + i);
 
-        // Simulate supply and demand variations
-        const baseSupply = 1000;
-        const baseDemand = 1200;
-        const variation = Math.sin((i / forecastDays) * Math.PI) * 200;
+        // Apply realistic day-to-day variations (±5% random + trend)
+        const trendFactor = marketTrend === 'rising' ? 1.02 : marketTrend === 'falling' ? 0.98 : 1;
+        const dayVariation = 1 + (Math.random() - 0.5) * 0.1; // ±5% random
+        const seasonalVariation = 1 + Math.sin((i / forecastDays) * Math.PI) * 0.05; // ±5% seasonal wave
 
-        try {
-          const [priceResponse, demandResponse] = await Promise.all([
-            predictPrice({
-              crop_type: selectedCrop,
-              season: season,
-              supply: baseSupply + variation + Math.random() * 100,
-              demand: baseDemand + variation + Math.random() * 100,
-              market_trend: marketTrend,
-            }),
-            predictDemand({
-              crop_type: selectedCrop,
-              season: season,
-              historical_demand: baseDemand + Math.random() * 200,
-              population: 22000000, // Sri Lanka population approx
-              consumption_trend: consumptionTrend,
-            }),
-          ]);
-
-          forecasts.push({
-            date: forecastDate.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            }),
-            price: priceResponse.predicted_price || Math.random() * 200 + 100,
-            demand: demandResponse.predicted_demand || Math.random() * 1000 + 500,
-          });
-
-          // Store the latest results
-          if (i === 0) {
-            setPriceResult(priceResponse);
-            setDemandResult(demandResponse);
-          }
-        } catch (err) {
-          // Fallback to simulated data if API fails
-          forecasts.push({
-            date: forecastDate.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            }),
-            price: 150 + Math.random() * 100 + i * 5,
-            demand: 800 + Math.random() * 400 - i * 20,
-          });
-        }
+        forecasts.push({
+          date: forecastDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          }),
+          price: basePrice * dayVariation * seasonalVariation * Math.pow(trendFactor, i),
+          demand: baseDemandValue * dayVariation * (1 + Math.cos((i / forecastDays) * Math.PI) * 0.1),
+        });
       }
 
       setForecastData(forecasts);
     } catch (err) {
       console.error("Error generating forecast:", err);
       setError("Failed to generate forecast. Using simulated data.");
-      // Generate fallback simulated data
       generateSimulatedForecast();
     } finally {
       setIsLoading(false);

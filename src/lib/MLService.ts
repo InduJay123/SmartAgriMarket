@@ -16,14 +16,18 @@ export interface PricePredictionResponse {
   crop_type: string;
   predicted_price: number;
   currency: string;
+  confidence: number;
+  model_accuracy: {
+    r2_score: number;
+    mae: number;
+    rmse: number;
+  };
 }
 
 export interface DemandPredictionRequest {
   crop_type: string;
-  season: string;
-  historical_demand: number;
-  population: number;
-  consumption_trend: string;
+  year?: number;
+  month?: number;
 }
 
 export interface DemandPredictionResponse {
@@ -31,6 +35,12 @@ export interface DemandPredictionResponse {
   crop_type: string;
   predicted_demand: number;
   unit: string;
+  confidence: number;
+  model_accuracy: {
+    r2_score: number;
+    mae: number;
+    rmse: number;
+  };
 }
 
 export interface YieldPredictionRequest {
@@ -47,6 +57,12 @@ export interface YieldPredictionResponse {
   crop_type: string;
   predicted_yield: number;
   unit: string;
+  confidence?: number;
+  model_accuracy?: {
+    r2_score: number;
+    mae: number;
+    rmse: number;
+  };
 }
 
 export interface ForecastDataPoint {

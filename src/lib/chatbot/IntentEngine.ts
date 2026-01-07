@@ -95,9 +95,9 @@ export class IntentEngine {
       // Help Intent
       {
         name: 'help',
-        keywords: ['help', 'assist', 'support', 'what can you do', 'features', 'options', 'guide'],
+        keywords: ['help', 'assist', 'support', 'what can you do', 'features', 'options', 'guide', 'can you', 'what'],
         weight: 1.2,
-        response: "I'm your AI farming assistant! 🤖 I can help with:\n\n📊 **Price Predictions**: Ask 'What will tomato price be next week?'\n🌾 **Yield Forecasting**: Ask 'What yield can I expect for carrots?'\n📈 **Demand Analysis**: Ask 'What's the demand for potatoes?'\n💡 **Explanations**: Ask 'Why is the price increasing?'\n\nJust ask naturally - I'll understand!",
+        response: "I'm your AI farming assistant! 🤖 I can help with:\n\n📊 **Price Predictions**: Ask 'What will Tomato price be next week?'\n🌾 **Yield Forecasting**: Ask 'What yield can I expect for Carrot?'\n📈 **Demand Analysis**: Ask 'What's the demand for Beans?'\n💡 **Explanations**: Ask 'Why is the price increasing?'\n\nJust ask naturally - I'll understand!",
         requiredEntities: []
       },
       
@@ -106,7 +106,7 @@ export class IntentEngine {
         name: 'browse_products',
         keywords: ['products', 'crops', 'vegetables', 'fruits', 'catalog', 'browse', 'available', 'sell', 'items'],
         weight: 1.0,
-        response: "We have fresh produce including:\n• Vegetables: Tomatoes, Carrots, Potatoes, Onions, Peppers 🥕\n• Fruits: Mangoes, Bananas, Oranges, Apples 🍎\n• Grains & Spices 🌾\n\nWhich would you like to know more about?",
+        response: "We have fresh produce including:\n• Vegetables: Tomato, Carrot, Beans, Cabbage, Brinjal, Pumpkin 🥕\n• Others: Big Onion, Coconut, Dried Chilli 🌶️\n• And more! 🌾\n\nWhich would you like to know more about?",
         requiredEntities: []
       },
       
@@ -167,9 +167,9 @@ export class IntentEngine {
       // Model Accuracy Intent
       {
         name: 'model_accuracy',
-        keywords: ['accuracy', 'r2', 'mae', 'rmse', 'how accurate', 'model performance', 'reliable'],
+        keywords: ['accuracy', 'r2', 'mae', 'rmse', 'how accurate', 'model performance', 'reliable', 'model', 'performance', 'what is'],
         weight: 1.4,
-        response: "🎯 AI Model Performance:\n\n**Price Predictor:**\n• Accuracy (R²): 99.92%\n• Mean Absolute Error: Rs. 0.82\n• RMSE: Rs. 3.25\n\n**Yield Predictor:**\n• Accuracy (R²): 98.5%\n\n**Demand Predictor:**\n• Accuracy (R²): 97.8%\n\nOur models are highly reliable! 🚀",
+        response: "🎯 AI Model Performance:\n\n**Price Predictor:**\n• Uses Random Forest with 9 years of historical data\n• Predicts prices based on market trends & seasonality\n\n**Demand Predictor:**\n• Trained on vegetable demand patterns\n• Predicts demand in metric tons\n\n**Yield Predictor:**\n• Environmental factors: rainfall, temperature, soil\n• Predicts yield per hectare\n\n📊 Click 'View Dashboard' for real-time accuracy metrics from our trained models!",
         requiredEntities: []
       },
       
@@ -268,6 +268,7 @@ export class IntentEngine {
    */
   public detectIntents(message: string, confidenceThreshold: number = 0.1): IntentMatch[] {
     const matches: IntentMatch[] = [];
+    const lowerMessage = message.toLowerCase();
 
     this.intents.forEach(intent => {
       const score = this.calculateTFIDF(message, intent);
@@ -275,7 +276,15 @@ export class IntentEngine {
       if (score > 0) {
         // Calculate confidence (normalize to 0-1 range)
         // Use sigmoid-like function for smooth confidence scaling
-        const confidence = Math.min(1, score / 2); // Adjust divisor for sensitivity
+        let confidence = Math.min(1, score / 1.5); // Increased sensitivity from /2 to /1.5
+        
+        // Boost confidence for direct keyword matches (helps with button queries)
+        const directMatch = intent.keywords.some(keyword => 
+          lowerMessage.includes(keyword.toLowerCase())
+        );
+        if (directMatch) {
+          confidence = Math.min(1, confidence * 1.3); // 30% boost for direct matches
+        }
         
         if (confidence >= confidenceThreshold) {
           // Find which keywords matched

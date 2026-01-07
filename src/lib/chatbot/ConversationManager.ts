@@ -14,7 +14,7 @@
  */
 
 import { IntentEngine, type IntentMatch } from './IntentEngine';
-import { ContextManager, AVAILABLE_CROPS, MARKETS } from './ContextManager';
+import { ContextManager, MARKETS } from './ContextManager';
 
 export interface ConversationState {
   waitingFor?: 'crop' | 'timeframe' | 'market' | 'confirmation';
@@ -156,9 +156,9 @@ export class ConversationManager {
   ): Promise<BotResponse> {
     return {
       text: `I'm not quite sure what you're asking. Here are some things I can help with:\n\n` +
-        `• **Price Predictions**: "What will tomato price be next week?"\n` +
-        `• **Yield Forecasting**: "What yield for carrots?"\n` +
-        `• **Demand Analysis**: "What's the demand for potatoes?"\n` +
+        `• **Price Predictions**: "What will Tomato price be next week?"\n` +
+        `• **Yield Forecasting**: "What yield for Carrot?"\n` +
+        `• **Demand Analysis**: "What's the demand for Beans?"\n` +
         `• **Explanations**: "Why is the price increasing?"\n` +
         `• **Market Info**: "Show me market trends"\n\n` +
         `Try asking in a different way! 😊`,
@@ -240,10 +240,8 @@ export class ConversationManager {
   private askForMissingEntity(entityType: string): BotResponse {
     const responses = {
       crop: {
-        text: `Which crop are you interested in? 🌾\n\nAvailable: ${
-          AVAILABLE_CROPS.filter((_, i) => i % 2 === 0).slice(0, 6).join(', ')
-        }, etc.`,
-        suggestedResponses: ['Tomato', 'Carrot', 'Potato', 'Onion']
+        text: `Which crop are you interested in? 🌾\n\nAvailable: Tomato, Carrot, Beans, Cabbage, Pumpkin, Brinjal, Big Onion, etc.`,
+        suggestedResponses: ['Tomato', 'Carrot', 'Beans', 'Cabbage']
       },
       timeframe: {
         text: `For which time period? 📅\n\nExamples: tomorrow, next week, next month`,
@@ -320,7 +318,7 @@ export class ConversationManager {
     // Format based on prediction type
     if (predictionType === 'demand') {
       return `${emoji} **AI Demand Prediction for ${cropName}**\n\n` +
-        `📈 Predicted Demand: **${prediction.predicted_demand?.toFixed(2) || 'N/A'} ${prediction.unit || 'tonnes'}**\n` +
+        `📈 Predicted Demand: **${prediction.predicted_demand?.toFixed(0) || 'N/A'} ${prediction.unit || 'metric tons'}**\n` +
         `📊 Confidence: **${(modelConfidence * 100).toFixed(1)}%** (${confidenceText})\n\n` +
         `Key Factors:\n` +
         `• Consumer preferences\n` +
@@ -331,7 +329,7 @@ export class ConversationManager {
         `💡 Want to know why? Ask "Why is demand this high?" or "Explain this prediction"`;
     } else if (predictionType === 'yield') {
       return `${emoji} **AI Yield Prediction for ${cropName}**\n\n` +
-        `🌾 Predicted Yield: **${prediction.predicted_yield?.toFixed(2) || 'N/A'} ${prediction.unit || 'kg/hectare'}**\n` +
+        `🌾 Predicted Yield: **${prediction.predicted_yield?.toFixed(0) || 'N/A'} ${prediction.unit || 'kg/hectare'}**\n` +
         `📊 Confidence: **${(modelConfidence * 100).toFixed(1)}%** (${confidenceText})\n\n` +
         `Key Factors:\n` +
         `• Soil quality\n` +
@@ -352,7 +350,6 @@ export class ConversationManager {
         `${uncertaintyNote}\n\n` +
         `💡 Want to know why? Ask "Why is this the price?" or "Explain this prediction"`;
     }
-      `💡 Want to know why? Ask "Why is this the price?" or "Explain this prediction"`;
   }
 
   /**

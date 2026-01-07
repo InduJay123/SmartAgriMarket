@@ -29,18 +29,23 @@ export interface ConversationContext {
 }
 
 export const AVAILABLE_CROPS = [
-  'tomato', 'tomatoes',
+  // Primary vegetables from dataset
+  'beans', 'bean',
+  'brinjal', 'brinjals', 'eggplant', 'aubergine',
+  'cabbage', 'cabbages',
   'carrot', 'carrots',
+  'pumpkin', 'pumpkins',
+  'snake gourd', 'snakegourd',
+  'tomato', 'tomatoes',
+  'big onion', 'onion', 'onions',
+  'coconut', 'coconuts',
+  'dried chilli', 'chilli', 'chillies', 'dried chillies',
+  'green chilli', 'green chillies',
   'potato', 'potatoes',
-  'onion', 'onions',
-  'pepper', 'peppers',
-  'mango', 'mangoes',
-  'banana', 'bananas',
-  'orange', 'oranges',
-  'apple', 'apples',
-  'cabbage',
-  'beans',
-  'pumpkin'
+  'red onion', 'red onions',
+  'leeks', 'leek',
+  // Common variations
+  'pepper', 'peppers'
 ];
 
 export const TIMEFRAMES = [
@@ -72,19 +77,50 @@ export class ContextManager {
   }
 
   /**
+   * Normalize crop name to match backend format (e.g., "Tomato", "Big Onion")
+   */
+  private normalizeCropName(crop: string): string {
+    // Map of lowercase crops to their proper backend names
+    const cropMapping: Record<string, string> = {
+      'beans': 'Beans', 'bean': 'Beans',
+      'brinjal': 'Brinjal', 'brinjals': 'Brinjal', 'eggplant': 'Brinjal', 'aubergine': 'Brinjal',
+      'cabbage': 'Cabbage', 'cabbages': 'Cabbage',
+      'carrot': 'Carrot', 'carrots': 'Carrot',
+      'pumpkin': 'Pumpkin', 'pumpkins': 'Pumpkin',
+      'snake gourd': 'Snake gourd', 'snakegourd': 'Snake gourd',
+      'tomato': 'Tomato', 'tomatoes': 'Tomato',
+      'big onion': 'Big Onion', 'onion': 'Big Onion', 'onions': 'Big Onion',
+      'coconut': 'Coconut', 'coconuts': 'Coconut',
+      'dried chilli': 'Dried Chilli', 'chilli': 'Dried Chilli', 'chillies': 'Dried Chilli', 'dried chillies': 'Dried Chilli',
+      'green chilli': 'Green Chilli', 'green chillies': 'Green Chilli',
+      'potato': 'Potato', 'potatoes': 'Potato',
+      'red onion': 'Red Onion', 'red onions': 'Red Onion',
+      'leeks': 'Leeks', 'leek': 'Leeks',
+      'pepper': 'Pepper', 'peppers': 'Pepper'
+    };
+    
+    return cropMapping[crop.toLowerCase()] || crop.charAt(0).toUpperCase() + crop.slice(1);
+  }
+
+  /**
    * Extract crop name from message
    * Uses simple pattern matching - can be enhanced with NER
    */
   public extractCrop(message: string): string | null {
     const messageLower = message.toLowerCase();
     
+    // Check for multi-word crops first (e.g., "big onion", "snake gourd")
+    const multiWordCrops = ['big onion', 'snake gourd', 'dried chilli', 'green chilli', 'red onion'];
+    for (const crop of multiWordCrops) {
+      if (messageLower.includes(crop)) {
+        return this.normalizeCropName(crop);
+      }
+    }
+    
     // Direct crop mention
     for (const crop of AVAILABLE_CROPS) {
       if (messageLower.includes(crop)) {
-        // Return singular form
-        return crop.endsWith('s') && crop.length > 3 
-          ? crop.slice(0, -1) 
-          : crop;
+        return this.normalizeCropName(crop);
       }
     }
 

@@ -99,7 +99,7 @@ const [loading, setLoading] = useState(true);
   useEffect(() => {
   const fetchFarmers = async () => {
     try {
-      const res = await api.get("/admin/farmers");
+      const res = await api.get("/adminpanel/farmers");
       setFarmers(res.data);
     } catch (err) {
       console.error("Failed to load farmers", err);

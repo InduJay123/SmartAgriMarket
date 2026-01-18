@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BrowserRouter,Routes, Route, useNavigate } from 'react-router-dom';
 
 import PublicLayout from './layout/PublicLayout';
@@ -36,11 +36,10 @@ import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import ProfileInfo from './pages/buyer/ProfileInfo';
 import PriceList from './pages/buyer/PriceList';
 import SidebarLayout from './layout/SidebarLayout';
-import FarmerOrders from './pages/farmer/FarmerOrders';
-import ForgotPassword from './pages/authentication/ForgotPassword';
 import ResetPassword from './pages/authentication/ResetPassword';
 import ScrollToTop from './scenes/navbar/ScrollTop';
 import BuyerMessages from './components/buyer/BuyerMessages';
+import DashboardLayout from './pages/farmer/DashboardLayout';
 
 function App() {
 
@@ -78,7 +77,10 @@ function App() {
       <Routes>
         <Route path='/' element = {<Home/>} />
         <Route path='/farmer' element = {<SidebarLayout/>} >
-          <Route path='dashboard' element = {<FarmerDashboard/>}/>
+          <Route path="dashboard" element={
+                <DashboardLayout>
+                  <FarmerDashboard />
+                </DashboardLayout>}/>
           <Route path='analytics' element={<AiInsights/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
           <Route path='pricelist' element={<PriceList />}/>

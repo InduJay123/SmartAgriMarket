@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import api from "../../api/api";
 
-interface Alert {
+interface UserAlert {
   id?: number;
+  alert_id: number;
   category: string;
   message: string;
 }
@@ -14,18 +14,18 @@ const AlertNotifications: React.FC = () => {
     if ("Notification" in window) {
       Notification.requestPermission();
     }
-
-    // Poll backend every 10 seconds
+    const shownAlerts = new Set<number>();
     const interval = setInterval(() => {
       api
-        .get<Alert[]>("/alerts/alerts/")
+        .get<UserAlert[]>("/user-alerts/")
         .then((res) => {
           res.data.forEach((alert) => {
-            if (Notification.permission === "granted") {
+            if (Notification.permission === "granted" && !shownAlerts.has(alert.id)) {
               new Notification(`${alert.category} Alert`, {
                 body: alert.message,
               });
-              api.post(`/alerts/alerts/${alert.id}/sent/`);
+              api.post(`/user-alerts/${alert.id}/sent/`);
+              shownAlerts.add(alert.id);
             }
           });
         })

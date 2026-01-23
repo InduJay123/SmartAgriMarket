@@ -4,6 +4,9 @@ import type { LoginFormData, UserRole } from "../../types/auth";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import marketImg from "../../assets/legumes-frais-1140x510.png" 
 import { useNavigate } from "react-router-dom";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+
 
 
 interface LoginProps {
@@ -11,6 +14,10 @@ interface LoginProps {
 }
 
 export default function Login({ onNavigateToSignup }: LoginProps) {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
    const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
     username: "",
@@ -51,15 +58,15 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
       }
     };
   return (
-    <div className="min-h-screen grid md:grid-cols-2">
+    <div className={`min-h-screen grid md:grid-cols-2 ${isSinhala ? "font-sinhala text-2xl" : "font-sans"}`}>
       {/* LEFT SECTION - LOGIN FORM */}
       <div className="flex items-center justify-center px-6 py-2">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Welcome back!
+           {t("Welcome back!")}
           </h2>
           <p className="text-gray-600 mb-8">
-            Enter your Credentials to access your account
+           {t("Enter your Credentials to access your account")}
           </p>
 
           {/* FORM */}
@@ -67,7 +74,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
             {/* ROLE */}
             <div>
               <label className="text-sm font-medium text-gray-700">
-                Select Your Role
+                {t("Select Your Role")}
               </label>
               <RoleSelector
                 selectedRole={formData.role}
@@ -80,7 +87,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
             {/* USERNAME */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email address
+                {t("Email address")}
               </label>
 
               <div className="relative">
@@ -92,7 +99,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
                     setFormData({ ...formData, username: e.target.value })
                   }
                   placeholder="Enter your email"
-                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none"
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none text-xs ${isSinhala ? "font-sans" : "font-sans"}`}
                 />
               </div>
               {errors.username && (
@@ -105,7 +112,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
             {/* PASSWORD */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
+                {t("Password")}
               </label>
 
               <div className="relative">
@@ -117,7 +124,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   placeholder="Enter your password"
-                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none"
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none text-xs ${isSinhala ? "font-sans" : "font-sans"}`}
                 />
               </div>
               {errors.password && (
@@ -130,7 +137,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
             {/* FORGOT PASSWORD */}
             <div className="flex justify-end">
               <button className="text-sm text-green-700 hover:text-green-800">
-                Forgot password?
+                {t("Forgot password?")}
               </button>
             </div>
 
@@ -140,19 +147,19 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
               type="submit"
               className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition"
             >
-              Login
+             {t("Login")}
             </button>
           </form>
 
           {/* SIGN UP */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don’t have an account?{" "}
+              {t("Don’t have an account?")}{" "}
               <button
                 onClick={onNavigateToSignup}
                 className="text-green-700 font-semibold hover:text-green-800"
               >
-                Sign Up
+               {t(" Sign Up")}
               </button>
             </p>
           </div>
@@ -162,7 +169,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
       {/* RIGHT SECTION - IMAGE + TEXT */}
       <div className="hidden md:flex flex-col items-left justify-center bg-white p-2">
         
-        <h2 className="text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6">
+        <h2 className={`text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6 ${isSinhala ?"font-sans" : "font-sans"}`}>
           Reach your<br /> customers faster, <br />
           Manage your<br /> harvest without loss, <br />
           <span className="text-green-700 font-bold">With Us.</span>

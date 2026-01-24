@@ -6,6 +6,8 @@ import marketImg from "../../assets/legumes-frais-1140x510.png"
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/auth";
 import ForgotPasswordModal from "./ForgotPassword";
+import { getFcmToken } from "../../lib/firebase-messaging";
+import api from "../../api/api";
 
 interface LoginProps {
   onNavigateToSignup: () => void;
@@ -21,6 +23,19 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
     role: "farmer",
   });
 
+    const saveFcmToken = async () => {
+      try {
+        const token = await getFcmToken();
+        if (!token) return;
+
+        await api.post("/notifications/save-token/", {
+          token,
+        });
+        console.log("FCM token saved");
+      } catch (err) {
+        console.error("Failed to save FCM token", err);
+      }
+    };
   
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,6 +61,8 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
     localStorage.setItem("accessToken", response.data.access);
     localStorage.setItem("refreshToken", response.data.refresh);
     localStorage.setItem("userRole", response.data.user.role);
+
+    await saveFcmToken();
 
     switch (response.data.user.role) {
       case "Farmer":

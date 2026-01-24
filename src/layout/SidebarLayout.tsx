@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Menu, User } from "lucide-react";
+import { Bell, Menu, User } from "lucide-react";
 import Sidebar from "../components/farmer/Sidebar";
 import { Outlet, useNavigate } from "react-router-dom";
 import emoji from "emoji-dictionary";
@@ -49,10 +49,25 @@ const SideBarLayout: React.FC = () => {
             </div>
 
             {/* RIGHT ICONS */}
-            <div className="flex items-center gap-4">
-               <button 
+            <div className="flex items-center gap-3">
+
+              {/* 🔔 Alerts Bell */}
+              <button
+                onClick={() => navigate("/farmer/alerts")}
+                className="relative p-2 rounded-lg hover:bg-gray-100"
+                title="Alerts"
+              >
+                <Bell size={22} className="text-gray-700" />
+
+                {/* optional red dot (show when there are unseen alerts) */}
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+
+              {/* 👤 Profile */}
+              <button 
                 onClick={() => navigate("/farmer/profile")}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              >
                 {farmer?.profile_image ? (
                   <img
                     src={farmer.profile_image}
@@ -62,10 +77,12 @@ const SideBarLayout: React.FC = () => {
                 ) : (
                   <User size={20} />
                 )}
-                <span className="text-sm font-medium">{farmer?.fullname || "Account"}</span>
+                <span className="text-sm font-medium">
+                  {farmer?.fullname || "Account"}
+                </span>
               </button>
             </div>
-
+            
           </div>
         </div>
       </header>

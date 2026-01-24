@@ -98,8 +98,10 @@ const FarmerProfileInfo:React.FC = () => {
 
     return(
         <div className="bg-gray-50 p-4">
-            <Header icon={SettingsIcon} title="Settings" subTitle="Manage your farm profile and preferences"/>
-            
+        <div>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 Profile Settings</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">Manage your farm profile and preferences</p>
+        </div>
             <div className="grid lg:grid-cols-2 gap-6 mt-6 mb-2">
                 <div className="flex flex-col bg-white p-6 w-full shadow-md rounded-md border border-gray-200 items-start justify-start">
                     <h2 className="text-lg font-bold mb-4">Farm Information</h2>

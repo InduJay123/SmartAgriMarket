@@ -42,6 +42,7 @@ import BuyerMessages from './components/buyer/BuyerMessages';
 import { getFcmToken, onMessageListener } from './lib/firebase-messaging';
 import axios from 'axios';
 import AlertsPanel from './pages/farmer/AlertPanel';
+import FarmerMessages from './pages/farmer/FarmerMessages';
 
 function App() {
 
@@ -111,6 +112,7 @@ function App() {
           <Route path='analytics' element={<AiInsights/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
           <Route path='pricelist' element={<PriceList />}/>
+          <Route path='messages' element={<FarmerMessages/>}/>
           <Route path='alerts' element={<AlertsPanel/>}/>
           <Route path='profile' element={<FarmerProfileInfo/>}/>
         </Route>

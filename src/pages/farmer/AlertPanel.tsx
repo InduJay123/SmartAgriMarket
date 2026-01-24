@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchUserAlerts, markAlertSeen,  } from "../../api/farmer/alerts";
-import { Bell, Map, MapPin, TrendingDown, TrendingUp } from "lucide-react";
+import { Bell,  Timer, TrendingDown, TrendingUp } from "lucide-react";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 
 type AlertItem = {
   id: number;
@@ -27,17 +29,6 @@ const AlertsPanel = () => {
       return "text-red-600";
     default:
       return "text-orange-500";
-  }
-};
-
-const getCategoryColor = (category) => {
-  switch (category) {
-    case "PRICE":
-      return "text-blue-600";
-    case "DEMAND":
-      return "text-orange-600";
-    default:
-      return "text-gray-600";
   }
 };
 
@@ -80,23 +71,26 @@ const getCategoryColor = (category) => {
   if (loading) return <p>Loading alerts...</p>;
 
   return (
-  <div className="p-2">
-    {/* LEFT = Alerts (wide), RIGHT = Cards (narrow) */}
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-      {/* LEFT SIDE (Alerts List) - more width */}
-      <div className="lg:col-span-9 bg-white shadow rounded-lg p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">🔔 Alerts</h2>
-
-          <button
-            onClick={handleMarkAllSeen}
-            className="text-sm px-3 py-1 rounded bg-green-600 text-white font-medium hover:bg-green-700"
-          >
-            Mark all seen
-          </button>
+  <div className="p-4">     
+    <div className="flex items-center justify-between mb-1">
+        <div>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">🔔 Alerts</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">Stay informed with the latest alerts and notifications</p>
         </div>
 
+        <button
+          onClick={handleMarkAllSeen}
+          className="text-lg px-4 py-2 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700"
+        >
+          Mark all seen
+        </button>
+    </div>
+    {/* LEFT = Alerts (wide), RIGHT = Cards (narrow) */}
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* LEFT SIDE (Alerts List) - more width */}
+      <div className="lg:col-span-9 bg-white shadow rounded-lg p-4 lg:h-[80vh] overflow-y-auto">
+
+        
         {alerts.length === 0 ? (
           <p className="text-gray-500 text-sm">No alerts</p>
         ) : (
@@ -133,7 +127,7 @@ const getCategoryColor = (category) => {
 
                     <div className="flex flex-wrap gap-4 items-center mt-2">
                       <p className="text-sm text-gray-600">
-                        <MapPin className="inline mr-1" size={14} />
+                        <Timer className="inline mr-1" size={14} />
                         {formatDate(alert.created_at)}
                       </p>
 
@@ -166,7 +160,7 @@ const getCategoryColor = (category) => {
       </div>
 
       {/* RIGHT SIDE (Cards) - smaller width */}
-      <div className="lg:col-span-3 space-y-4">
+      <div className="lg:col-span-3 space-y-4 lg:sticky lg:top-4 self-start">
         {/* Cards row-wise */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
 
@@ -204,6 +198,17 @@ const getCategoryColor = (category) => {
             </div>
           </div>
 
+          <div className="bg-white border border-gray-100 shadow-sm rounded-lg p-4">
+          <p className="text-sm font-semibold mb-3">Calendar</p>
+
+          <DayPicker
+            showOutsideDays
+            modifiers={{ today: new Date() }}
+            modifiersClassNames={{
+              today: "bg-green-600 text-white rounded-full",
+            }}
+          />
+        </div>
         </div>
       </div>
     </div>

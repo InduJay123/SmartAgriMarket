@@ -27,7 +27,7 @@ const Header:React.FC <HeaderProps>= ({
     return(
         <div>
             <div className="flex flex-col items-start justify-start gap-4 mb-6">
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap items-center gap-6">
                     <User/>
                     <div className="flex flex-col items-start justify-start gap-2">
                         <h1 className="font-extrabold text-3xl"> Welcome back, {farmer?.first_name} </h1>                         

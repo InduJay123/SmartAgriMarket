@@ -38,7 +38,7 @@ import PriceList from './pages/buyer/PriceList';
 import SidebarLayout from './layout/SidebarLayout';
 import ResetPassword from './pages/authentication/ResetPassword';
 import ScrollToTop from './scenes/navbar/ScrollTop';
-import BuyerMessages from './components/buyer/BuyerMessages';
+import BuyerMessages from './pages/buyer/BuyerMessages';
 import { getFcmToken, onMessageListener } from './lib/firebase-messaging';
 import axios from 'axios';
 import AlertsPanel from './pages/farmer/AlertPanel';
@@ -142,7 +142,8 @@ function App() {
           <Route path="orders" element={<OrderHistory />} />
           <Route path="favourites" element={<FavouritesPage />} />  
           <Route path="pricelist" element={<PriceList />} />
-          <Route path="messages" element={<BuyerMessages/>} />                 
+          <Route path="messages" element={<BuyerMessages/>} />
+          <Route path="alerts" element={<AlertsPanel/>} />
           <Route path="profile" element={<ProfileInfo buyerId={''}/>} />
          </Route>
       </Routes>

@@ -1,5 +1,5 @@
 import { useEffect, useState} from "react";
-import { Menu, User, TrendingUp,Search } from "lucide-react";
+import { Menu, User, TrendingUp,Search, Bell } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../components/buyer/Sidebar";
 import { getBuyerProfile } from "../api/profile";
@@ -64,6 +64,16 @@ const BuyerSideBarLayout: React.FC = () => {
 
             {/* RIGHT: Account + Cart */}
             <div className="flex items-center gap-4">
+               <button
+                onClick={() => navigate("/farmer/alerts")}
+                className="relative p-2 rounded-lg hover:bg-gray-100"
+                title="Alerts"
+              >
+                <Bell size={22} className="text-gray-700" />
+
+                {/* optional red dot (show when there are unseen alerts) */}
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
                <button 
                 onClick={() => navigate("/buyer/profile")}
                 className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">

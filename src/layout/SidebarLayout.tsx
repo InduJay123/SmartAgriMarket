@@ -53,7 +53,7 @@ const SideBarLayout: React.FC = () => {
 
               {/* 🔔 Alerts Bell */}
               <button
-                onClick={() => navigate("/farmer/alerts")}
+                onClick={() => navigate("/buyer/alerts")}
                 className="relative p-2 rounded-lg hover:bg-gray-100"
                 title="Alerts"
               >

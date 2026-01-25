@@ -119,13 +119,10 @@ function ProfileInfo() {
   return (
     <div className="space-y-4">
       {/* Personal Information */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <CreditCard size={28} className="text-green-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Profile Information</h2>
+      <div>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 Profile Settings</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">Manage your farm profile and preferences</p>
         </div>
-        <p className="text-gray-600">Manage your profile and market details</p>
-      </div>
 
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>

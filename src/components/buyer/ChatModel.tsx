@@ -18,7 +18,7 @@ const ChatModal = ({ farmerUserId, onClose }: ChatModalProps) => {
           <X />
         </button>
 
-        <h3 className="font-semibold text-lg mb-2">Chat with Farmer</h3>
+        <h3 className="font-semibold text-lg mb-2">Chat with Buyer</h3>
 
         <Chat otherUserId={farmerUserId} />
       </div>

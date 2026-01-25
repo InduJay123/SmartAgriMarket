@@ -61,7 +61,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
     localStorage.setItem("accessToken", response.data.access);
     localStorage.setItem("refreshToken", response.data.refresh);
     localStorage.setItem("userRole", response.data.user.role);
-
+    localStorage.setItem("user_id", String(response.data.user.id));
     await saveFcmToken();
 
     switch (response.data.user.role) {

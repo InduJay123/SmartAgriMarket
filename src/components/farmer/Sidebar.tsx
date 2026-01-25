@@ -14,7 +14,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     const menuItems = [
         { name: "Home", icon: Home, path: "/farmer/dashboard" },
-        { name: "AI Insights", icon: TrendingUp, path: "/farmer/analytics" },
+        { name: "AI Insights", icon: TrendingUp, path: "/farmer/ai-insights" },
         { name: "Add Crops", icon: PlusCircle, path: "/farmer/addcrops" },
         { name: "Daily Price List", icon: FileSpreadsheet, path: "/farmer/pricelist" },
         { name: "Messages", icon: MessagesSquare, path: "/farmer/messages" },

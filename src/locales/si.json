@@ -70,6 +70,20 @@
     "Password": "මුරපදය",
     "Forgot password?": "මුරපදය අමතක වුණාද?",
     "Don’t have an account?": "ගිණුමක් නැද්ද?",
-    " Sign Up": " ලියාපදිංචි වන්න"
+    " Sign Up": " ලියාපදිංචි වන්න",
+    "Create an account": "ගිණුමක් සාදන්න",
+    "Confirm your password": "මුරපදය තහවුරු කරන්න",
+    "Create a password": "මුරපදයක් සාදන්න",
+    "Farm Location": "ගොවිපළ ස්ථානය",
+    "City, District": "නගරය, දිස්ත්‍රික්කය",
+    "Already have an account?": "දැනටමත් ගිණුමක් තිබේද?",
+    "Username": "පරිශීලක නාමය",
+    "Email": "ඊමේල්",
+    "Mobile Number": "ජංගම දුරකථන අංකය",
+    "Enter your full name": "ඔබේ සම්පූර්ණ නම ඇතුල් කරන්න",
+    "Choose a username": "පරිශීලක නාමයක් තෝරන්න",
+    "Enter your mobile number": "ඔබේ ජංගම දුරකථන අංකය ඇතුල් කරන්න",
+    "Create Account": "ගිණුම සාදන්න",
+    "10 digits": "අංක 10 ක් අවශ්‍යයි"
 
 }

@@ -72,5 +72,23 @@
     "Forgot password?": "Forgot password?",
     
     "Don’t have an account?": "Don’t have an account?",
-    " Sign Up": " Sign Up"
+    " Sign Up": " Sign Up",
+    "Create an account": "Create an account",
+    "Enter your details to create your account": "Enter your details to create your account",
+   
+    "Create a password": "Create a password",
+    "Confirm Password": "Confirm Password",
+    "Confirm your password": "Confirm your password",
+    "Farm Location": "Farm Location",
+    "City, District": "City, District",
+    "Already have an account?": "Already have an account?",
+   
+    "Username": "Username",
+    "Email": "Email",
+    "Role": "Role",
+    "Mobile Number": "Mobile Number",
+    "Enter your full name": "Enter your full name",
+    "Choose a username": "Choose a username",
+    "Create Account": "Create Account",
+    "10 digits": "10 digits"
 }

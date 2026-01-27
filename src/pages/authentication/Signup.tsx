@@ -3,12 +3,17 @@ import { UserPlus, User, Mail, Lock, Phone, MapPin } from "lucide-react";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import type { SignupFormData, UserRole } from "../../types/auth";
 import rightimg from "../../assets/man-seller-sells-fresh-organic-fruit-vegetable-street-shop-seasonal-outdoor-farmer-local-market_575670-344.avif"
+import { useTranslation } from "react-i18next";
 
 interface SignupProps {
   onNavigateToLogin: () => void;
 }
 
 export default function Signup({ onNavigateToLogin }: SignupProps) {
+
+  
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
 
   const [formData, setFormData] = useState<SignupFormData>({
     fullName: "",
@@ -67,17 +72,17 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
   };
 
   return ( 
-      <div className="w-full bg-white grid grid-cols-1 md:grid-cols-2 overflow-hidden py-10 px-16">
+      <div className={`w-full bg-white grid grid-cols-1 md:grid-cols-2 overflow-hidden py-10 px-16 ${isSinhala ? "font-sinhala text-2xl" : "font-sans"}`}>
         {/* LEFT SIDE – SIGNUP FORM */}
         <div className="p-10">
-          <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
-          <p className="text-gray-600 mt-1">
-            Smart Agriculture Market Management System
+          <h1 className="text-3xl font-bold text-gray-800">{t("Create Account")}</h1>
+          <p className={`text-gray-600 mt-1 ${isSinhala ? "font-sans" : "font-sans"}`}>
+            {t("Smart Agriculture Market Management System")}
           </p>
 
           <div className="mt-6">
             <label className="text-sm font-medium text-gray-700">
-              Select Your Role
+              {t("Select Your Role")}
             </label>
 
             <RoleSelector
@@ -90,9 +95,9 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
 
             {/* FULL NAME */}
             <InputField
-              label="Full Name"
+              label={t("Full Name")}
               icon={User}
-              placeholder="Enter your full name"
+              placeholder={t("Enter your full name")}
               value={formData.fullName}
               onChange={(v: any) => setFormData({ ...formData, fullName: v })}
               error={errors.fullName}
@@ -100,9 +105,9 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
 
             {/* USERNAME */}
             <InputField
-              label="Username"
+              label={t("Username")}
               icon={User}
-              placeholder="Choose a username"
+              placeholder={t("Choose a username")}
               value={formData.username}
               onChange={(v: any) => setFormData({ ...formData, username: v })}
               error={errors.username}
@@ -111,18 +116,18 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             {/* EMAIL + PHONE */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
-                label="Email"
+                label={t("Email")}
                 icon={Mail}
-                placeholder="Enter your email"
+                placeholder={t("Enter your email")}
                 value={formData.email}
                 onChange={(v: any) => setFormData({ ...formData, email: v })}
                 error={errors.email}
               />
 
               <InputField
-                label="Mobile Number"
+                label={t("Mobile Number")}
                 icon={Phone}
-                placeholder="10–15 digits"
+                placeholder={t("10 digits")}
                 value={formData.mobileNumber}
                 onChange={(v: any) => setFormData({ ...formData, mobileNumber: v })}
                 error={errors.mobileNumber}
@@ -131,10 +136,10 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
 
             {/* PASSWORD */}
             <InputField
-              label="Password"
+              label={t("Password")}
               icon={Lock}
               type="password"
-              placeholder="Create a password"
+              placeholder={t("Create a password")}
               value={formData.password}
               onChange={(v: any) => setFormData({ ...formData, password: v })}
               error={errors.password}
@@ -142,10 +147,10 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
 
             {/* CONFIRM PASSWORD */}
             <InputField
-              label="Confirm Password"
+              label={t("Confirm Password")}
               icon={Lock}
               type="password"
-              placeholder="Confirm your password"
+              placeholder={t("Confirm your password")}
               value={formData.confirmPassword}
               onChange={(v: any) =>
                 setFormData({ ...formData, confirmPassword: v })
@@ -156,9 +161,9 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             {/* FARM LOCATION – only for farmers */}
             {formData.role === "farmer" && (
               <InputField
-                label="Farm Location"
+                label={t("Farm Location")}
                 icon={MapPin}
-                placeholder="City, District"
+                placeholder={t("City, District")}
                 value={formData.farmLocation}
                 onChange={(v: any) => setFormData({ ...formData, farmLocation: v })}
                 error={errors.farmLocation}
@@ -168,17 +173,17 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             <button 
               className="w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
               <UserPlus className="inline w-5 h-5 mr-2" />
-              Sign Up
+              {t("Sign Up")}
             </button>
           </form>
 
           <p className="text-sm text-gray-600 mt-4 text-center">
-            Already have an account?{" "}
+            {t("Already have an account?")}{" "}
             <button
               onClick={onNavigateToLogin}
               className="text-green-700 font-semibold hover:underline"
             >
-              Login
+              {t("Login")}
             </button>
           </p>
         </div>

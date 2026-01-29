@@ -109,7 +109,7 @@ function App() {
         <Route path='/' element = {<Home/>} />
         <Route path='/farmer' element = {<SidebarLayout/>} >
           <Route path="dashboard" element={<FarmerDashboard/>}/>
-          <Route path='analytics' element={<AiInsights/>} />
+          <Route path='ai-insights' element={<AiInsights/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
           <Route path='pricelist' element={<PriceList />}/>
           <Route path='messages' element={<FarmerMessages/>}/>

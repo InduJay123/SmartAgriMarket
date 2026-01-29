@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CreditCard, MapPin, Phone, Mail, User, Save, Camera } from 'lucide-react';
+import { CreditCard, MapPin, Phone, Mail, User, Save} from 'lucide-react';
 import { getBuyerProfile, updateBuyerProfile } from '../../api/profile';
 import ProfileImageUpload from '../../components/buyer/ProfileImageUpload';
 
@@ -12,17 +12,13 @@ interface BuyerProfile {
   company_name?: string;
   company_email?: string;
   company_phone?: string;
+  profile_image: string;
   address?: string;
   city?: string;
   postal_code?: string;
-  profile_image?: string;
 }
 
-interface ProfileInfoProps {
-  buyerId: string;
-}
-
-function ProfileInfo({ buyerId }: ProfileInfoProps) {
+function ProfileInfo() {
   const [profile, setProfile] = useState<BuyerProfile>({
     user_id: '',
     fullname: '',
@@ -32,41 +28,43 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
     company_name: '',
     company_email: '',
     company_phone: '',
+    profile_image: '',
     address: '',
     city: '',
     postal_code: '',
-    profile_image: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   const normalizeProfile = (data: any) => ({
-  user_id: data.user_id ?? '',
-  fullname: data.fullname ?? '',
-  username: data.username ?? '',
-  email: data.email ?? '',
-  phone: data.phone ?? '',
+    user_id: data.id ?? '',
+    fullname: data.buyer_details?.fullname ?? '',
+    username: data.username ?? '',
+    email: data.email ?? '',
+    phone: data.phone ?? '',
 
-  company_name: data.company_name ?? '',
-  company_email: data.company_email ?? '',
-  company_phone: data.company_phone ?? '',
-  address: data.address ?? '',
-  city: data.city ?? '',
-  postal_code: data.postal_code ?? '',
-  profile_image: data.profile_image ?? '',
-});
+    company_name: data.buyer_details?.company_name ?? '',
+    company_email: data.buyer_details?.company_email ?? '',
+    company_phone: data.buyer_details?.company_phone ?? '',
 
-  // Fetch profile from backend
+    address: data.buyer_details?.address ?? '',
+    city: data.buyer_details?.city ?? '',
+    postal_code: data.buyer_details?.postal_code ?? '',
+
+    profile_image: data.buyer_details?.profile_image ?? '',
+  });
+
  useEffect(() => {
   async function fetchProfile() {
     setLoading(true);
     const data = await getBuyerProfile();
 
     if (data) {
-      setProfile(data);
+      setProfile(normalizeProfile(data));
     } else {
       setMessage("Failed to load profile");
+      setLoading(false);
     }
 
     setLoading(false);
@@ -76,23 +74,35 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
 }, []);
 
 
-  // Handle input changes
   const handleChange = (field: keyof BuyerProfile, value: string) => {
     setProfile(prev => ({ ...prev, [field]: value }));
   };
 
-  // Save profile to backend
   const handleSave = async () => {
     setSaving(true);
     setMessage('');
     try {
-      const data = await updateBuyerProfile(profile);
+      const payload = {
+        fullname: profile.fullname,
+        username: profile.username,
+        email: profile.email,
+        phone: profile.phone,
+
+        company_name: profile.company_name || "",
+        company_email: profile.company_email || "",
+        company_phone: profile.company_phone || "",
+
+        address: profile.address || "",
+        city: profile.city || "",
+        postal_code: profile.postal_code || "",
+      };
+      const data = await updateBuyerProfile(payload);
       setProfile(normalizeProfile(data));
       setMessage('Profile updated successfully!');
-    } catch (error) {
+    }catch (error) {
       console.error('Error updating profile:', error);
       setMessage('Failed to update profile.');
-    } finally {
+    }finally {
       setSaving(false);
     }
   };
@@ -109,71 +119,71 @@ function ProfileInfo({ buyerId }: ProfileInfoProps) {
   return (
     <div className="space-y-4">
       {/* Personal Information */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <CreditCard size={28} className="text-green-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Profile Information</h2>
+      <div>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 Profile Settings</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">Manage your farm profile and preferences</p>
         </div>
-        <p className="text-gray-600">Manage your profile and market details</p>
-      </div>
 
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>
-        <div className="space-y-5">
-          <ProfileImageUpload  
-            image={profile.profile_image}
-            onChange={(url) =>
-              setProfile((prev) => ({
-                ...prev,
-                profile_image: url,
-              }))
-            }/>
+        <div className='flex flex-wrap items-center gap-10'>
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-              <User size={16} />
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={profile.fullname}
-              onChange={(e) => handleChange('fullname', e.target.value)}
-              placeholder="Enter your full name"
-              className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Mail size={16} />
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={profile.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                placeholder="your.email@example.com"
-                className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-              />
+            <ProfileImageUpload  
+              image={profile.profile_image}
+              onChange={(url) =>
+                setProfile((prev) => ({
+                  ...prev,
+                  profile_image: url,
+                }))
+              }/>    
             </div>
+            <div className='space-y-4'>
+              <div className="w-full">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <User size={16} />
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={profile.fullname}
+                  onChange={(e) => handleChange('fullname', e.target.value)}
+                  placeholder="Enter your full name"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition box-border"
+                />
+              </div>
 
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Phone size={16} />
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={profile.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+94 71 2345678"
-                className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <Mail size={16} />
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={profile.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="your.email@example.com"
+                    className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <Phone size={16} />
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={profile.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    placeholder="+94 71 2345678"
+                    className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
       {/* Market / Company Information */}
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Market / Company Information</h3>

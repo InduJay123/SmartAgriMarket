@@ -1,10 +1,8 @@
-import axios from "axios";
-
-const API_BASE = "http://127.0.0.1:8000/api/reviews";
+import api from "./api";
 
 export const getReviews = async (productId:  number) => {
     try{
-        const response = await axios.get(`${API_BASE}/product/${productId}/`)
+        const response = await api(`/reviews/product/${productId}/`)
         console.log(response.data);
         return response.data;
     }catch(err){
@@ -13,11 +11,10 @@ export const getReviews = async (productId:  number) => {
     }
 };
 
-export const addReview = async (productId: number, userId: number, rating: number, comment: string) => {
+export const addReview = async (productId: number, rating: number, comment: string) => {
     try {
-        const response = await axios.post(`${API_BASE}/add/`, {
+        const response = await api.post(`/reviews/add/`, {
             product: productId,
-            user: userId,
             rating,
             comment
         });
@@ -29,8 +26,19 @@ export const addReview = async (productId: number, userId: number, rating: numbe
 };
 
 export const getReviewSummary = async (marketId: number) => {
-  const res = await axios.get(
-    `${API_BASE}/summary/${marketId}/`
+  const res = await api.get(
+    `/reviews/summary/${marketId}/`
   );
   return res.data;
+};
+
+
+export const getFarmerRatingSummary = async (farmerId: number) => {
+  try {
+    const res = await api.get(`/reviews/farmer/summary/${farmerId}/`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching farmer rating summary:", err);
+    return null;
+  }
 };

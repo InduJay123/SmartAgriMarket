@@ -47,7 +47,7 @@ const FarmerProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, on
       setPreview(publicUrl); // update local preview
       onChange(publicUrl);   // update parent
 
-      await updateFarmerProfile(1, { profile_image: publicUrl });
+      await updateFarmerProfile( { profile_image: publicUrl });
     } catch (err: any) {
         console.error('Image upload failed:', err);
         setError('Image upload failed. Please try again.');

@@ -1,5 +1,5 @@
 import { useEffect, useState} from "react";
-import { Menu, User, TrendingUp,Search } from "lucide-react";
+import { Menu, User, TrendingUp,Search, Bell } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../components/buyer/Sidebar";
 import { getBuyerProfile } from "../api/profile";
@@ -11,13 +11,15 @@ const BuyerSideBarLayout: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBuyer = async () => {
-      const userId = 1; // replace with actual logged-in user ID
-      const data = await getBuyerProfile(userId);
-      setBuyer(data);
-    };
-    fetchBuyer();
-  }, []);
+  const fetchBuyer = async () => {
+    const data = await getBuyerProfile();
+    setBuyer({
+      fullname: data?.buyer_details?.fullname,
+      profile_image: data?.buyer_details?.profile_image,
+    });
+  };
+  fetchBuyer();
+}, []);
 
   return (
     <div className="w-screen bg-gray-50 flex flex-col justify-between">
@@ -62,6 +64,16 @@ const BuyerSideBarLayout: React.FC = () => {
 
             {/* RIGHT: Account + Cart */}
             <div className="flex items-center gap-4">
+               <button
+                onClick={() => navigate("/farmer/alerts")}
+                className="relative p-2 rounded-lg hover:bg-gray-100"
+                title="Alerts"
+              >
+                <Bell size={22} className="text-gray-700" />
+
+                {/* optional red dot (show when there are unseen alerts) */}
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
                <button 
                 onClick={() => navigate("/buyer/profile")}
                 className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
@@ -84,7 +96,7 @@ const BuyerSideBarLayout: React.FC = () => {
       {/* PAGE CONTENT */}
       <div className="flex flex-1 min-h-0">
         <Sidebar isOpen={showSidebar} onClose={() => setShowSidebar(false)} />
-        <main className="flex-1 overflow-auto min-h-0 pl-10 pr-40">
+        <main className="flex-1 overflow-auto min-h-0 ml-10 pr-40">
           <Outlet />
         </main>
       </div>   

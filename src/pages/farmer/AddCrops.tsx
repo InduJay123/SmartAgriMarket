@@ -8,6 +8,7 @@ import ChooseCrop from "../../components/farmer/ChooseCrop";
 import Details from "../../components/farmer/Details";
 import Pricing from "../../components/farmer/Pricing";
 import AddLocation from "../../components/farmer/AddLocation";
+import { postFormData } from "../../api/farmer/farmer";
 
 const AddCrops: React.FC = () => {
   const navigate = useNavigate();
@@ -36,13 +37,19 @@ const AddCrops: React.FC = () => {
       const cropName = (formData.crop?.trim() || formData.customCrop?.trim() || "").toString();
       cropData.append("crop_name", cropName);
       cropData.append("description", formData.additionalDetails || "");
-      cropData.append("image", formData.cropImage || "");
+      if (formData.cropImage) cropData.append("image", formData.cropImage);
       cropData.append("category", "General");
 
-      const cropResponse = await axios.post("http://127.0.0.1:8000/api/crops/", cropData, { headers: { "Content-Type": "multipart/form-data" } });
-      const cropId = cropResponse.data.crop_id;
-      if(!cropId){ alert("Crop creation failed"); return; }
-
+      const cropResponse = await postFormData("/marketplace/crops/", cropData, { headers: { "Content-Type": "multipart/form-data" } });
+      
+      const cropId = cropResponse.data.id || cropResponse.data.crop_id;
+      if (!cropId) {
+        console.error("Crop creation failed:", cropResponse.data);
+        alert("Crop creation failed. Please try again.");
+        return;
+      }
+      console.log("Using crop ID:", cropId);
+      console.log("Crop created successfully:", cropResponse.data);
       // Marketplace creation
       const marketplaceData = new FormData();
       marketplaceData.append("crop", String(cropId));
@@ -50,18 +57,20 @@ const AddCrops: React.FC = () => {
       marketplaceData.append("unit", formData.unit || "kg");
       marketplaceData.append("predicted_date", String(formData.predictDate));
       marketplaceData.append("quantity", String(formData.quantity));
-      marketplaceData.append("farming_method", String(formData.farmingMethod));
+      marketplaceData.append("farming_method", 
+        formData.farmingMethod ? String(formData.farmingMethod) : "Unknown"
+      );
       marketplaceData.append("farming_season", String(formData.farmingSeason));
       marketplaceData.append("additional_details", String(formData.additionalDetails));
       marketplaceData.append("region", String(formData.region));
       marketplaceData.append("district", String(formData.district));
       marketplaceData.append("status", "Available");
-      marketplaceData.append("farmer_id", "1");
-      if(formData.image) marketplaceData.append("image", formData.image.toString()); // Supabase URL
+      if(formData.image) marketplaceData.append("image", formData.image.toString());
+      
+      await postFormData("/marketplace/marketplace/", marketplaceData);
 
-      const marketResponse = await axios.post("http://127.0.0.1:8000/api/marketplace/", marketplaceData, { headers: { "Content-Type": "multipart/form-data" } });
       alert("Success! Your crop has been added successfully!");
-      setTimeout(() => navigate("/farmer/addcrops"), 1500);
+      setTimeout(() => navigate("/farmer/dashboard/"), 1500);
 
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) console.error(error.response?.data);

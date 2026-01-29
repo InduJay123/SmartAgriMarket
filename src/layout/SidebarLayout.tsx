@@ -1,13 +1,27 @@
-// FarmerDashboardLayout.tsx
-import { useState } from "react";
-import { Menu, User, Bell } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Bell, Menu, User } from "lucide-react";
 import Sidebar from "../components/farmer/Sidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import emoji from "emoji-dictionary";
+import { getFarmerProfile } from "../api/farmer/farmerProfile";
 
 const SideBarLayout: React.FC = () => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [farmer, setFarmer] = useState<{ fullname: string; first_name: string , profile_image: string } | null>(null);
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    const fetchFarmer = async () => {
+      const data = await getFarmerProfile();
+      setFarmer({
+        fullname: data?.farmer_details?.fullname,
+        first_name: data?.first_name,
+        profile_image: data?.farmer_details?.profile_image,
+      });
+    };
+    fetchFarmer();
+  }, []);
+ 
   return (
     <div className="w-screen bg-gray-50 flex flex-col justify-between ">
 
@@ -29,21 +43,46 @@ const SideBarLayout: React.FC = () => {
                 <p className="text-3xl">{emoji.getUnicode("ear_of_rice")}</p>
                 <div>
                   <h1 className="text-xl font-bold text-gray-900">Farmer Portal</h1>
-                  <p className="text-xs text-gray-500">Neha's Farm</p>
+                  <p className="text-xs text-gray-500">{farmer?.first_name || "Account"}'s Farm</p>
                 </div>
               </div>
             </div>
 
             {/* RIGHT ICONS */}
-            <div className="flex items-center gap-4">
-              <button className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-                <Bell size={22} />
+            <div className="flex items-center gap-3">
+
+              {/* 🔔 Alerts Bell */}
+              <button
+                onClick={() => navigate("/buyer/alerts")}
+                className="relative p-2 rounded-lg hover:bg-gray-100"
+                title="Alerts"
+              >
+                <Bell size={22} className="text-gray-700" />
+
+                {/* optional red dot (show when there are unseen alerts) */}
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <button className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-                <User size={22} />
+
+              {/* 👤 Profile */}
+              <button 
+                onClick={() => navigate("/farmer/profile")}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              >
+                {farmer?.profile_image ? (
+                  <img
+                    src={farmer.profile_image}
+                    alt="Profile"
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <User size={20} />
+                )}
+                <span className="text-sm font-medium">
+                  {farmer?.fullname || "Account"}
+                </span>
               </button>
             </div>
-
+            
           </div>
         </div>
       </header>

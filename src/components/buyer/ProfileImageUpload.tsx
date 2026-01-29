@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Camera, Trash2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import avatar from '../../assets/avatar.svg?url'
-import { deleteBuyerProfileImage } from '../../api/profile';
+import { deleteBuyerProfileImage, updateBuyerProfile } from '../../api/profile';
 
 interface ProfileImageUploadProps {
   image?: string; // current image URL
@@ -16,9 +16,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-
     const file = e.target.files[0];
-
     setUploading(true);
     setError('');
 
@@ -46,6 +44,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
 
       setPreview(publicUrl); // update local preview
       onChange(publicUrl);   // update parent
+      await updateBuyerProfile({ profile_image: publicUrl });
+      
     } catch (err: any) {
       console.error('Image upload failed:', err);
       setError('Image upload failed. Please try again.');
@@ -63,8 +63,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
         }
       }
       await deleteBuyerProfileImage();
-
-      // 3️⃣ Update UI
+      await updateBuyerProfile({ profile_image: null });
       setPreview('');
       onChange('');
 
@@ -72,18 +71,16 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
       console.error('Failed to remove profile image:', err);
       setError('Failed to remove image');
     }
-
     setPreview('');
     onChange('');
   };
 
   return (
-    <div className="relative w-24 h-24 group">
-      {/* Profile image or default avatar */}
+    <div className="relative group">
       <img
-        src={preview || avatar} // replace with your avatar image path
+        src={preview || avatar}
         alt="Profile"
-        className="w-24 h-24 object-cover rounded-full border border-gray-300"
+        className="w-28 h-28 object-cover rounded-full border border-gray-300"
       />
 
       {/* Edit overlay on hover */}

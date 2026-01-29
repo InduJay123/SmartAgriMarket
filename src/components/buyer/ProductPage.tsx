@@ -37,7 +37,7 @@ function ProductPage({ products, addToCart, loading }: ProductPageProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <PriceRangeFilter
         priceRange={priceRange}
         setPriceRange={setPriceRange}

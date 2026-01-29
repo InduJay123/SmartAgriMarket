@@ -19,9 +19,27 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
     additional_details: crop.additional_details || ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const getSeason = (dateStr: string) => {
+    if (!dateStr) return "Unknown";
+    const date = new Date(dateStr);
+    const month = date.getMonth() + 1; // JS months are 0-indexed
+
+    if (month >= 5 && month <= 8) {
+        return "Yala";
+    } else {
+        return "Maha";
+    }
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+      if (name === "predicted_date") {
+          const season = getSeason(value);
+          setFormData({ ...formData, predicted_date: value, farming_season: season });
+      } else {
+          setFormData({ ...formData, [name]: value });
+      }};
 
   const handleSave = async () => {
     try {
@@ -37,7 +55,7 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
         image: image,
         additional_details: formData.additional_details || ""
       };
-
+      
       await updateCrop(crop.market_id, payload);
 
       alert("Crop updated successfully!");
@@ -68,22 +86,16 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
 
         {/* Crop Name */}
         <div className="mb-2">
-          <label className="block mb-1 font-semibold text-gray-800">Crop Name</label>
-          <input type="text" value={crop.crop_name} readOnly className="w-full border p-2 rounded-xl text-sm text-gray-600" />
-        </div>
-
-        {/* Quantity */}
-        <div className="mb-2">
-          <label className="block mb-1 font-semibold text-gray-800">Quantity</label>
-          <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
-        </div>
-
-        {/* Price & Unit */}
+          <label className="block mb-1 font-semibold text-gray-800">Crop Name: {crop.crop_name}</label>
+       </div>
+        
         <div className="grid grid-cols-2 gap-4">
+          {/* Quantity */}
           <div className="mb-2">
-            <label className="block mb-1 font-semibold text-gray-800">Price per kg (Rs.)</label>
-            <input type="number" name="price" value={formData.price} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
+            <label className="block mb-1 font-semibold text-gray-800">Quantity</label>
+            <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
           </div>
+
           <div className="mb-2">
             <label className="block mb-1 font-semibold text-gray-800">Unit</label>
             <select name="unit" value={formData.unit} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm">
@@ -93,25 +105,32 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
             </select>
           </div>
         </div>
-
-        {/* Predicted Date */}
+        {/* Price & Unit */}
         <div className="mb-2">
-          <label className="block mb-1 font-semibold text-gray-800">Expected Harvest Date</label>
-          <input type="date" name="predicted_date" value={formData.predicted_date} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
+            <label className="block mb-1 font-semibold text-gray-800">Price per kg (Rs.)</label>
+            <input type="number" name="price" value={formData.price} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
+           {/* Predicted Date */}
+          <div className="mb-2">
+            <label className="block mb-1 font-semibold text-gray-800">Expected Harvest Date</label>
+            <input type="date" name="predicted_date" value={formData.predicted_date} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
+          </div>
           {/* Season */}
           <div className="mb-2">
             <label className="block mb-1 font-semibold text-gray-800">Season</label>
-            <select name="farming_season" value={formData.farming_season} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm">
-              <option value="Yala">Yala</option>
-              <option value="Maha">Maha</option>
-              <option value="Unknown">Unknown</option>
-            </select>
+            <input
+              type="text"
+              name="farming_season"
+              value={formData.farming_season}
+              readOnly
+              className="w-full border p-2 rounded-xl text-sm bg-gray-100"
+            />
           </div>
+        </div>
 
-          {/* Status */}
+        {/* Status */}
           <div className="mb-4">
             <label className="block mb-1 font-semibold text-gray-800">Status</label>
             <select name="status" value={formData.status} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm">
@@ -120,7 +139,6 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
               <option value="Sold">Sold</option>
             </select>
           </div>
-        </div>
 
         <div className="mb-4">
           <label className="block mb-1 font-semibold text-gray-800">Additional Details</label>

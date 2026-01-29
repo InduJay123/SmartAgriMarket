@@ -17,11 +17,11 @@ const StarRating = ({
   };
 
   return (
-    <div className="flex items-center gap-1 cursor-pointer">
+    <div className="flex items-center ml-12 gap-1 cursor-pointer">
       {[1, 2, 3, 4, 5].map((star) => (
         <Star
           key={star}
-          size={24}
+          size={20}
           className={`transition-colors ${
             star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
           }`}

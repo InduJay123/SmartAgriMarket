@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { UserPlus, User, Mail, Lock, Phone, MapPin } from "lucide-react";
+import { UserPlus, User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from "lucide-react";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import type { SignupFormData, UserRole } from "../../types/auth";
 import rightimg from "../../assets/man-seller-sells-fresh-organic-fruit-vegetable-street-shop-seasonal-outdoor-farmer-local-market_575670-344.avif"
 import { useTranslation } from "react-i18next";
+import { signupUser } from "../../api/auth";
 
 interface SignupProps {
   onNavigateToLogin: () => void;
@@ -26,7 +27,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     farmLocation: "",
   });
 
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState<
     Partial<Record<keyof SignupFormData, string>>
   >({});
@@ -64,10 +66,34 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Signup submitted:", formData);
+    if (!validateForm()) return;
+
+    try {
+      const payload: any = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role === "farmer" ? "Farmer" : "Buyer",
+        fullname: formData.fullName,
+        contact_number: formData.mobileNumber,
+      };
+
+      if (formData.role === "farmer") {
+        payload.farm_name = formData.farmLocation;
+      }
+
+      const response = await signupUser(payload);
+
+
+      console.log("Signup successful:", response.data);
+      alert("Account created successfully!");
+      onNavigateToLogin();
+
+    } catch (error: any) {
+        console.error(error.response?.data || error.message);
+        alert("Signup failed: " + JSON.stringify(error.response?.data));
     }
   };
 
@@ -128,6 +154,7 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
                 label={t("Mobile Number")}
                 icon={Phone}
                 placeholder={t("10 digits")}
+                placeholder="10 digits"
                 value={formData.mobileNumber}
                 onChange={(v: any) => setFormData({ ...formData, mobileNumber: v })}
                 error={errors.mobileNumber}
@@ -144,6 +171,24 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
               onChange={(v: any) => setFormData({ ...formData, password: v })}
               error={errors.password}
             />
+            <div className="relative">
+              <InputField
+                label="Password"
+                type={showPassword ? "text" : "password"} // toggle type
+                icon={Lock}
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={(v: any) => setFormData({ ...formData, password: v })}
+                error={errors.password}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/6 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
 
             {/* CONFIRM PASSWORD */}
             <InputField
@@ -158,12 +203,34 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
               error={errors.confirmPassword}
             />
 
+            <div className="relative mt-4">
+              <InputField
+                label="Confirm Password"
+                type={showConfirm ? "text" : "password"}
+                icon={Lock}
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={(v: any) =>
+                  setFormData({ ...formData, confirmPassword: v })
+                }
+                error={errors.confirmPassword}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/6 text-gray-500"
+                onClick={() => setShowConfirm(!showConfirm)}
+              >
+                {showConfirm ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
             {/* FARM LOCATION – only for farmers */}
             {formData.role === "farmer" && (
               <InputField
                 label={t("Farm Location")}
+                label="Farm Name"
                 icon={MapPin}
                 placeholder={t("City, District")}
+                placeholder="Farm Name"
                 value={formData.farmLocation}
                 onChange={(v: any) => setFormData({ ...formData, farmLocation: v })}
                 error={errors.farmLocation}

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { X, Star } from "lucide-react";
-import { getProductReviews } from "../../api/farmer/reviews";
-import { getReviewSummary } from "../../api/reviews";
+import { getReviews, getReviewSummary } from "../../api/reviews";
 
 interface Review {
   id: number;
@@ -27,7 +26,7 @@ const ReviewPopup = ({ productId, onClose }: ReviewPopupProps) => {
   const fetchData = async () => {
     try {
       const [reviewsData, summaryData] = await Promise.all([
-        getProductReviews(productId),
+        getReviews(productId),
         getReviewSummary(productId),
       ]);
 

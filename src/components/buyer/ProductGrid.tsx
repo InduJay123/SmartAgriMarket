@@ -1,16 +1,14 @@
-import { Eye, ShoppingCart, Star } from 'lucide-react';
+import { Eye, Star } from 'lucide-react';
 import type { Product } from '../../@types/Product';
 import carbageImg from '../../assets/carbage.png';
 import { useEffect, useState } from 'react';
 import ProductPopup from './ProductPopup';
-import PlaceOrder from './PlaceOrder';
 import { fetchFavourites, toggleFavourite } from '../../api/favourites';
 import { getReviewSummary } from '../../api/reviews';
 import avatar from '../../assets/avatar.svg?url'
 
 interface ProductGridProps {
   products: Product[];
-
 }
 
 function ProductGrid({ products }: ProductGridProps) {
@@ -62,15 +60,15 @@ function ProductGrid({ products }: ProductGridProps) {
     loadFavourites();
   }, []);
   
-  const handleToggleFavourite = async (productId: number) => {
+  const handleToggleFavourite = async (market_id: number) => {
     try {
-      const res = await toggleFavourite(productId);
+      const res = await toggleFavourite(market_id);
       setFavourites(prev =>
-        prev.includes(productId)
-          ? prev.filter(id => id !== productId)
-          : [...prev, productId]
+        prev.includes(market_id)
+          ? prev.filter(id => id !== market_id)
+          : [...prev, market_id]
       );
-      console.log(res.data.message);
+      console.log(res.message);
     } catch (err) {
       console.error(err);
     }
@@ -160,20 +158,15 @@ function ProductGrid({ products }: ProductGridProps) {
               </p>
 
             </div>
-
-            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              {product.additional_details || 'No description'}
-            </p>
-
             <div className="flex flex-wrap items-center justify-between mb-3">
-              <span className="text-2xl font-bold text-gray-900">
-                Rs.{product.price}
-              </span>
-
-              <span className="text-sm text-gray-500">
+              <span className="text-md font-bold text-gray-600">
                 Available:{' '}
-                <span className="font-semibold">{product.quantity}</span>/
-                {product.unit}
+                <span className="font-bold text-xl text-green-900">
+                  {product.quantity}/{product.unit}
+                </span>
+              </span>
+              <span className="text-sm font-semibold text-gray-600">
+                Rs.{product.price}
               </span>
             </div>
             <div className='flex gap-2'>
@@ -189,7 +182,17 @@ function ProductGrid({ products }: ProductGridProps) {
                 <Eye size={18} />
                 {product.quantity === 0 ? 'Out of Stock' : 'View'}    
               </button>
-             
+              {/*<button               
+                disabled={product.quantity === 0}
+                className={`w-full py-1.5 rounded-lg font-semibold flex items-center justify-center gap-2 ${
+                  product.quantity === 0
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-black text-white hover:bg-black/90  active:scale-95'
+                }`}
+              >
+                <ShoppingCart size={18} />
+                {product.quantity === 0 ? 'Out of Stock' : 'Buy'}      
+              </button>*/}
             </div>
           </div>
         </div>
@@ -208,12 +211,12 @@ function ProductGrid({ products }: ProductGridProps) {
         />
       )}
 
-      {orderProduct && (
+      {/*orderProduct && (
         <PlaceOrder
           product={orderProduct}
           onClose={() => setOrderProduct(null)}
         />
-      )}
+      )*/}
     </div>
 
   );

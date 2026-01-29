@@ -5,7 +5,6 @@ import FarmerProfileImageUpload from "../../components/farmer/FarmerProfileImage
 import { getFarmerProfile, updateFarmerProfile } from "../../api/farmer/farmerProfile";
 
 const FarmerProfileInfo:React.FC = () => {
-    const USER_ID = 1;
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         farmName: "",
@@ -25,15 +24,14 @@ const FarmerProfileInfo:React.FC = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const data = await getFarmerProfile(USER_ID);
+                const data = await getFarmerProfile();
                 
-
                 setFormData({
                     farmName: data.farmer_details?.farm_name || "",
-                    farmerName: data.fullname || "",
+                    farmerName: data.farmer_details?.fullname || "",
                     email: data.email || "",
                     contact: data.phone || "",
-                    region: data.region || "",
+                    region: data.farmer_details?.region || "",
                     address: data.farmer_details?.address || "",
                     about: data.farmer_details?.about || "",
                     profileImage: data.farmer_details?.profile_image || "",
@@ -74,7 +72,7 @@ const FarmerProfileInfo:React.FC = () => {
 
     const handleSave = async () => {
         try {
-            await updateFarmerProfile(USER_ID,{
+            await updateFarmerProfile({
                 fullname: formData.farmerName,
                 phone: formData.contact,
                 region: formData.region,
@@ -100,8 +98,10 @@ const FarmerProfileInfo:React.FC = () => {
 
     return(
         <div className="bg-gray-50 p-4">
-            <Header icon={SettingsIcon} title="Settings" subTitle="Manage your farm profile and preferences"/>
-            
+        <div>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 Profile Settings</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">Manage your farm profile and preferences</p>
+        </div>
             <div className="grid lg:grid-cols-2 gap-6 mt-6 mb-2">
                 <div className="flex flex-col bg-white p-6 w-full shadow-md rounded-md border border-gray-200 items-start justify-start">
                     <h2 className="text-lg font-bold mb-4">Farm Information</h2>
@@ -109,7 +109,7 @@ const FarmerProfileInfo:React.FC = () => {
                         image={formData.profileImage}
                         onChange={handleImageChange}
                     />
-                    <form className="flex flex-col items-start justify-start space-y-4">
+                    <form className="flex flex-col w-full items-start justify-start space-y-4">
                         <div className="flex flex-col items-start w-full">
                             <label className="text-gray-700 font-medium mb-1 block">Farm Name</label>
                             <input type="text" name="farmName" value={formData.farmName} onChange={handleChange}
@@ -144,69 +144,49 @@ const FarmerProfileInfo:React.FC = () => {
                     </form>
                 </div>
 
-               <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-md p-6 border border-gray-200 w-full max-w-md mx-auto">
+              <div className="flex-col">
+                 <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-md p-6 border border-gray-200 w-full max-w-md mx-auto">
                     <h2 className="text-lg font-bold mb-4">Notification Preferences</h2>
 
-                    <div className="flex justify-between items-center mb-2 w-full">
-                        <label htmlFor="priceAlert" className="text-black">Price Alerts</label>
-
+                    {[
+                    { name: "price_alert", label: "Price Alerts" },
+                    { name: "buyer_msg", label: "Buyer Messages" },
+                    { name: "harvest_rem", label: "Harvest Reminders" },
+                    { name: "market_update", label: "Market Updates" },
+                    ].map((item) => (
+                    <div key={item.name} className="flex items-center justify-between w-full mb-2">
+                        <label className="text-gray-800 w-2/3">{item.label}</label>
                         <input
-                            type="checkbox"
-                            name="price_alert"
-                            checked={formData.price_alert}
-                            onChange={handleChange}
+                        type="checkbox"
+                        name={item.name}
+                        checked={formData[item.name as keyof typeof formData] as boolean}
+                        onChange={handleChange}
+                        className="w-1/3 h-4"
                         />
                     </div>
-
-                    <div className="flex justify-between items-center mb-2 w-full">
-                        <label htmlFor="buyerMsg" className="text-black">Buyer Messages</label>
-                        <input
-                            type="checkbox"
-                            name="buyer_msg"
-                            checked={formData.buyer_msg}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center mb-2 w-full">
-                        <label htmlFor="harvestRem" className="text-black">Harvest Reminders</label>
-                        <input
-                            type="checkbox"
-                            name="harvest_rem"
-                            checked={formData.harvest_rem}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center mb-2 w-full">
-                        <label htmlFor="marketUpdate" className="text-black">Market Updates</label>
-                        <input
-                            type="checkbox"
-                            name="market_update"
-                            checked={formData.market_update}
-                            onChange={handleChange}
-                        />
-                    </div>
+                    ))}
                 </div>
 
-            </div>
+                <div className="flex flex-col items-start justify-start mt-6 mb-4 rounded-lg shadow-md border border-gray-200 p-4">
+                    <h2 className="text-lg font-bold mb-4">About Your Farm</h2>
+                    <textarea
+                        className="w-full bg-gray-100 border border-gray-200 rounded-md text-gray-600 text-sm mb-4 p-4 resize-none min-h-[240px] max-h-[240px] overflow-auto"
+                        value={formData.about}
+                        onChange={(e) => setFormData({ ...formData, about: e.target.value })}
+                        />
+                </div>
 
-            <div className="flex flex-col items-start justify-start mt-6 mb-4 rounded-lg shadow-md border border-gray-200 p-4">
-                <h2 className="text-lg font-bold mb-4">About Your Farm</h2>
-                <textarea
-                    className="w-full bg-gray-100 border border-gray-200 rounded-md text-gray-600 text-sm mb-4 p-4 resize-none min-h-[240px] max-h-[240px] overflow-auto"
-                    value={formData.about}
-                    onChange={(e) => setFormData({ ...formData, about: e.target.value })}
-                    />
-            </div>
-
-            <div className="flex justify-end w-full mt-4">
+                <div className="flex justify-end w-full">
                 <button 
                     onClick={handleSave}
                     className="flex items-end justify-end bg-green-700 text-white font-bold px-4 py-1 rounded-md hover:bg-green-800 transition-colors"> 
                     Save Changes
                 </button>      
             </div>
+              </div>
+            </div>
+
+            
         </div>
     )
 }

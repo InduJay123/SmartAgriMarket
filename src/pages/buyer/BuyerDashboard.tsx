@@ -4,6 +4,7 @@ import { Filter } from "lucide-react";
 import { fetchProducts } from "../../api/ProductService";
 import ProductPage from "../../components/buyer/ProductPage";
 import Cart from "../../components/buyer/Cart";
+import Chat from "../../components/Chat";
 
 interface CartItem {
   id: string;
@@ -19,7 +20,6 @@ function BuyerDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Fetch products from API and ensure price is a number
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -41,8 +41,13 @@ function BuyerDashboard() {
     getProducts();
   }, []);
 
-  // Categories for filter
-  const categories = ["all", ...Array.from(new Set(products.map((p) => p.category)))];
+  const seasons = ["all", "Yala", "Maha"];
+  const [selectedSeason, setSelectedSeason] = useState("all");
+
+  const filteredProducts = products.filter(p => 
+    selectedSeason === "all" || p.farming_season === selectedSeason
+  );
+
 
   // Add product to cart
   const handleAddToCart = (productId: number) => {
@@ -99,7 +104,7 @@ function BuyerDashboard() {
   }
 
   return (
-    <div className="space-y-6 pt-4">
+    <div className="space-y-4 pt-4">
       {/* Banner */}
       <div className="relative rounded-2xl overflow-hidden h-64">
         <img
@@ -118,33 +123,30 @@ function BuyerDashboard() {
 
       {/* Filter */}
       <div className="bg-white rounded-xl shadow-sm p-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-2">
           <h3 className="text-lg font-bold">Filter Products</h3>
           <Filter size={20} className="text-gray-500" />
         </div>
 
-        <label className="block text-sm font-medium mb-3">Categories</label>
+        <label className="block text-sm font-medium mb-3">Seasons</label>
         <div className="flex flex-wrap gap-2 mb-4">
-          {categories.map((cat, index) => (
-            <button
-              key={`${cat}-${index}`}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                selectedCategory === cat
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-700"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {seasons.map((season, index) => (
+          <button
+            key={`${season}-${index}`}
+            onClick={() => setSelectedSeason(season)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              selectedSeason === season
+                ? "bg-green-600 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {season}
+          </button>
+        ))}
         </div>
-
         {/* Product List */}
         <ProductPage
-          products={products.filter(
-            (p) => selectedCategory === "all" || p.category === selectedCategory
-          )}
+          products={filteredProducts}
           addToCart={handleAddToCart}
           loading={loading}
           cartItems={cartItems}

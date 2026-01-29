@@ -25,7 +25,6 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
   const { t, i18n } = useTranslation();
   const isSinhala = i18n.language === "si";
 
-   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -173,8 +172,6 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
                 className="text-sm text-green-700 hover:text-green-800">
-                  Forgot password?
-              <button className="text-sm text-green-700 hover:text-green-800">
                 {t("Forgot password?")}
               </button>
             </div>

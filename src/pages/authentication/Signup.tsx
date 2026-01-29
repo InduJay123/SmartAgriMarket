@@ -154,7 +154,6 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
                 label={t("Mobile Number")}
                 icon={Phone}
                 placeholder={t("10 digits")}
-                placeholder="10 digits"
                 value={formData.mobileNumber}
                 onChange={(v: any) => setFormData({ ...formData, mobileNumber: v })}
                 error={errors.mobileNumber}
@@ -162,21 +161,12 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             </div>
 
             {/* PASSWORD */}
-            <InputField
-              label={t("Password")}
-              icon={Lock}
-              type="password"
-              placeholder={t("Create a password")}
-              value={formData.password}
-              onChange={(v: any) => setFormData({ ...formData, password: v })}
-              error={errors.password}
-            />
             <div className="relative">
               <InputField
-                label="Password"
+                label={t("Password")}
                 type={showPassword ? "text" : "password"} // toggle type
                 icon={Lock}
-                placeholder="Create a password"
+                placeholder={t("Create a password")}
                 value={formData.password}
                 onChange={(v: any) => setFormData({ ...formData, password: v })}
                 error={errors.password}
@@ -191,24 +181,12 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             </div>
 
             {/* CONFIRM PASSWORD */}
-            <InputField
-              label={t("Confirm Password")}
-              icon={Lock}
-              type="password"
-              placeholder={t("Confirm your password")}
-              value={formData.confirmPassword}
-              onChange={(v: any) =>
-                setFormData({ ...formData, confirmPassword: v })
-              }
-              error={errors.confirmPassword}
-            />
-
             <div className="relative mt-4">
               <InputField
-                label="Confirm Password"
+                label={t("Confirm Password")}
                 type={showConfirm ? "text" : "password"}
                 icon={Lock}
-                placeholder="Confirm your password"
+                placeholder={t("Confirm your password")}
                 value={formData.confirmPassword}
                 onChange={(v: any) =>
                   setFormData({ ...formData, confirmPassword: v })
@@ -227,10 +205,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             {formData.role === "farmer" && (
               <InputField
                 label={t("Farm Location")}
-                label="Farm Name"
                 icon={MapPin}
                 placeholder={t("City, District")}
-                placeholder="Farm Name"
                 value={formData.farmLocation}
                 onChange={(v: any) => setFormData({ ...formData, farmLocation: v })}
                 error={errors.farmLocation}

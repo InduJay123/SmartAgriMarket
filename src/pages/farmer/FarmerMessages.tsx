@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { MessageSquare, Search } from "lucide-react";
 import Chat from "../../components/Chat";
 import { getChatList } from "../../api/farmer/chat";
+import CommunityChat from "./CommunityChat";
+import api from "../../api/api";
 
 type ChatItem = {
   user_id: number;
@@ -9,11 +11,15 @@ type ChatItem = {
   last_message: string;
   timestamp: string;
   profile_image?: string | null;
+  unread_count?: number;
 };
+
+type Mode = "none" | "private" | "community";
 
 const FarmerMessages = () => {
   const [chatList, setChatList] = useState<ChatItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mode, setMode] = useState<Mode>("none"); 
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [q, setQ] = useState("");
 
@@ -66,6 +72,21 @@ const FarmerMessages = () => {
             <h2 className="font-semibold text-lg">Messages</h2>
           </div>
 
+          <button
+            onClick={() => {
+              setMode("community");
+              setSelectedUserId(null);
+            }}
+            className={`w-full text-left border border-green-400 bg-green-100 rounded-xl p-3 mb-3 hover:bg-green-50 transition ${
+              mode === "community" ? "border-green-600" : ""
+            }`}
+          >
+            <p className="font-semibold">🌾 Farmers Community</p>
+            <p className="text-sm text-green-600 truncate">
+              Chat with all farmers
+            </p>
+          </button>
+          
           {/* Search */}
           <div className="flex items-center gap-2 border rounded-lg px-3 py-2 mb-3">
             <Search className="w-4 h-4 text-gray-500" />
@@ -87,7 +108,16 @@ const FarmerMessages = () => {
               {filtered.map((c) => (
                 <button
                   key={c.user_id}
-                  onClick={() => setSelectedUserId(c.user_id)}
+                  onClick={async () => {
+                    setMode("private");
+                    setSelectedUserId(c.user_id);
+                    try {
+                      await api.post(`/chat/messages/${c.user_id}/mark-read/`);
+                      loadChats();
+                    } catch (e) {
+                      console.error("Failed to mark read", e);
+  }
+                  }}
                   className={`w-full text-left border rounded-xl p-3 hover:bg-gray-50 transition ${
                     selectedUserId === c.user_id ? "border-green-600" : ""
                   }`}
@@ -110,9 +140,18 @@ const FarmerMessages = () => {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <p className="font-medium truncate">{c.username}</p>
-                        <p className="text-[11px] text-gray-500 whitespace-nowrap">
-                          {new Date(c.timestamp).toLocaleString()}
-                        </p>
+
+                        <div className="flex items-center gap-2">
+                          {c.unread_count && c.unread_count > 0 && (
+                            <span className="min-w-[20px] h-[20px] px-2 rounded-full bg-green-600 text-white text-[11px] flex items-center justify-center">
+                              {c.unread_count > 99 ? "99+" : c.unread_count}
+                            </span>
+                          )}
+
+                          <p className="text-[11px] text-gray-500 whitespace-nowrap">
+                            {new Date(c.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </p>
+                        </div>
                       </div>
 
                       <p className="text-sm text-gray-600 truncate">
@@ -127,16 +166,29 @@ const FarmerMessages = () => {
         </div>
 
         {/* RIGHT: Chat window */}
-        <div className="md:col-span-2 bg-white rounded-xl shadow p-4 h-[75vh] flex flex-col">
-          {!selectedUserId ? (
+         <div className="md:col-span-2 bg-white rounded-xl shadow p-4 h-[75vh] flex flex-col">
+          {mode === "none" ? (
             <div className="h-full flex flex-col items-center justify-center text-gray-500">
               <MessageSquare className="w-10 h-10 mb-3 text-gray-300" />
               <p className="font-medium">Select a chat</p>
-              <p className="text-sm">Choose a conversation from the left to start messaging</p>
+              <p className="text-sm">
+                Choose a conversation from the left to start messaging
+              </p>
+            </div>
+          ) : mode === "community" ? (
+            <div className="flex-1 min-h-0">
+              <CommunityChat />
+            </div>
+          ) : !selectedUserId ? (
+            <div className="h-full flex flex-col items-center justify-center text-gray-500">
+              <MessageSquare className="w-10 h-10 mb-3 text-gray-300" />
+              <p className="font-medium">Select a chat</p>
+              <p className="text-sm">
+                Choose a conversation from the left to start messaging
+              </p>
             </div>
           ) : (
             <div className="flex-1 min-h-0">
-              {/* IMPORTANT: Your Chat component should be h-full */}
               <Chat otherUserId={selectedUserId} />
             </div>
           )}

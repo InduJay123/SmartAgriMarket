@@ -1,0 +1,13 @@
+npm install
+npm install axios
+npm install i18next
+npm install react-i18next
+npm install i18next-browser-languagedetector
+npm install i18next-http-backend
+npm install lucide-react
+npm install react-router-dom
+npm install swiper
+npm install framer-motion
+npm install emoji-dictionary
+npm install @radix-ui/react-dialog
+

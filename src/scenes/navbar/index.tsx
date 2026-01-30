@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import logo from "../../assets/ChatGPT Image Nov 29, 2025, 12_24_03 PM.png";
 
 export default function Navbar() {
 
+  const navigate = useNavigate();
+  
   const {i18n} = useTranslation();
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -21,11 +22,20 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+
+  const navLinks = [
+  { name: "Home", path: "/" },
+  { name: "About Us", path: "/aboutus" },
+  { name: "Contact", path: "/contactus" },
+ 
+  
+];
+
   return (
     <header
       className={`w-full fixed top-0 z-50 transition-all duration-300 ${
-        isTopOfPage ? "" : "bg-white shadow"
-      }`}
+        isTopOfPage ? "bg-transparent " : "bg-white shadow"
+      } `}
     >
       <div className="w-11/12 mx-auto flex items-center justify-between py-4">
         
@@ -40,8 +50,6 @@ export default function Navbar() {
        
         <nav>
           <ul className="flex items-center gap-10 text-sm font-medium">
-
-
        <li>
           <Link
             to="/"
@@ -65,7 +73,7 @@ export default function Navbar() {
 
         <li>
           <Link
-            to="/contactus"
+            to="/aboutus"
             className={`relative px-3 py-1 text-sm font-medium group
               ${isTopOfPage ? "text-white" : ""} hover:${isTopOfPage ? "text-white" : "text-green-700"}
             `}
@@ -104,13 +112,21 @@ export default function Navbar() {
 
        
         <div className="flex items-center gap-4">
-          <button className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md">
-           {t('Login')}
-          </button>
-          <button className={`px-6 py-2 rounded-md border text-${isTopOfPage ? "white" : ""} border-gray-400 hover:bg-gray-200 hover:text-green-700`}>
-            {t('Sign Up')}
-          </button>
-        </div>
+      <button
+        onClick={() => navigate("/login")}
+        className="px-6 py-2 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md"
+      >
+        {t('Login')}
+      </button>
+
+      <button
+        onClick={() => navigate("/signup")}
+        className="px-6 py-2 rounded-md text-gray-300 border border-gray-400 hover:bg-green-700 hover:text-white"
+      >
+        {t('Sign Up')}
+      </button>
+    </div>
+
 
         <div className="flex gap-3">
       <button
@@ -118,7 +134,7 @@ export default function Navbar() {
         className={`relative px-3 py-1 text-sm font-medium group 
           ${isTopOfPage ? "text-white" : ""}
           focus:outline-none focus:ring-0 focus-visible:outline-none
-          border border-transparent
+          border border-transparent bg-transparent
         `}
       >
         EN
@@ -136,7 +152,7 @@ export default function Navbar() {
         className={`relative px-3 py-1 text-sm font-medium group 
           ${isTopOfPage ? "text-white" : ""}
           focus:outline-none focus:ring-0 focus-visible:outline-none
-          border border-transparent
+          border border-transparent bg-transparent
         `}
       >
         සිං

@@ -40,17 +40,17 @@ const isSinhala = i18n.language === "si";
 
 
   return (
-    <div className={`w-screen overflow-x-hidden ${isSinhala ? "font-sinhala text-2xl" : "font-sans"} text-gray-900`}>
+    <div className={`w-screen -mt-10 overflow-x-hidden ${isSinhala ? "font-sinhala text-2xl" : "font-sans"} text-gray-900`}>
       <section className="h-[80vh] md:h-[90vh] relative">
-        <Swiper
-  modules={[Navigation, Pagination, Autoplay, EffectFade]}
-  effect="fade"
-  slidesPerView={1}
-  loop={true}
-  autoplay={{ delay: 5000, disableOnInteraction: false }}
-  pagination={{ clickable: true }}
-  className="h-full"
->
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay, EffectFade]}
+            effect="fade"
+            slidesPerView={1}
+            loop={true}
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            className="h-full"
+          >
           {[
             {
               img: slide,
@@ -108,10 +108,10 @@ const isSinhala = i18n.language === "si";
                     className="mt-8 flex justify-center gap-4 flex-col sm:flex-row"
                   >
                     <button className="rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md px-6 py-3  font-medium w-full sm:w-auto">
-                      {t('getStarted')}
+                    <Link to="/login">  {t('getStarted')}  </Link>
                     </button>
-                    <button className="border border-white px-6 py-3 rounded text-white hover:bg-white hover:text-[#0f6b53] w-full sm:w-auto">
-                      {t('learnMore')}
+                    <button className="border border-white px-6 py-3 bg-transparent rounded text-white hover:bg-white hover:text-[#0f6b53] w-full sm:w-auto">
+                     <Link to = "/aboutus"> {t('learnMore')} </Link>
                     </button>
                   </motion.div>
                 </div>
@@ -135,7 +135,7 @@ const isSinhala = i18n.language === "si";
             </motion.p>
 
             <motion.button variants={fadeUp} className="mt-6 rounded-md bg-custom-green text-white hover:bg-green-800 shadow-md px-6 py-3">
-              {t('getStarted')}
+             <Link to= "/login"> {t('getStarted')} </Link>
             </motion.button>
           </motion.div>
 
@@ -292,8 +292,8 @@ const isSinhala = i18n.language === "si";
             <h3 className="text-2xl md:text-3xl font-bold">{t('Sustainable Farming Meets Technology: Building a Greener Future')}</h3>
             <p className="mt-3 text-white/90">{t('Innovative tools and insights to reduce waste and increase yields.')}</p>
             <div className="mt-4 flex gap-3">
-              <button className="bg-custom-green px-5 py-2 rounded text-white">{t('learnMore')}</button>
-              <button className="border border-white px-5 py-2 rounded text-white hover:bg-white hover:text-[#0f6b53]"><Link to="/contactus" className="hover:text-green-700">{t('Contact Us')}</Link></button>
+              <button className="bg-custom-green px-5 py-2 rounded text-white"><Link to="/aboutus">{t('learnMore')}</Link></button>
+              <button className="border border-white bg-transparent px-5 py-2 rounded text-white hover:bg-white hover:text-[#0f6b53]"><Link to="/contactus" className="hover:text-green-700">{t('Contact Us')}</Link></button>
             </div>
           </div>
         </div>
@@ -305,7 +305,7 @@ const isSinhala = i18n.language === "si";
           <div>
             <h3 className="text-2xl md:text-3xl font-bold text-custom-green">{t('The Benefits of Choosing Our Expertise')}</h3>
             <p className="text-gray-600 mt-4">{t('We combine local knowledge with technology to provide measurable improvements for farmers and buyers.')}</p>
-            <button className="mt-6 bg-custom-green text-white px-6 py-2 rounded">{t('learnMore')}</button>
+            <button className="mt-6 bg-custom-green text-white px-6 py-2 rounded"><Link to="/aboutus">{t('learnMore')}</Link></button>
           </div>
 
           <div className="bg-custom-green text-white p-8 rounded-2xl">
@@ -347,34 +347,111 @@ const isSinhala = i18n.language === "si";
       </section>
 
       {/* FOOTER */}
-      <footer className={`bg-custom-green text-white py-12 ${isSinhala ? "font-sans " : "font-sans"}`}>
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
-          <div>
-            <h4 className="font-bold text-lg">{t('Smart Agriculture Market Management System')}</h4>
-            <p className="text-white/90 mt-2 text-sm">{t('Empowering farmers with technology and reliable market insights.')}</p>
-          </div>
+      <footer
+  className={`bg-custom-green text-white py-14 ${
+    isSinhala ? "font-sans" : "font-sans"
+  }`}
+>
+  <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+    
+    {/* Brand Section */}
+    <div>
+      <h4 className="font-extrabold text-xl leading-tight">
+        {t("Smart Agriculture Market Management System")}
+      </h4>
 
-          <div>
-            <h5 className="font-semibold mb-2">Pages</h5>
-            <ul className="text-sm text-white/90 space-y-2">
-              <li>Home</li>
-              <li>Products</li>
-              <li>About</li>
-              <li>Blog</li>
-            </ul>
-          </div>
+      <p className="text-white/90 mt-3 text-sm">
+        {t(
+          "Empowering farmers with technology, price forecasting, and reliable market insights."
+        )}
+      </p>
 
-          <div>
-            <h5 className="font-semibold mb-2">About</h5>
-            <ul className="text-sm text-white/90 space-y-2">
-              <li>Contact</li>
-              <li>Services</li>
-              <li>Support</li>
-              <li>Careers</li>
-            </ul>
-          </div>
-        </div>
-      </footer>
+      {/* Social Links */}
+      <div className="flex gap-4 mt-5">
+        <a className="hover:text-yellow-300 transition">
+          <i className="fab fa-facebook text-xl"></i>
+        </a>
+        <a className="hover:text-yellow-300 transition">
+          <i className="fab fa-instagram text-xl"></i>
+        </a>
+        <a className="hover:text-yellow-300 transition">
+          <i className="fab fa-twitter text-xl"></i>
+        </a>
+      </div>
+    </div>
+
+    {/* Quick Links */}
+    <div>
+      <h5 className="font-semibold text-lg mb-3 border-b border-white/40 pb-1">
+        {t("Quick Links")}
+      </h5>
+      <ul className="text-sm text-white/90 space-y-2">
+        <li className="hover:text-yellow-300 cursor-pointer transition"><Link to="/">Home</Link></li>
+        <li className="hover:text-yellow-300 cursor-pointer transition">
+          <Link to="/">Products</Link>
+        </li>
+        <li className="hover:text-yellow-300 cursor-pointer transition">
+         <Link to="/aboutus"> About Us </Link>
+        </li>
+        <li className="hover:text-yellow-300 cursor-pointer transition">
+          Blog
+        </li>
+      </ul>
+    </div>
+
+    {/* Help Section */}
+    <div>
+      <h5 className="font-semibold text-lg mb-3 border-b border-white/40 pb-1">
+        {t("Support")}
+      </h5>
+      <ul className="text-sm text-white/90 space-y-2">
+        <li className="hover:text-yellow-300 cursor-pointer transition">
+          <Link to="/contactus">Contact</Link>
+        </li>
+        <li className="hover:text-yellow-300 cursor-pointer transition">
+          <Link to = "/aboutus">Services</Link>
+        </li>
+        <li className="hover:text-yellow-300 cursor-pointer transition">
+         <Link to="/contactus">Help Center</Link>
+        </li>
+        <li className="hover:text-yellow-300 cursor-pointer transition">
+          Careers
+        </li>
+      </ul>
+    </div>
+
+    {/* Contact Info */}
+    <div>
+      <h5 className="font-semibold text-lg mb-3 border-b border-white/40 pb-1">
+        {t("Contact Information")}
+      </h5>
+
+      <ul className="text-sm text-white/90 space-y-3">
+        <li className="flex gap-2 items-start">
+          <i className="fas fa-map-marker-alt mt-1"></i>
+          <span>{t("Matara, Sri Lanka")}</span>
+        </li>
+
+        <li className="flex gap-2 items-center">
+          <i className="fas fa-envelope"></i>
+          <span>smartagrimarket@gmail.com</span>
+        </li>
+
+        <li className="flex gap-2 items-center">
+          <i className="fas fa-phone-alt"></i>
+          <span>+94 71 234 5678</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  {/* Bottom Footer Strip */}
+  <div className="mt-10 border-t border-white/20 pt-5 text-center text-sm text-white/80">
+    © {new Date().getFullYear()} Smart Agriculture Market Management System.  
+    {t("All Rights Reserved.")}.
+  </div>
+</footer>
+
 
     </div>
   );

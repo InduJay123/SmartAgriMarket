@@ -121,7 +121,7 @@ export default function Navbar() {
 
       <button
         onClick={() => navigate("/signup")}
-        className="px-6 py-2 rounded-md text-gray-200 border border-gray-200 hover:bg-gray-200"
+        className="px-6 py-2 rounded-md text-gray-300 border border-gray-400 hover:bg-green-700 hover:text-white"
       >
         {t('Sign Up')}
       </button>

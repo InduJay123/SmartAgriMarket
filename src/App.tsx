@@ -22,6 +22,7 @@ import UploadPrice from './pages/admin/UploadPrice';
 import AddCrops from './pages/farmer/AddCrops';
 import AiInsights from './pages/farmer/AiInsights';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import FloodDetection from './pages/farmer/FloodDetection';
 
 import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
 import Settings from './pages/admin/Settings';
@@ -110,6 +111,7 @@ function App() {
         <Route path='/farmer' element = {<SidebarLayout/>} >
           <Route path="dashboard" element={<FarmerDashboard/>}/>
           <Route path='ai-insights' element={<AiInsights/>} />
+          <Route path='flood-detection' element={<FloodDetection/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
           <Route path='pricelist' element={<PriceList />}/>
           <Route path='messages' element={<FarmerMessages/>}/>

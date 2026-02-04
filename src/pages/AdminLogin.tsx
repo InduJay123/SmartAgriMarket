@@ -10,7 +10,7 @@ interface AdminLoginProps {
 const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
@@ -20,8 +20,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     setErrorMsg("");
 
     try {
-      const res = await api.post("/auth/login/", {
-        email: formData.email,
+      const res = await api.post("/auth/admin/login/", {
+        username: formData.username,
         password: formData.password,
       });
 
@@ -81,11 +81,11 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
           <div className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md">
             <User className="text-green-400 w-5" />
             <input
-              type="email"
-              placeholder="admin@example.com"
-              value={formData.email}
+              type="text"
+              placeholder="adminuser"
+              value={formData.username}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setFormData({ ...formData, username: e.target.value })
               }
               className="bg-transparent focus:outline-none w-full text-white"
               required

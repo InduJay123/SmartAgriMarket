@@ -73,6 +73,9 @@ function App() {
   );
 
   useEffect(() => {
+    if (window.location.pathname.startsWith("/admin")) {
+      return;
+    }
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")

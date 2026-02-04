@@ -8,6 +8,10 @@ const buyers = [
   { id: 5, name: 'Dedicated Economic Centres (DECs)', type: 'Retailer', location: 'Dambulla', verified: true },
 ];
 
+const fetchbuyesrs = async () => {
+  // Placeholder for API call to fetch buyers
+}
+
 export default function ManageBuyers() {
   return (
     <div className="space-y-6 pr-28">

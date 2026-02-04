@@ -52,8 +52,8 @@ const ManageFarmers: React.FC = () => {
     try {
       const url =
         filter === "all"
-          ? "/adminpanel/farmers/"
-          : `/adminpanel/farmers/?status=${filter}`;
+          ? "/auth/admin/farmers/"
+          : `/auth/admin/farmers/?status=${filter}`;
 
       const res = await api.get(url);
 

@@ -67,7 +67,7 @@ const AdminDashboard: React.FC = () => {
   /* -------------------- API CALLS -------------------- */
   const fetchDashboardStats = async () => {
     try {
-      const res = await api.get("/dashboard/stats");
+      const res = await api.get("/auth/admin/dashboard-stats/");
       setFarmers(res.data.verified_farmers);
       setPendingApprovals(res.data.pending_approvals);
     } catch (err) {
@@ -77,7 +77,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchPendingUsers = async () => {
     try {
-      const res = await api.get("/adminpanel/pending-users/");
+      const res = await api.get("/auth/admin/farmers/");
       setPendingUsers(res.data);
     } catch (err) {
       console.error("Pending users error", err);
@@ -88,7 +88,7 @@ const AdminDashboard: React.FC = () => {
 
   const handleApprove = async (id: number) => {
     try {
-      await api.patch(`/adminpanel/users/${id}/approve/`);
+      await api.patch(`/auth/admin/farmers/${id}/approve/`);
       fetchPendingUsers();
       fetchDashboardStats();
     } catch (err) {
@@ -98,7 +98,7 @@ const AdminDashboard: React.FC = () => {
 
   const handleReject = async (id: number) => {
     try {
-      await api.patch(`/adminpanel/users/${id}/reject/`);
+      await api.patch(`/auth/admin/farmers/${id}/reject/`);
       fetchPendingUsers();
       fetchDashboardStats();
     } catch (err) {

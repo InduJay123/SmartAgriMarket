@@ -88,7 +88,7 @@ const FarmerDashboard: React.FC = () => {
 
     const navigate = useNavigate();
     const [crops, setCrops] = useState<Crop[]>([])
-    const [selectedCrop, setSelectedCrop] = useState(null);
+    const [selectedCrop, setSelectedCrop] = useState<Crop | null>(null);
 
     useEffect(() => {
         const loadCrops = async () => {
@@ -115,7 +115,7 @@ const FarmerDashboard: React.FC = () => {
     };
 
     const handleAddCrop = () => { navigate('/farmer/addcrops') };
-    const handleEditCrop = (crop) => { setSelectedCrop(crop)};
+    const handleEditCrop = (crop: Crop) => { setSelectedCrop(crop)};
 
     const refreshCrops = async () => {
         try {

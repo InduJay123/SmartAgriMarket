@@ -14,7 +14,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-gray-700 hidden sm:block">Profile</span>
           <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center">
-            
+            <User size={20} className="text-white" />
           </div>
         </div>
       </div>

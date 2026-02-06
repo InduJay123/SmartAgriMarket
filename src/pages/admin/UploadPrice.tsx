@@ -15,7 +15,7 @@ interface PriceUploadApi {
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_EXT = [".csv", ".xls", ".xlsx"];
 
-// ✅ change these if your backend uses different routes
+
 const UPLOAD_URL = "/prices/uploads/"; // POST
 const LIST_URL = "/prices/uploads/"; // GET
 
@@ -231,3 +231,4 @@ export default function UploadPrice() {
     </div>
   );
 }
+

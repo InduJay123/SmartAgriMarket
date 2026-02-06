@@ -38,6 +38,8 @@ const AdminDashboard: React.FC = () => {
   /* -------------------- STATES -------------------- */
   const [farmers, setFarmers] = useState(0);
   const [pendingApprovals, setPendingApprovals] = useState(0);
+  const [buyers, setBuyers] = useState(0);
+  const [crops, setCrops] = useState(0);
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const [loadingPending, setLoadingPending] = useState(true);
 
@@ -70,6 +72,8 @@ const AdminDashboard: React.FC = () => {
       const res = await api.get("/auth/admin/dashboard-stats/");
       setFarmers(res.data.verified_farmers);
       setPendingApprovals(res.data.pending_approvals);
+      setBuyers(res.data.buyers);
+      setCrops(res.data.crops);
     } catch (err) {
       console.error("Dashboard stats error", err);
     }
@@ -85,26 +89,37 @@ const AdminDashboard: React.FC = () => {
       setLoadingPending(false);
     }
   };
+const handleApprove = async (user: { id: number; role: string }) => {
+  try {
+    await api.patch("/auth/admin/verify/", {
+      role: user.role,      // FARMER or BUYER (we will fix backend to accept this)
+      user_id: user.id,
+      is_active: true,
+    });
 
-  const handleApprove = async (id: number) => {
-    try {
-      await api.patch(`/auth/admin/farmers/${id}/approve/`);
-      fetchPendingUsers();
-      fetchDashboardStats();
-    } catch (err) {
-      console.error("Approve failed", err);
-    }
-  };
+    fetchPendingUsers();
+    fetchDashboardStats();
+  } catch (err) {
+    console.error("Approve failed", err);
+  }
+};
 
-  const handleReject = async (id: number) => {
-    try {
-      await api.patch(`/auth/admin/farmers/${id}/reject/`);
-      fetchPendingUsers();
-      fetchDashboardStats();
-    } catch (err) {
-      console.error("Reject failed", err);
-    }
-  };
+const handleReject = async (user: { id: number; role: string }) => {
+  try {
+    await api.patch("/auth/admin/verify/", {
+      role: user.role,
+      user_id: user.id,
+      is_active: false,
+    });
+
+    fetchPendingUsers();
+    fetchDashboardStats();
+  } catch (err) {
+    console.error("Reject failed", err);
+  }
+};
+
+
 
   /* -------------------- EFFECTS -------------------- */
   useEffect(() => {
@@ -130,14 +145,14 @@ const AdminDashboard: React.FC = () => {
     },
     {
       title: "Buyers",
-      value: "—",
+      value: buyers.toString(),
       icon: ShoppingCart,
       color: "text-blue-300",
       bgColor: "bg-blue-50",
     },
     {
       title: "Crops",
-      value: "—",
+      value: crops.toString(),
       icon: Leaf,
       color: "text-amber-900",
       bgColor: "bg-amber-100",
@@ -195,12 +210,13 @@ const AdminDashboard: React.FC = () => {
               <p className="text-sm text-gray-500">{u.role}</p>
 
               <div className="flex gap-3 mt-3">
-                <button onClick={() => handleApprove(u.id)} className="bg-green-700 text-white px-4 py-1 rounded">
+                <button onClick={() => handleApprove(u)} className="bg-green-700 text-white px-4 py-1 rounded">
                   Approve
                 </button>
-                <button onClick={() => handleReject(u.id)} className="bg-red-600 text-white px-4 py-1 rounded">
+                <button onClick={() => handleReject(u)} className="bg-red-600 text-white px-4 py-1 rounded">
                   Reject
                 </button>
+            
               </div>
             </div>
           ))

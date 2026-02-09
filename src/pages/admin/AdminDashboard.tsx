@@ -113,7 +113,7 @@ const AdminDashboard: React.FC = () => {
   const fetchPendingUsers = async () => {
     setLoadingPending(true);
     try {
-      // ideally: GET /auth/admin/pending-users/
+      
       const res = await api.get("/auth/admin/farmers/");
       setPendingUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
@@ -132,7 +132,7 @@ const AdminDashboard: React.FC = () => {
 
     setDetailsLoading(true);
     try {
-      // ✅ new endpoint
+      
       const res = await api.get(`/auth/admin/user/${u.id}/`);
       setDetails(res.data);
     } catch (err: any) {

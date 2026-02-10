@@ -144,7 +144,7 @@ const FarmerDashboard: React.FC = () => {
     };
 
     const navigate = useNavigate();
-    const [crops, setCrops] = useState<Crop[]>([])
+    const [crops, setCrops] = useState<Crop[]>([]);
     const [selectedCrop, setSelectedCrop] = useState<Crop | null>(null);
 
     useEffect(() => {
@@ -171,7 +171,6 @@ const FarmerDashboard: React.FC = () => {
         return emoji || "🌾"; // fallback emoji
     };
 
-<<<<<<< HEAD
     const handleAddCrop = () => { 
         navigate('/farmer/addcrops'); 
     };

@@ -1,4 +1,4 @@
-import { Calendar, DollarSign, Edit, MessageSquare, PlusCircle, Trash2, TrendingUp} from "lucide-react";
+import { Calendar, DollarSign, Edit, MessageSquare, PlusCircle, Trash2, TrendingUp, Brain } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/farmer/Header";
@@ -6,6 +6,7 @@ import TopCard from "../../components/farmer/TopCard";
 import EditCrop from "../../components/farmer/EditCrop";
 import ReviewPopup from "../../components/farmer/ReviewPopup";
 import { deleteCrop, fetchCrops } from "../../api/farmer/marketplace";
+import { predictPrice, predictDemand } from "../../lib/MLService";
 
 interface Crop {
     market_id: number;
@@ -22,20 +23,76 @@ interface Crop {
 
 const FarmerDashboard: React.FC = () => {
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+    
+    // State for ML predictions
+    const [marketPrice, setMarketPrice] = useState<string>("Loading...");
+    const [demandForecast, setDemandForecast] = useState<string>("Loading...");
+    const [isLoadingPredictions, setIsLoadingPredictions] = useState<boolean>(true);
+
+    // Fetch ML predictions
+    useEffect(() => {
+        const fetchPredictions = async () => {
+            setIsLoadingPredictions(true);
+            try {
+                // Get current season
+                const month = new Date().getMonth();
+                let season = "northeast_monsoon";
+                if (month >= 2 && month <= 4) season = "first_inter_monsoon";
+                else if (month >= 5 && month <= 8) season = "southwest_monsoon";
+                else if (month >= 9 && month <= 10) season = "second_inter_monsoon";
+
+                // Fetch price prediction for Tomato (most common crop)
+                const [priceResponse, demandResponse] = await Promise.all([
+                    predictPrice({
+                        crop_type: "Tomato",
+                        season: season,
+                        supply: 1000,
+                        demand: 1200,
+                        market_trend: "stable",
+                    }),
+                    predictDemand({
+                        crop_type: "Tomato",
+                        season: season,
+                        historical_demand: 1000,
+                        population: 22000000,
+                        consumption_trend: "stable",
+                    }),
+                ]);
+
+                setMarketPrice(`Rs. ${priceResponse.predicted_price?.toFixed(0) || 250}/kg`);
+                
+                // Determine demand level
+                const demandValue = demandResponse.predicted_demand || 0;
+                if (demandValue > 1000) setDemandForecast("High");
+                else if (demandValue > 500) setDemandForecast("Medium");
+                else setDemandForecast("Low");
+
+            } catch (error) {
+                console.error("Error fetching predictions:", error);
+                // Fallback values
+                setMarketPrice("Rs. 250/kg");
+                setDemandForecast("High");
+            } finally {
+                setIsLoadingPredictions(false);
+            }
+        };
+
+        fetchPredictions();
+    }, []);
 
     const stats = [
         {
             title: "Market Price",
-            value:"Rs. 250/kg",
-            subTitle:"Tomato avg",
+            value: isLoadingPredictions ? "Loading..." : marketPrice,
+            subTitle:"Tomato avg (AI)",
             icon: DollarSign,
             color:"text-green-300",
             bgColor:"bg-green-50"           
         },
         {
             title: "Demand Forecast",
-            value:"High",
-            subTitle:"Next Week",
+            value: isLoadingPredictions ? "Loading..." : demandForecast,
+            subTitle:"Next Week (AI)",
             icon:TrendingUp,
             color:"text-blue-300" ,
             bgColor:"bg-green-50"           
@@ -114,8 +171,14 @@ const FarmerDashboard: React.FC = () => {
         return emoji || "🌾"; // fallback emoji
     };
 
-    const handleAddCrop = () => { navigate('/farmer/addcrops') };
-    const handleEditCrop = (crop: Crop) => { setSelectedCrop(crop)};
+<<<<<<< HEAD
+    const handleAddCrop = () => { 
+        navigate('/farmer/addcrops'); 
+    };
+    
+    const handleEditCrop = (crop: Crop) => { 
+        setSelectedCrop(crop);
+    };
 
     const refreshCrops = async () => {
         try {
@@ -157,6 +220,28 @@ const FarmerDashboard: React.FC = () => {
                         iconColor={stat.color}
                     />
                 ))}           
+            </div>
+
+            {/* AI Insights Banner */}
+            <div className="mt-6 bg-gradient-to-r from-green-600 to-green-700 rounded-xl shadow-lg p-4 sm:p-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white/20 p-3 rounded-full">
+                            <Brain className="text-white" size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-white font-bold text-lg">AI-Powered Forecasting</h3>
+                            <p className="text-green-100 text-sm">Get detailed price, demand, and yield predictions using our Random Forest ML model</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => navigate('/farmer/ai-insights')}
+                        className="bg-white text-green-700 px-6 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
+                    >
+                        <TrendingUp size={18} />
+                        View AI Insights
+                    </button>
+                </div>
             </div>
 
             <div className=" bg-white border border-gray-200 rounded-xl shadow-lg mt-8 p-4 sm:p-6">

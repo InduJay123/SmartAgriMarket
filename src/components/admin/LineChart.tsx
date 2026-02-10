@@ -57,9 +57,7 @@ export default function LineChart({ data, title }: LineChartProps) {
         </div>
       </div>
 
-      <div className="flex justify-between mt-6 text-sm text-gray-500">
-        <span>Price Range: Rs {minPrice} - Rs {maxPrice}</span>
-      </div>
+      
     </div>
   );
 }

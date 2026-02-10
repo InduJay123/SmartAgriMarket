@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-8 py-4 flex flex-wrap items-center justify-between">
         
-          <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>       
+          <h1 className="text-xl font-bold text-gray-800"></h1>       
       
       <div className="flex items-center justify-end gap-4">
         <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">

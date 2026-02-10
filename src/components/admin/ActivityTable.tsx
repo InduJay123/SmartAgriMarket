@@ -19,7 +19,13 @@ export default function ActivityTable({ activities }: ActivityTableProps) {
       </div>
 
      <table className="w-full min-w-[500px]">
-        
+        <thead>
+          <tr className="border-b border-gray-200 font-semibold text-gray-700">
+            <th className="text-left py-3 px-4  ">Date</th>
+            <th className="text-left py-3 px-4 ">Action</th>
+            <th className="text-left py-3 px-4 ">User</th>
+          </tr>
+        </thead>
         <tbody>
           {activities.map((activity, index) => (
             <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 text-gray-600 text-sm">

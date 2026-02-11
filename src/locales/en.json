@@ -90,5 +90,9 @@
     "Enter your full name": "Enter your full name",
     "Choose a username": "Choose a username",
     "Create Account": "Create Account",
-    "10 digits": "10 digits"
+    "10 digits": "10 digits",
+    "Market Price" : "Market Price",
+    "Demand Forecast": "Demand Forecast",
+    "Harvest Alerts": "Harvest Alerts",
+    "Messages": "Messages"
 }

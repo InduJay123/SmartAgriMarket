@@ -84,6 +84,10 @@
     "Choose a username": "පරිශීලක නාමයක් තෝරන්න",
     "Enter your mobile number": "ඔබේ ජංගම දුරකථන අංකය ඇතුල් කරන්න",
     "Create Account": "ගිණුම සාදන්න",
-    "10 digits": "අංක 10 ක් අවශ්‍යයි"
+    "10 digits": "අංක 10 ක් අවශ්‍යයි",
+    "Market Price" : "වෙළඳපොළ මිල",
+    "Demand Forecast": "ඉල්ලුම් අනුමානය",
+    "Harvest Alerts": "අවසන් දින අවවාදය",
+    "Messages": "පණිවිඩ"
 
 }

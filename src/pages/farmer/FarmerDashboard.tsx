@@ -7,6 +7,8 @@ import EditCrop from "../../components/farmer/EditCrop";
 import ReviewPopup from "../../components/farmer/ReviewPopup";
 import { deleteCrop, fetchCrops } from "../../api/farmer/marketplace";
 import { predictPrice, predictDemand } from "../../lib/MLService";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 interface Crop {
     market_id: number;
@@ -21,7 +23,13 @@ interface Crop {
     updated_at: string;
 }
 
+
+
 const FarmerDashboard: React.FC = () => {
+
+    const { t, i18n } = useTranslation();
+    const isSinhala = i18n.language === "si";
+
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
     
     // State for ML predictions
@@ -82,7 +90,7 @@ const FarmerDashboard: React.FC = () => {
 
     const stats = [
         {
-            title: "Market Price",
+            title: t('Market Price'),
             value: isLoadingPredictions ? "Loading..." : marketPrice,
             subTitle:"Tomato avg (AI)",
             icon: DollarSign,
@@ -90,7 +98,7 @@ const FarmerDashboard: React.FC = () => {
             bgColor:"bg-green-50"           
         },
         {
-            title: "Demand Forecast",
+            title: t('Demand Forecast'),
             value: isLoadingPredictions ? "Loading..." : demandForecast,
             subTitle:"Next Week (AI)",
             icon:TrendingUp,
@@ -98,7 +106,7 @@ const FarmerDashboard: React.FC = () => {
             bgColor:"bg-green-50"           
         },
         {
-            title: "Harvest Alerts",
+            title: t('Harvest Alerts'),
             value:"3 Active",
             subTitle:"Due this month",
             icon: Calendar,
@@ -106,7 +114,7 @@ const FarmerDashboard: React.FC = () => {
             bgColor:"bg-orange-50"            
         },
         {
-            title: "Messages",
+            title: t('Messages'),
             value:"5 New",
             subTitle:"From buyers",
             icon:MessageSquare,

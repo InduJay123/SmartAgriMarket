@@ -34,7 +34,12 @@ const Sidebar:React.FC<SidebarProps> = ({
   return (
     <>
       {/* --- MOBILE OVERLAY --- */}
-      
+      {showMobileMenu && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+          onClick={() => setShowMobileMenu(false)}
+        ></div>
+      )}
 
       {/* --- SIDEBAR PANEL --- */}
       <aside

@@ -42,7 +42,13 @@ const Sidebar:React.FC<SidebarProps> = ({
       )}
 
       {/* --- SIDEBAR PANEL --- */}
-      
+      <aside
+        className={`
+          fixed lg:static top-0 left-0 w-64 bg-white border-r shadow-lg z-40
+          transform transition-transform duration-300 h-screen
+          ${showMobileMenu ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
+      >
         {/* Close button (mobile only) */}
         <div className="lg:hidden flex justify-end p-4">
           <button

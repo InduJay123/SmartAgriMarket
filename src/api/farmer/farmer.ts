@@ -1,6 +1,6 @@
 import api from "../api";
 
-export const postFormData = (endpoint: string, data: FormData) => {
+export const postFormData = (endpoint: string, data: FormData, p0: { headers: { "Content-Type": string; }; }) => {
   return api.post(endpoint, data, {
     headers: { "Content-Type": "multipart/form-data" },
   });

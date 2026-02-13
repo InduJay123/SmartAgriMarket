@@ -9,11 +9,16 @@ import Details from "../../components/farmer/Details";
 import Pricing from "../../components/farmer/Pricing";
 import AddLocation from "../../components/farmer/AddLocation";
 import { postFormData } from "../../api/farmer/farmer";
+import { useTranslation } from "react-i18next";
 
 const AddCrops: React.FC = () => {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<CropFormData>({});
+  const [formData, setFormData] = useState<CropFormData>({} as CropFormData);
 
   const validateStep = () => {
     switch(step){
@@ -25,27 +30,27 @@ const AddCrops: React.FC = () => {
     }
   };
 
-  const handleNext = () => { if(validateStep()) setStep(step+1); else alert("Please fill all required fields!"); };
+  const handleNext = () => { if(validateStep()) setStep(step+1); else alert(t("Please fill all required fields!")); };
   const handleBack = () => setStep(step-1);
 
   const handleSubmit = async () => {
-    if(!validateStep()){ alert("Please fill all required fields!"); return; }
+    if(!validateStep()){ alert(t("Please fill all required fields!")); return; }
 
     try {
       // Crop creation
       const cropData = new FormData();
       const cropName = (formData.crop?.trim() || formData.customCrop?.trim() || "").toString();
-      cropData.append("crop_name", cropName);
-      cropData.append("description", formData.additionalDetails || "");
-      if (formData.cropImage) cropData.append("image", formData.cropImage);
-      cropData.append("category", "General");
+      cropData.append(t("crop_name"), cropName);
+      cropData.append(t("description"), formData.additionalDetails || "");
+      if (formData.cropImage) cropData.append(t("image"), formData.cropImage);
+      cropData.append(t("category"), "General");
 
       const cropResponse = await postFormData("/marketplace/crops/", cropData, { headers: { "Content-Type": "multipart/form-data" } });
       
       const cropId = cropResponse.data.id || cropResponse.data.crop_id;
       if (!cropId) {
-        console.error("Crop creation failed:", cropResponse.data);
-        alert("Crop creation failed. Please try again.");
+        console.error(t("Crop creation failed:", cropResponse.data));
+        alert(t("Crop creation failed. Please try again."));
         return;
       }
       console.log("Using crop ID:", cropId);
@@ -67,9 +72,9 @@ const AddCrops: React.FC = () => {
       marketplaceData.append("status", "Available");
       if(formData.image) marketplaceData.append("image", formData.image.toString());
       
-      await postFormData("/marketplace/marketplace/", marketplaceData);
+      await postFormData("/marketplace/marketplace/", marketplaceData, { headers: { "Content-Type": "multipart/form-data" } });
 
-      alert("Success! Your crop has been added successfully!");
+      alert(t("Success! Your crop has been added successfully!"));
       setTimeout(() => navigate("/farmer/dashboard/"), 1500);
 
     } catch (error: unknown) {
@@ -84,8 +89,8 @@ const AddCrops: React.FC = () => {
         <div className="inline-flex bg-gray-200 w-16 h-16 items-center justify-center rounded-full">
           <Sprout size={32} className="text-green-600"/>
         </div>
-        <h2 className="text-3xl font-extrabold mb-2">Add Your Crop</h2>
-        <p className="text-sm text-gray-500 mb-8">Share your harvest with buyers across Sri Lanka</p>
+        <h2 className="text-3xl font-extrabold mb-2">{t("Add Your Crop")}</h2>
+        <p className="text-sm text-gray-500 mb-8">{t("Share your harvest with buyers across Sri Lanka")}</p>
       </div>
 
       <ProgressBar step={step}/>
@@ -99,16 +104,16 @@ const AddCrops: React.FC = () => {
         <hr/>
         <div className="flex flex-wrap justify-between mt-4">
           <button onClick={handleBack} className="flex items-center justify-center border bg-gray-50 rounded-md text-gray-700 py-1 px-4 hover:bg-red-800 hover:text-white gap-2">
-            <ArrowLeft size={18}/> Back
+            <ArrowLeft size={18}/> {t("Back")}
           </button>
 
           {step < 4 ? (
             <button onClick={handleNext} className="flex items-center justify-center border rounded-md bg-green-800 text-white py-1 px-4 hover:bg-green-700 gap-2">
-              <ArrowRight size={18}/> Continue
+              <ArrowRight size={18}/> {t("Continue")}
             </button>
           ) : (
             <button onClick={handleSubmit} className="flex items-center justify-center border rounded-md bg-green-800 text-white py-1 px-4 hover:bg-green-700 gap-2">
-              <CheckCircle size={18}/> Add Crop
+              <CheckCircle size={18}/> {t("Add Crop")}
             </button>
           )}
         </div>

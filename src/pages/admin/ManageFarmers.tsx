@@ -31,6 +31,9 @@ const ManageFarmers: React.FC = () => {
 
   const [farmers, setFarmers] = useState<FarmerApi[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const [buyers, setBuyers] = useState(0);
+  const [crops, setCrops] = useState(0);
 
   const [showMap, setShowMap] = useState(false);
 
@@ -39,11 +42,13 @@ const ManageFarmers: React.FC = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const res = await api.get("/dashboard/stats");
-      setVerifiedFarmersCount(res.data.verified_farmers ?? 0);
-      setPendingApprovalsCount(res.data.pending_approvals ?? 0);
+      const res = await api.get("/auth/admin/dashboard-stats/");
+      setVerifiedFarmersCount(res.data.verified_farmers);
+      setPendingApprovalsCount(res.data.pending_approvals);
+      setBuyers(res.data.buyers);
+      setCrops(res.data.crops);
     } catch (err) {
-      console.error("Error fetching dashboard stats:", err);
+      console.error("Dashboard stats error", err);
     }
   };
 
@@ -52,8 +57,8 @@ const ManageFarmers: React.FC = () => {
     try {
       const url =
         filter === "all"
-          ? "/adminpanel/farmers/"
-          : `/adminpanel/farmers/?status=${filter}`;
+          ? "/auth/admin/farmers/"
+          : `/auth/admin/farmers/?status=${filter}`;
 
       const res = await api.get(url);
 
@@ -118,7 +123,7 @@ const ManageFarmers: React.FC = () => {
     },
     {
       title: "Buyers",
-      value: "—",
+      value: buyers.toString(),
       subTitle: "",
       icon: ShoppingCart,
       color: "text-blue-300",
@@ -126,7 +131,7 @@ const ManageFarmers: React.FC = () => {
     },
     {
       title: "Crops",
-      value: "—",
+      value: crops.toString(),
       subTitle: "",
       icon: Leaf,
       color: "text-amber-900",

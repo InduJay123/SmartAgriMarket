@@ -233,7 +233,7 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
 
         {/* RIGHT SIDE – Illustration area */}
         <div className="hidden md:flex flex-col  items-center justify-center p-10 ">         
-          <h2 className="text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6 -mt-12">
+          <h2 className={`text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6 -mt-12 ${isSinhala ? "font-sans" : "font-sans"}`}>
           Reach your<br /> customers faster, <br />
           Manage your<br /> harvest without loss, <br />
           <span className="text-green-700 font-bold">With Us.</span>

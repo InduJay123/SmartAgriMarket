@@ -90,5 +90,41 @@
     "Enter your full name": "Enter your full name",
     "Choose a username": "Choose a username",
     "Create Account": "Create Account",
-    "10 digits": "10 digits"
+    "10 digits": "10 digits",
+    "Market Price" : "Market Price",
+    "Demand Forecast": "Demand Forecast",
+    "Harvest Alerts": "Harvest Alerts",
+    "Messages": "Messages",
+    "AI-Powered Forecasting": "AI-Powered Forecasting",
+    "Get detailed price, demand, and yield predictions using our Random Forest ML model": "Get detailed price, demand, and yield predictions using our Random Forest ML model",
+    "View AI Insights": "View AI Insights",
+    "My Crops": "My Crops",
+    "Add New Crop": "Add New Crop",
+    "Manage your farm produce" : "Manage your farm produce",
+    "Expected Qty": "Expected Qty",
+    "Expected Date": "Expected Date",
+    "Price": "Price",
+    "Season": "Season",
+    "Status": "Status",
+    "Crop": "Crop",
+    "Actions": "Actions",
+    "Add Your Crop": "Add Your Crop",
+    "Share your harvest with buyers across Sri Lanka": "Share your harvest with buyers across Sri Lanka",
+    "Back": "Back",
+    "Continue": "Continue",
+    "Add Crop": "Add Crop",
+    "Please fill all required fields!": "Please fill all required fields!",
+    "Crop creation failed. Please try again.": "Crop creation failed. Please try again.",
+    "Crop creation failed:": "Crop creation failed:",
+    "Success! Your crop has been added successfully!": "Success! Your crop has been added successfully!",
+    "Crop created successfully:": "Crop created successfully:",
+    "Crop updated successfully:": "Crop updated successfully:",
+    "Crop deleted successfully.": "Crop deleted successfully.",
+
+    "crop_name": "crop_name",
+    
+    "image": "image",
+    "category": "category"
+
+    
 }

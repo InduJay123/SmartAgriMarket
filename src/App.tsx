@@ -43,6 +43,7 @@ import { getFcmToken, onMessageListener } from './lib/firebase-messaging';
 import axios from 'axios';
 import AlertsPanel from './pages/farmer/AlertPanel';
 import FarmerMessages from './pages/farmer/FarmerMessages';
+import ChatBot from './components/chatbot/ChatBot';
 
 function App() {
 
@@ -73,6 +74,9 @@ function App() {
   );
 
   useEffect(() => {
+    if (window.location.pathname.startsWith("/admin")) {
+      return;
+    }
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
@@ -144,9 +148,10 @@ function App() {
           <Route path="pricelist" element={<PriceList />} />
           <Route path="messages" element={<BuyerMessages/>} />
           <Route path="alerts" element={<AlertsPanel/>} />
-          <Route path="profile" element={<ProfileInfo buyerId={''}/>} />
+          <Route path="profile" element={<ProfileInfo />} />
          </Route>
       </Routes>
+      <ChatBot />
     </BrowserRouter>
     </div>
   );

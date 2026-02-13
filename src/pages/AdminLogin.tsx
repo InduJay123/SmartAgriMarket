@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import api from "../../src/services/api"; // ✅ adjust path if needed
+import api from "../services/api";
 
 interface AdminLoginProps {
   onClose: () => void;
@@ -10,7 +10,7 @@ interface AdminLoginProps {
 const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
@@ -20,23 +20,30 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     setErrorMsg("");
 
     try {
-      // ✅ REAL BACKEND LOGIN (JWT)
-      const res = await api.post("/auth/token/", {
-        email: formData.email,
+      const res = await api.post("/auth/admin/login/", {
+        username: formData.username,
         password: formData.password,
       });
 
-      // ✅ SAVE TOKENS
-      localStorage.setItem("access_token", res.data.access);
-      localStorage.setItem("refresh_token", res.data.refresh);
+      console.log("LOGIN STATUS:", res.status);
+      console.log("LOGIN DATA:", res.data);
 
-      // (optional) close modal and go to dashboard
+      const { access, refresh } = res.data;
+
+      if (!access) {
+        throw new Error("No access token returned from backend");
+      }
+
+      localStorage.setItem("access_token", access);
+      if (refresh) localStorage.setItem("refresh_token", refresh);
+
       onClose();
       navigate("/admin/dashboard");
     } catch (err: any) {
       console.error("Login failed:", err);
       const msg =
         err?.response?.data?.detail ||
+        err?.message ||
         "Login failed. Check email/password and try again.";
       setErrorMsg(msg);
     } finally {
@@ -64,7 +71,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
           Admin Login
         </h2>
 
-        {/* ✅ show error */}
         {errorMsg && (
           <div className="mb-4 rounded-xl bg-red-500/20 border border-red-500/40 p-3 text-sm text-red-200">
             {errorMsg}
@@ -72,22 +78,20 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Email */}
           <div className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md">
             <User className="text-green-400 w-5" />
             <input
-              type="email"
-              placeholder="admin@example.com"
-              value={formData.email}
+              type="text"
+              placeholder="adminuser"
+              value={formData.username}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setFormData({ ...formData, username: e.target.value })
               }
               className="bg-transparent focus:outline-none w-full text-white"
               required
             />
           </div>
 
-          {/* Password */}
           <div className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md">
             <Lock className="text-green-400 w-5" />
             <input

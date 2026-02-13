@@ -61,7 +61,26 @@ const Sidebar:React.FC<SidebarProps> = ({
 
         {/* MENU LIST */}
         <nav className="flex flex-col gap-1 px-4 py-2">
-          
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                setShowMobileMenu(false);
+              }}
+              className={`
+                flex items-center gap-3 px-4 py-2 rounded-lg text-left transition-all
+                ${
+                  activeTab === item.id
+                    ? "bg-green-600 text-white hover:border-none"
+                    : "text-gray-700 hover:bg-gray-100 hover:border-none"
+                }
+              `}
+            >
+              <item.icon size={20} />
+              {item.name}
+            </button>
+          ))}
         </nav>
 
         <button

@@ -88,6 +88,40 @@
     "Market Price" : "වෙළඳපොළ මිල",
     "Demand Forecast": "ඉල්ලුම් අනුමානය",
     "Harvest Alerts": "අවසන් දින අවවාදය",
-    "Messages": "පණිවිඩ"
+    "Messages": "පණිවිඩ",
+    "AI-Powered Forecasting": "AI-සම්පූර්ණ අනුමානය",
+    "Get detailed price, demand, and yield predictions using our Random Forest ML model": "අපගේ රැන්ඩම් ෆොරස්ට් ML ආකෘතිය භාවිතා කරමින් විස්තරාත්මක මිල, ඉල්ලුම් සහ ප්‍රතිලාභ අනුමාන ලබා ගන්න.",
+    "View AI Insights": "AI අවබෝධය බලන්න",
+    "My Crops": "මගේ බෝග",  
+    "Add New Crop": "නව බෝග එකතු කරන්න",
+    "Manage your farm produce" : "ඔබේ ගොවිපළ නිෂ්පාදන කළමනාකරණය කරන්න",
+    "Expected Qty": "අපේක්ෂිත ප්‍රමාණය",
+    "Expected Date": "අපේක්ෂිත දිනය",
+    "Price": "මිල",
+    "Season": "කාලය",
+    "Status": "තත්ත්වය",
+    "Crop": "බෝග",
+    "Actions": "ක්‍රියා",
+    "Add Your Crop": "ඔබේ බෝග එකතු කරන්න",
+    "Add Crop": "බෝග එකතු කරන්න",
+    "Share your harvest with buyers across Sri Lanka": "ශ්‍රී ලංකාව පුරා මිලදීගන්නන් සමඟ ඔබේ අස්වැන්න බෙදා හදා ගන්න",
+    "Edit": "සංස්කරණය",
+    "Delete": "මකන්න",
+    "Please fill all required fields!": "කරුණාකර සියලු අවශ්‍ය ක්ෂේත්‍ර පුරවන්න!",
+    "Crop creation failed. Please try again.": "බෝග නිර්මාණය අසාර්ථකයි. කරුණාකර නැවත උත්සාහ කරන්න.",
+    "Crop creation failed:": "බෝග නිර්මාණය අසාර්ථකයි:",
+     "Using crop ID:": "බෝග හැඳුනුම්පත භාවිතා කරමින්:",
+     "Success! Your crop has been added successfully!": "සාර්ථකයි! ඔබේ බෝගය සාර්ථකව එකතු කර ඇත!",
+     "Crop created successfully:": "බෝගය සාර්ථකව නිර්මාණය කරන ලදි:",
+     "Crop updated successfully:": "බෝගය සාර්ථකව යාවත්කාලීන කරන ලදි:",
+     "Crop deleted successfully.": "බෝගය සාර්ථකව මකා දමන ලදි.",
+
+     "crop_name": "බෝග නාමය",
+      
+      "image": "පින්තූරය",
+      "category": "වර්ගය"
+
+
+
 
 }

@@ -202,7 +202,7 @@ const FarmerDashboard: React.FC = () => {
         try {
             await deleteCrop(marketId);
             setCrops(prev => prev.filter(crop => crop.market_id !== marketId));
-            alert("Crop deleted successfully!");
+            alert(t("Crop deleted successfully."));
         } catch (error) {
             console.error("Error deleting crop:", error);
             alert("Failed to delete crop");
@@ -237,8 +237,8 @@ const FarmerDashboard: React.FC = () => {
                             <Brain className="text-white" size={24} />
                         </div>
                         <div>
-                            <h3 className="text-white font-bold text-lg">AI-Powered Forecasting</h3>
-                            <p className="text-green-100 text-sm">Get detailed price, demand, and yield predictions using our Random Forest ML model</p>
+                            <h3 className="text-white font-bold text-lg">{t('AI-Powered Forecasting')}</h3>
+                            <p className="text-green-100 text-sm">{t('Get detailed price, demand, and yield predictions using our Random Forest ML model')}</p>
                         </div>
                     </div>
                     <button
@@ -246,7 +246,7 @@ const FarmerDashboard: React.FC = () => {
                         className="bg-white text-green-700 px-6 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
                     >
                         <TrendingUp size={18} />
-                        View AI Insights
+                        {t("View AI Insights")}
                     </button>
                 </div>
             </div>
@@ -254,13 +254,13 @@ const FarmerDashboard: React.FC = () => {
             <div className=" bg-white border border-gray-200 rounded-xl shadow-lg mt-8 p-4 sm:p-6">
                 <div className="flex flex-wrap sm: gap-2 items-center justify-between w-full">
                     <div className="flex flex-col items-start justify-start">
-                        <h2 className="text-xl font-bold mb-2">My Crops</h2>
-                        <p className="text-xs text-gray-500">Manage your farm produce</p>
+                        <h2 className="text-xl font-bold mb-2">{t("My Crops")}</h2>
+                        <p className="text-xs text-gray-500">{t("Manage your farm produce")}</p>
                     </div>
                     <button 
                         onClick={handleAddCrop}
                         className="flex items-center gap-3 bg-green-800 rounded-xl py-2 px-4 text-white text-sm font-semibold sm:w-auto">
-                        <PlusCircle size={16} className="font-semibold"/> Add New Crop
+                        <PlusCircle size={16} className="font-semibold"/> {t("Add New Crop")}
                     </button>
                 </div>
 
@@ -293,11 +293,11 @@ const FarmerDashboard: React.FC = () => {
                 </div>
 
                 <div className="text-sm text-gray-700 space-y-1">
-                    <p><span className="font-semibold">Expected Qty:</span> {crop.quantity}{crop.unit}</p>
-                    <p><span className="font-semibold">Expected Date:</span> {crop.predicted_date}</p>
-                    <p><span className="font-semibold">Price:</span> Rs. {crop.price}</p>
-                    <p><span className="font-semibold">Season:</span>{crop.farming_season}</p>
-                    <p><span className="font-semibold">Status:</span> {crop.status}</p>
+                    <p><span className="font-semibold">{t("Expected Qty")}:</span> {crop.quantity}{crop.unit}</p>
+                    <p><span className="font-semibold">{t("Expected Date")}:</span> {crop.predicted_date}</p>
+                    <p><span className="font-semibold">{t("Price")}:</span> Rs. {crop.price}</p>
+                    <p><span className="font-semibold">{t("Season")}:</span>{crop.farming_season}</p>
+                    <p><span className="font-semibold">{t("Status")}:</span> {crop.status}</p>
                 </div>
                 </div>
             ))}
@@ -306,13 +306,13 @@ const FarmerDashboard: React.FC = () => {
                     <table className="min-w-[700px] w-full text-sm">
                         <thead className="text-sm text-gray-500 bg-gray-100 border-b">
                             <tr>
-                                <th className="px-6 py-4 text-left">Crop</th>
-                                <th className="px-6 py-4 text-left">Expected Quantity/kg</th>
-                                <th className="px-4 py-4 text-left">Expected Date</th>
-                                <th className="px-10 py-4 text-left">Price/Rs</th>
-                                <th className="px-10 py-4 text-left">Season</th>
-                                <th className="px-10 py-4 text-left">Status</th>
-                                <th className="px-10 py-4 text-center">Actions</th>
+                                <th className="px-6 py-4 text-left">{t("Crop")}</th>
+                                <th className="px-6 py-4 text-left">{t("Expected Qty")}</th>
+                                <th className="px-4 py-4 text-left">{t("Expected Date")}</th>
+                                <th className="px-10 py-4 text-left">{t("Price")}</th>
+                                <th className="px-10 py-4 text-left">{t("Season")}</th>
+                                <th className="px-10 py-4 text-left">{t("Status")}</th>
+                                <th className="px-10 py-4 text-center">{t("Actions")}</th>
                             </tr>
                         </thead>  
                         <tbody>

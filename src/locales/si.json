@@ -119,7 +119,36 @@
      "crop_name": "බෝග නාමය",
       
       "image": "පින්තූරය",
-      "category": "වර්ගය"
+      "category": "වර්ගය",
+
+      "Profile Settings": "පැතිකඩ සැකසුම්",
+      "Manage your farm profile and preferences": "ඔබේ ගොවිපළ පැතිකඩ සහ කැමැත්තන් කළමනාකරණය කරන්න",
+      "Farm Information": "ගොවිපළ තොරතුරු",
+      "Farm Name": "ගොවිපළ නම",
+      "Farmer Name": "ගොවියාගේ නම",
+      "Email Address": "ඊමේල් ලිපිනය",
+      "Contact Number": "සම්බන්ධ අංකය",
+      "Farm Address": "ගොවිපළ ලිපිනය",
+      "Region": "ප්‍රදේශය",
+      "Notification Preferences": "අවවාද කැමැත්තන්",
+      "Price Alerts": "මිල අවවාද",
+      "Buyer Messages": "මිලදීගන්නන්ගේ පණිවිඩ",
+      "Harvest Reminders": "අස්වැන්න මතක් කිරීම",
+      "Market Updates": "වෙළඳපොළ යාවත්කාලීන කිරීම්",
+      "About Your Farm": "ඔබේ ගොවිපළ ගැන",
+      "Save Changes": "වෙනස්කම් සුරකින්න",
+
+      "Chats": "කතාබහ",
+      "Engage in discussions and share updates with others": "අන් අය සමඟ සාකච්ඡා වල නිරත වන්න සහ යාවත්කාලීන කිරීම් බෙදා හදා ගන්න",
+      "Messages": "පණිවිඩ",
+      "Farmers Community": "ගොවීන්ගේ ප්‍රජාව",
+      "Chat with all farmers": "සියලු ගොවීන් සමඟ කතාබහ",
+      "Search users...": "පරිශීලකයන් සෙවීම...",
+      "Loading...": "පූරණය වෙමින්...",
+      "No chats yet.": "තවම කතාබහක් නැත.",
+      "Select a chat": "කතාබහක් තෝරන්න",
+      "Choose a conversation from the left to start messaging": "පණිවිඩ යවීම ආරම්භ කිරීමට වමෙන් සංවාදයක් තෝරන්න"
+      
 
 
 

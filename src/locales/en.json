@@ -124,7 +124,34 @@
     "crop_name": "crop_name",
     
     "image": "image",
-    "category": "category"
+    "category": "category",
 
-    
+    "Profile Settings": "Profile Settings",
+    "Manage your farm profile and preferences": "Manage your farm profile and preferences",
+    "Farm Information": "Farm Information",
+    "Farm Name": "Farm Name",
+    "Farmer Name": "Farmer Name",
+    "Email Address": "Email Address",
+    "Contact Number": "Contact Number",
+    "Farm Address": "Farm Address",
+    "Region": "Region",
+    "Notification Preferences": "Notification Preferences",
+    "Price Alerts": "Price Alerts",
+    "Buyer Messages": "Buyer Messages",
+    "Harvest Reminders": "Harvest Reminders",
+    "Market Updates": "Market Updates",
+    "About Your Farm": "About Your Farm",
+    "Save Changes": "Save Changes",
+
+    "Chats": "Chats",
+    "Engage in discussions and share updates with others": "Engage in discussions and share updates with others",
+    "Farmers Community": "Farmers Community",
+    "Chat with all farmers": "Chat with all farmers",
+    "Search users...": "Search users...",
+    "Loading...": "Loading...",
+    "No chats yet.": "No chats yet.",
+    "Select a chat": "Select a chat",
+    "Choose a conversation from the left to start messaging": "Choose a conversation from the left to start messaging"
+
+
 }

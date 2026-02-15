@@ -3,6 +3,7 @@ import { fetchUserAlerts, markAlertSeen,  } from "../../api/farmer/alerts";
 import { Bell,  Timer, TrendingDown, TrendingUp } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
+import { useTranslation } from "react-i18next";
 
 type AlertItem = {
   id: number;
@@ -17,11 +18,15 @@ type AlertItem = {
 
 
 const AlertsPanel = () => {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [unseenCount, setUnseenCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
-  const getLevelColor = (level) => {
+  const getLevelColor = (level: string | undefined) => {
   switch (level) {
     case "HIGH":
       return "text-green-600";
@@ -68,21 +73,21 @@ const AlertsPanel = () => {
     });
   };
 
-  if (loading) return <p>Loading alerts...</p>;
+  if (loading) return <p>{t("loading_alerts")}</p>;
 
   return (
-  <div className="p-4">     
+  <div className={`p-4 ${isSinhala ? "font-sinhala" : "font-sans"}`}>     
     <div className="flex items-center justify-between mb-1">
         <div>
-          <h1 className="text-4xl text-black font-bold px-4 py-2">🔔 Alerts</h1>
-          <p className="text-md text-gray-500 mb-6 px-4">Stay informed with the latest alerts and notifications</p>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">🔔 {t("alerts")}</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">{t("stay_informed_with_latest_alerts_and_notifications")}</p>
         </div>
 
         <button
           onClick={handleMarkAllSeen}
           className="text-lg px-4 py-2 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700"
         >
-          Mark all seen
+         {t("mark_all_seen")}
         </button>
     </div>
     {/* LEFT = Alerts (wide), RIGHT = Cards (narrow) */}
@@ -92,7 +97,7 @@ const AlertsPanel = () => {
 
         
         {alerts.length === 0 ? (
-          <p className="text-gray-500 text-sm">No alerts</p>
+          <p className="text-gray-500 text-sm">{t("no_alerts")}</p>
         ) : (
           <ul className="space-y-3">
             {alerts.map((alert) => (
@@ -136,7 +141,7 @@ const AlertsPanel = () => {
                       </span>
 
                       <span className={`${getLevelColor(alert.level)} text-xs font-medium`}>
-                        • {alert.level} {alert.category}
+                        • {alert.level || "MEDIUM"} {alert.category}
                       </span>
                       <div className="mt-1">
                         {alert.level === "HIGH" && (
@@ -168,9 +173,9 @@ const AlertsPanel = () => {
           <div className="bg-white border border-gray-100 shadow-sm rounded-lg p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-500 text-xs">Total Alerts</p>
+                <p className="text-gray-500 text-xs">{t("Total Alerts")}</p>
                 <h3 className="font-bold text-2xl">{alerts.length}</h3>
-                <p className="text-gray-500 text-xs">Total Alerts</p>
+                <p className="text-gray-500 text-xs">{t("Total Alerts")}</p>
               </div>
 
               <div className="w-10 h-10 rounded-xl bg-green-100/50 p-2">
@@ -183,9 +188,9 @@ const AlertsPanel = () => {
           <div className="bg-white border border-gray-100 shadow-sm rounded-lg p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-500 text-xs">Missed Alerts</p>
+                <p className="text-gray-500 text-xs">{t("Missed Alerts")}</p>
                 <h3 className="font-bold text-2xl">{unseenCount}</h3>
-                <p className="text-gray-500 text-xs">Unseen</p>
+                <p className="text-gray-500 text-xs">{t("Unseen")}</p>
               </div>
 
               {/* relative for dot */}
@@ -199,7 +204,7 @@ const AlertsPanel = () => {
           </div>
 
           <div className="bg-white border border-gray-100 shadow-sm rounded-lg p-4">
-          <p className="text-sm font-semibold mb-3">Calendar</p>
+          <p className="text-sm font-semibold mb-3">{t("Calendar")}</p>
 
           <DayPicker
             showOutsideDays

@@ -151,7 +151,23 @@
     "Loading...": "Loading...",
     "No chats yet.": "No chats yet.",
     "Select a chat": "Select a chat",
-    "Choose a conversation from the left to start messaging": "Choose a conversation from the left to start messaging"
+    "Choose a conversation from the left to start messaging": "Choose a conversation from the left to start messaging",
+
+    "Daily Price Lists": "Daily Price Lists",
+    "Access and download the latest pricing documents for your reference": "Access and download the latest pricing documents for your reference",
+    "View": "View",
+    "Uploaded by": "Uploaded by",
+    "No documents found": "No documents found",
+
+    "loading_alerts": "Loading alerts...",
+    "alerts": "Alerts",
+    "stay_informed_with_latest_alerts_and_notifications": "Stay informed with the latest alerts and notifications",
+    "mark_all_seen": "Mark all seen",
+    "no_alerts": "No alerts",
+    "Total Alerts": "Total Alerts",
+    "Missed Alerts": "Missed Alerts",
+    "Unseen": "Unseen",
+    "Calendar": "Calendar"
 
 
 }

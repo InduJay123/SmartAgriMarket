@@ -147,8 +147,25 @@
       "Loading...": "පූරණය වෙමින්...",
       "No chats yet.": "තවම කතාබහක් නැත.",
       "Select a chat": "කතාබහක් තෝරන්න",
-      "Choose a conversation from the left to start messaging": "පණිවිඩ යවීම ආරම්භ කිරීමට වමෙන් සංවාදයක් තෝරන්න"
+      "Choose a conversation from the left to start messaging": "පණිවිඩ යවීම ආරම්භ කිරීමට වමෙන් සංවාදයක් තෝරන්න",
+
+      "Daily Price Lists": "දෛනික මිල ලැයිස්තු",
+      "Access and download the latest pricing documents for your reference": "ඔබේ යොග්‍යතාව සඳහා නවතම මිල ගණන් ලේඛන ලබා ගන්න සහ බාගත කරන්න",
+      "View": "බලන්න",
+      "Uploaded by": "අප්ලෝඩ් කළේ",
+      "No documents found": "ලේඛන නොමැත.",
+
+      "loading_alerts": "අවවාද පූරණය වෙමින්...",
+      "alerts": "අවවාද",
+      "stay_informed_with_latest_alerts_and_notifications": "නවතම අවවාද සහ දැනුම්දීම් සමඟ තොරතුරු ලබා ගන්න",
+      "mark_all_seen": "සියල්ල දැකලා කියන්න",
+      "no_alerts": "අවවාද නොමැත",
+      "Total Alerts": "මුළු අවවාද",
+      "Missed Alerts": "අමතක අවවාද ",
+      "Calendar": "දින දර්ශනය",
+      "Unseen": "නොදැකුණු"
       
+
 
 
 

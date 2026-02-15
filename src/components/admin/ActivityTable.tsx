@@ -26,7 +26,15 @@ export default function ActivityTable({ activities }: ActivityTableProps) {
             <th className="text-left py-3 px-4 ">User</th>
           </tr>
         </thead>
-        
+        <tbody>
+          {activities.map((activity, index) => (
+            <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 text-gray-600 text-sm">
+              <td className="py-3 px-4 ">{activity.date}</td>
+              <td className="py-3 px-4 ">{activity.activity}</td>
+              <td className="py-3 px-4 ">{activity.user}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );

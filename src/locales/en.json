@@ -167,7 +167,32 @@
     "Total Alerts": "Total Alerts",
     "Missed Alerts": "Missed Alerts",
     "Unseen": "Unseen",
-    "Calendar": "Calendar"
+    "Calendar": "Calendar",
+
+    "AI Insights & Forecasting" : "AI Insights & Forecasting",
+    "Get detailed price, demand, and yield predictions using our Random Forest ML model": "Get detailed price, demand, and yield predictions using our Random Forest ML model",
+    "Forecast Period": "Forecast Period",
+    "Months": "Months",
+    "Starting this month": "Starting this month",
+    "Days": "Days",
+    "Starting today": "Starting today",
+    "Yield Forecast Chart": "Yield Forecast Chart",
+    "Model Prediction": "Model Prediction",
+    "Preview": "Preview",
+    "Algorithm": "Algorithm",
+    "Random Forest Regressor": "Random Forest Regressor",
+    "Training Data": "Training Data",
+    "Historical market prices & agricultural data": "Historical market prices & agricultural data",
+    "Yield Features": "Yield Features",
+    "Year, month, season code, crop code, lag yields": "Year, month, season code, crop code, lag yields",
+    "Update Frequency": "Update Frequency",
+    "Retrain when new monthly data is added": "Retrain when new monthly data is added",
+    "View Harvest Insights": "View Harvest Insights",
+    "Harvest Forecast Chart": "Harvest Forecast Chart",
+    "Demand Prediction Chart": "Demand Prediction Chart",
+    "Model Accuracy": "Model Accuracy",
+    "Our AI models are trained on extensive historical data to provide accurate forecasts that help you make informed decisions about your farm operations.": "Our AI models are trained on extensive historical data to provide accurate forecasts that help you make informed decisions about your farm operations."
+
 
 
 }

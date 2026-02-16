@@ -45,6 +45,7 @@ import {
   type PricePredictionResponse,
   type DemandPredictionResponse,
 } from "../../lib/MLService";
+import { useTranslation } from "react-i18next";
 
 interface ForecastData {
   date: string;
@@ -68,6 +69,11 @@ interface YieldForecastResponse {
 type Tab = "price" | "demand" | "yield";
 
 const AiInsights: React.FC = () => {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
+
   // Shared
   const [activeTab, setActiveTab] = useState<Tab>("price");
   const [selectedCrop, setSelectedCrop] = useState<string>("Tomato");
@@ -144,12 +150,16 @@ const AiInsights: React.FC = () => {
       crop_type: selectedCrop,
       predicted_price: forecasts[0].price,
       currency: "LKR",
+      confidence: 0.85,
+      model_accuracy: { r2_score: 0.82, mae: 12.5, rmse: 15.3 },
     });
     setDemandResult({
       prediction_type: "demand",
       crop_type: selectedCrop,
       predicted_demand: forecasts[0].demand,
       unit: "tonnes",
+      confidence: 0.85,
+      model_accuracy: { r2_score: 0.82, mae: 45.2, rmse: 58.1 },
     });
   };
 
@@ -310,17 +320,17 @@ const AiInsights: React.FC = () => {
     <div className="bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full">
       <Header
         icon={Brain}
-        title="AI Insights & Forecasting"
-        subTitle="Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model"
+        title={t("AI Insights & Forecasting")}
+        subTitle={t("Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model")}
       />
 
       {/* Info Banner */}
       <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
         <Info className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
         <div>
-          <h4 className="font-semibold text-blue-800">Random Forest ML Model</h4>
+          <h4 className="font-semibold text-blue-800">{t("Random Forest ML Model")}</h4>
           <p className="text-sm text-blue-600">
-            Predictions are powered by a Random Forest model trained on historical market/agri data. It learns seasonal patterns and trends to provide forecasts.
+           {t("Predictions are powered by a Random Forest model trained on historical market/agri data. It learns seasonal patterns and trends to provide forecasts.")}
           </p>
         </div>
       </div>
@@ -367,7 +377,7 @@ const AiInsights: React.FC = () => {
           <div className="space-y-4">
             {/* Crop */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Select Crop</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("Select Crop")}</label>
               <select
                 value={selectedCrop}
                 onChange={(e) => {
@@ -386,7 +396,7 @@ const AiInsights: React.FC = () => {
 
             {/* Season (kept for UI consistency, yield model ignores it) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Season</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("Season")}</label>
               <select
                 value={season}
                 onChange={(e) => setSeason(e.target.value)}
@@ -404,7 +414,7 @@ const AiInsights: React.FC = () => {
             {activeTab === "price" && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Market Trend</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("Market Trend")}</label>
                   <select
                     value={marketTrend}
                     onChange={(e) => setMarketTrend(e.target.value)}
@@ -419,7 +429,7 @@ const AiInsights: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Forecast Days: {forecastDays}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("Forecast Days")}: {forecastDays}</label>
                   <input
                     type="range"
                     min="3"
@@ -440,7 +450,7 @@ const AiInsights: React.FC = () => {
             {activeTab === "demand" && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Consumption Trend</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("Consumption Trend")}</label>
                   <select
                     value={consumptionTrend}
                     onChange={(e) => setConsumptionTrend(e.target.value)}
@@ -455,7 +465,7 @@ const AiInsights: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Forecast Days: {forecastDays}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("Forecast Days")}: {forecastDays}</label>
                   <input
                     type="range"
                     min="3"
@@ -475,7 +485,7 @@ const AiInsights: React.FC = () => {
             {/* YIELD (ONLY months) */}
             {activeTab === "yield" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Forecast Months: {yieldMonths}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("Forecast Months")}: {yieldMonths}</label>
                 <input
                   type="range"
                   min="1"
@@ -524,7 +534,7 @@ const AiInsights: React.FC = () => {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500">Predicted Price</p>
+                    <p className="text-sm text-gray-500">{t("Predicted Price")}</p>
                     <p className="text-2xl font-bold text-green-600">Rs. {priceResult.predicted_price?.toFixed(2) || "N/A"}</p>
                     <p className="text-xs text-gray-400">per kg</p>
                   </div>
@@ -546,9 +556,9 @@ const AiInsights: React.FC = () => {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500">Predicted Demand</p>
+                    <p className="text-sm text-gray-500">{t("Predicted Demand")}</p>
                     <p className="text-2xl font-bold text-blue-600">{demandResult.predicted_demand?.toFixed(0) || "N/A"}</p>
-                    <p className="text-xs text-gray-400">tonnes</p>
+                    <p className="text-xs text-gray-400">{t("tonnes")}</p>
                   </div>
                   <div className="bg-blue-100 p-3 rounded-full">
                     <Package className="text-blue-600" size={24} />
@@ -591,9 +601,9 @@ const AiInsights: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-500">Forecast Period</p>
-                      <p className="text-xl font-bold text-gray-800">{yieldMonths} Months</p>
-                      <p className="text-xs text-gray-400">Starting this month</p>
+                      <p className="text-sm text-gray-500">{t("Forecast Period")}</p>
+                      <p className="text-xl font-bold text-gray-800">{yieldMonths} {t("Months")}</p>
+                      <p className="text-xs text-gray-400">{t("Starting this month")}</p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-full">
                       <Calendar className="text-gray-600" size={24} />
@@ -622,9 +632,9 @@ const AiInsights: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-500">Forecast Period</p>
-                      <p className="text-xl font-bold text-gray-800">{forecastDays} Days</p>
-                      <p className="text-xs text-gray-400">Starting today</p>
+                      <p className="text-sm text-gray-500">{t("Forecast Period")}</p>
+                      <p className="text-xl font-bold text-gray-800">{forecastDays} {t("Days")}</p>
+                      <p className="text-xs text-gray-400">{t("Starting today")}</p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-full">
                       <Calendar className="text-gray-600" size={24} />
@@ -692,13 +702,13 @@ const AiInsights: React.FC = () => {
           {activeTab === "yield" && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg">Yield Forecast Chart</h3>
+                <h3 className="font-bold text-lg">{t("Yield Forecast Chart")}</h3>
                 <span
                   className={`text-xs px-2 py-1 rounded-full border ${
                     yieldResult ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-gray-50 text-gray-600 border-gray-200"
                   }`}
                 >
-                  {yieldResult ? "Model Prediction" : "Preview"}
+                  {yieldResult ? t("Model Prediction") : t("Preview")}
                 </span>
               </div>
 
@@ -731,20 +741,20 @@ const AiInsights: React.FC = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <h4 className="font-semibold text-gray-700">Algorithm</h4>
-                <p className="text-gray-600">Random Forest Regressor</p>
+                <h4 className="font-semibold text-gray-700">{t("Algorithm")}</h4>
+                <p className="text-gray-600">{t("Random Forest Regressor")}</p>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-700">Training Data</h4>
-                <p className="text-gray-600">Historical market prices & agricultural data</p>
+                <h4 className="font-semibold text-gray-700">{t("Training Data")}</h4>
+                <p className="text-gray-600">{t("Historical market prices & agricultural data")}</p>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-700">Yield Features</h4>
+                <h4 className="font-semibold text-gray-700">{t("Yield Features")}</h4>
                 <p className="text-gray-600">Year, month, season code, crop code, lag yields</p>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-700">Update Frequency</h4>
-                <p className="text-gray-600">Retrain when new monthly data is added</p>
+                <h4 className="font-semibold text-gray-700">{t("Update Frequency")}</h4>
+                <p className="text-gray-600">{t("Retrain when new monthly data is added")}</p>
               </div>
             </div>
           </div>

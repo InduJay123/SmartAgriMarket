@@ -163,7 +163,42 @@
       "Total Alerts": "මුළු අවවාද",
       "Missed Alerts": "අමතක අවවාද ",
       "Calendar": "දින දර්ශනය",
-      "Unseen": "නොදැකුණු"
+      "Unseen": "නොදැකුණු",
+
+      "AI Insights & Forecasting": "AI අවබෝධය සහ අනුමානය",
+      "Get detailed predictions and insights for your farm using our AI-powered tools": "අපගේ AI-සම්පූර්ණ මෙවලම් භාවිතා කරමින් ඔබේ ගොවිපළ සඳහා විස්තරාත්මක අනුමාන සහ අවබෝධය ලබා ගන්න",
+      "Yield Forecast": "ප්‍රතිලාභ අනුමානය",
+      "Price Forecast": "මිල අනුමානය",
+      "View AI Insights": "AI අවබෝධය බලන්න",
+      "Algorithm": "ආකෘතිය",
+      "Training Data": "පුහුණු දත්ත",
+      "Yield Features": "ප්‍රතිලාභ ලක්ෂණ",
+      "Update Frequency": "යාවත්කාලීන කිරීමේ අනුපිළිවෙල",
+      "Model Prediction": "මොඩල අනුමානය",
+      "Preview": "පෙරදසුන",
+      "Yield Forecast Chart": "ප්‍රතිලාභ අනුමානය සටහරය",
+      "Forecast Period": "අනුමාන කාලය",
+      "Months": "මාස",
+      "Starting this month": "මෙම මාසයේ ආරම්භ", 
+      "Days": "දින",
+      "Starting today": "අද සිට ආරම්භ",
+      "Price Forecast Chart": "මිල අනුමානය සටහරය",
+      "AI-Powered Price Forecasting": "AI-සම්පූර්ණ මිල අනුමානය",
+      "Get accurate price predictions for your crops using our advanced machine learning models": "අපගේ නව්‍ය යන්ත්‍ර ඉගෙනුම් ආකෘති භාවිතා කරමින් ඔබේ බෝග සඳහා නිවැරදි මිල අනුමාන ලබා ගන්න",
+      "Price Forecast": "මිල අනුමානය",
+      "View Price Insights": "මිල අවබෝධය බලන්න",
+      "Price Prediction Chart": "මිල අනුමානය සටහරය",
+      "AI-Powered Demand Forecasting": "AI-සම්පූර්ණ ඉල්ලුම් අනුමානය",
+      "Get insights into future demand for your crops to optimize your harvest and sales strategy": "ඔබේ බෝග සඳහා අනාගත ඉල්ලුම පිළිබඳ අවබෝධය ලබා ගන්න, ඔබේ අස්වැන්න සහ විකුණුම් रणनीතිය හොඳින් සැලසුම් කරන්න",
+      "Demand Forecast": "ඉල්ලුම් අනුමානය",
+      "View Demand Insights": "ඉල්ලුම් අවබෝධය බලන්න",
+      "Demand Prediction Chart": "ඉල්ලුම් අනුමානය සටහරය",
+       "AI-Powered Harvest Alerts": "AI-සම්පූර්ණ අස්වැන්න අවවාද",
+      "Receive timely alerts on optimal harvest times and potential risks to maximize your yield": "ඔබේ ප්‍රතිලාභ වැඩි කිරීමට හොඳම අස්වැන්න කාලයන් සහ හැකි අවදානම් පිළිබඳ කාලීන අවවාද ලබා ගන්න",
+      "Harvest Alerts": "අස්වැන්න අවවාද",
+      "View Harvest Insights": "අස්වැන්න අවබෝධය බලන්න",
+      "Harvest Alert Chart": "අස්වැන්න අවවාද සටහරය"
+      
       
 
 

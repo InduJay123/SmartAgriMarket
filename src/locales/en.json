@@ -170,7 +170,10 @@
     "Calendar": "Calendar",
 
     "AI Insights & Forecasting" : "AI Insights & Forecasting",
-    "Get detailed price, demand, and yield predictions using our Random Forest ML model": "Get detailed price, demand, and yield predictions using our Random Forest ML model",
+    "Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model": "Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model",
+    "Price Forecast": "Price Forecast",
+    "Demand Forecast": "Demand Forecast",
+    "Yield Prediction": "Yield Prediction",
     "Forecast Period": "Forecast Period",
     "Months": "Months",
     "Starting this month": "Starting this month",

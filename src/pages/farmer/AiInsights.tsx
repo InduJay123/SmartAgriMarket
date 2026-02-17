@@ -338,9 +338,9 @@ const AiInsights: React.FC = () => {
       {/* Tabs */}
       <div className="mt-6 flex flex-wrap gap-2">
         {[
-          { id: "price", label: "Price Forecast", icon: DollarSign },
-          { id: "demand", label: "Demand Forecast", icon: Package },
-          { id: "yield", label: "Yield Prediction", icon: Leaf },
+          { id: "price", label: t("Price Forecast"), icon: DollarSign },
+          { id: "demand", label: t("Demand Forecast"), icon: Package },
+          { id: "yield", label: t("Yield Prediction"), icon: Leaf },
         ].map((tab) => (
           <button
             key={tab.id}

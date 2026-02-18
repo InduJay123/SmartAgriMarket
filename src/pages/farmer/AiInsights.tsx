@@ -317,7 +317,7 @@ const AiInsights: React.FC = () => {
   // Render
   // -----------------------------
   return (
-    <div className="bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full">
+    <div className={`bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full ${isSinhala ? "font-sinhala" : "font-sans"}`}>
       <Header
         icon={Brain}
         title={t("AI Insights & Forecasting")}
@@ -518,7 +518,7 @@ const AiInsights: React.FC = () => {
               ) : (
                 <>
                   <RefreshCw size={20} />
-                  {activeTab === "yield" ? "Predict Yield" : "Generate Forecast"}
+                  {activeTab === "yield" ? t("Predict Yield") : t("Generate Forecast")}
                 </>
               )}
             </button>
@@ -545,7 +545,7 @@ const AiInsights: React.FC = () => {
                 <div className="mt-3 flex items-center gap-2">
                   <TrendIcon trend={getPriceTrend()} />
                   <span className="text-sm text-gray-600">
-                    {getPriceTrend() === "up" ? "Price trending up" : getPriceTrend() === "down" ? "Price trending down" : "Price stable"}
+                    {getPriceTrend() === "up" ? t("Price trending up") : getPriceTrend() === "down" ? t("Price trending down") : t("Price stable")}
                   </span>
                 </div>
               </div>
@@ -567,7 +567,7 @@ const AiInsights: React.FC = () => {
                 <div className="mt-3 flex items-center gap-2">
                   <TrendIcon trend={getDemandTrend()} />
                   <span className="text-sm text-gray-600">
-                    {getDemandTrend() === "up" ? "Demand increasing" : getDemandTrend() === "down" ? "Demand decreasing" : "Demand stable"}
+                    {getDemandTrend() === "up" ? t("Demand increasing") : getDemandTrend() === "down" ? t("Demand decreasing") : t("Demand stable")}
                   </span>
                 </div>
               </div>
@@ -579,7 +579,7 @@ const AiInsights: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-500">{yieldResult ? "Predicted Avg Yield" : "Preview Avg Yield"}</p>
+                      <p className="text-sm text-gray-500">{yieldResult ? t("Predicted Avg Yield") : t("Preview Avg Yield")}</p>
                       <p className="text-2xl font-bold text-emerald-600">{yieldSummary ? yieldSummary.avg.toFixed(0) : "—"}</p>
                       <p className="text-xs text-gray-400">ha</p>
                     </div>
@@ -588,7 +588,7 @@ const AiInsights: React.FC = () => {
                     </div>
                   </div>
                   <p className="mt-2 text-xs text-gray-500">
-                    {yieldResult ? "Based on ML model forecast" : "Preview (click Predict Yield to run model)"}
+                    {yieldResult ? t("Based on ML model forecast") : t("Preview (click Predict Yield to run model)")}
                   </p>
                 </div>
 
@@ -619,7 +619,7 @@ const AiInsights: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-500">Selected Crop</p>
+                      <p className="text-sm text-gray-500">{t("Selected Crop")}</p>
                       <p className="text-xl font-bold text-gray-800">{selectedCrop}</p>
                       <p className="text-xs text-gray-400">{season.replace(/_/g, " ")}</p>
                     </div>
@@ -649,7 +649,7 @@ const AiInsights: React.FC = () => {
           {(activeTab === "price" || activeTab === "demand") && forecastData.length > 0 && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="font-bold text-lg mb-4">
-                {activeTab === "price" ? "Price Forecast Chart" : "Demand Forecast Chart"}
+                {activeTab === "price" ? t("Price Forecast Chart") : t("Demand Forecast Chart")}
               </h3>
 
               {activeTab === "price" ? (
@@ -676,7 +676,7 @@ const AiInsights: React.FC = () => {
                       strokeWidth={2}
                       fillOpacity={1}
                       fill="url(#colorPrice)"
-                      name="Predicted Price (LKR)"
+                      name={t("Predicted Price (LKR)")}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -691,7 +691,7 @@ const AiInsights: React.FC = () => {
                       formatter={(v) => [`${Number(v).toFixed(0)} tonnes`, "Demand"]}
                     />
                     <Legend />
-                    <Bar dataKey="demand" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Predicted Demand (tonnes)" />
+                    <Bar dataKey="demand" fill="#3b82f6" radius={[4, 4, 0, 0]} name={t("Predicted Demand (tonnes)")} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -726,7 +726,7 @@ const AiInsights: React.FC = () => {
                     dataKey="yield"
                     fill="#22c55e" // green after predict, gray before
                     radius={[4, 4, 0, 0]}
-                    name={yieldResult ? "Predicted Yield (ha)" : "Preview Yield (ha)"}
+                    name={yieldResult ? t("Predicted Yield (ha)") : t("Preview Yield (ha)")}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -737,7 +737,7 @@ const AiInsights: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
               <Brain className="text-purple-600" size={20} />
-              About the ML Model
+              {t("About the ML Model")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
@@ -750,7 +750,7 @@ const AiInsights: React.FC = () => {
               </div>
               <div>
                 <h4 className="font-semibold text-gray-700">{t("Yield Features")}</h4>
-                <p className="text-gray-600">Year, month, season code, crop code, lag yields</p>
+                <p className="text-gray-600">{t("Year, month, season code, crop code, lag yields")}</p>
               </div>
               <div>
                 <h4 className="font-semibold text-gray-700">{t("Update Frequency")}</h4>

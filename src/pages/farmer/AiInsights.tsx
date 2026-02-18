@@ -371,7 +371,7 @@ const AiInsights: React.FC = () => {
         <div className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
             <BarChart3 className="text-green-600" size={20} />
-            {activeTab === "yield" ? "Yield Parameters" : "Forecast Parameters"}
+            {activeTab === "yield" ? t("Yield Parameters") : t("Forecast Parameters")}
           </h3>
 
           <div className="space-y-4">

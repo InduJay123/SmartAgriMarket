@@ -235,7 +235,18 @@
       "View Harvest Insights": "අස්වැන්න අවබෝධය බලන්න",
       "Harvest Alert Chart": "අස්වැන්න අවවාද සටහරය",
 
-      "Daily Price Lists":"දෛනික මිල ලැයිස්තු"
+      "Daily Price Lists":"දෛනික මිල ලැයිස්තු",
+
+      "Phone Number": "දුරකථන අංකය",
+      "Personal Information": "පෞද්ගලික තොරතුරු",
+      "Market / Company Information": "වෙළඳපොළ / සමාගම් තොරතුරු",
+      "Company Name": "සමාගම් නම",
+      "Company Email": "සමාගම් ඊමේල්",
+      "Company Phone": "සමාගම් දුරකථන අංකය",
+      "Address": "ලිපිනය",
+      "Street Address": "වීථි ලිපිනය",
+      "City": "නගරය",
+      "Postal Code": "තැපැල් කේතය"
       
       
 

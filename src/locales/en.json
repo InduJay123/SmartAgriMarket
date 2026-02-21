@@ -229,7 +229,24 @@
     "Model Accuracy": "Model Accuracy",
     "Our AI models are trained on extensive historical data to provide accurate forecasts that help you make informed decisions about your farm operations.": "Our AI models are trained on extensive historical data to provide accurate forecasts that help you make informed decisions about your farm operations.",
 
-    "Daily Price Lists": "Daily Price Lists"
+    "Daily Price Lists": "Daily Price Lists",
+
+    "Personal Information": "Personal Information",
+    "Full Name": "Full Name",
+    "Email Address": "Email Address",
+    "Phone Number": "Phone Number",
+    "Farm Location": "Farm Location",
+    "City, District": "City, District",
+    "Market / Company Information": "Market / Company Information",
+    "Company Name": "Company Name",
+    "Company Email": "Company Email",
+    "Company Phone": "Company Phone",
+    "Address": "Address",
+    "Street Address": "Street Address",
+    "City": "City",
+    "Postal Code": "Postal Code"
+
+
 
 
 

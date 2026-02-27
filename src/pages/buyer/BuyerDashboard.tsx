@@ -5,6 +5,7 @@ import { fetchProducts } from "../../api/ProductService";
 import ProductPage from "../../components/buyer/ProductPage";
 import Cart from "../../components/buyer/Cart";
 import Chat from "../../components/Chat";
+import { useTranslation } from "react-i18next";
 
 interface CartItem {
   id: string;
@@ -13,6 +14,10 @@ interface CartItem {
 }
 
 function BuyerDashboard() {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
   const [products, setProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
@@ -149,7 +154,6 @@ function BuyerDashboard() {
           products={filteredProducts}
           addToCart={handleAddToCart}
           loading={loading}
-          cartItems={cartItems}
         />
 
         {/* Cart */}

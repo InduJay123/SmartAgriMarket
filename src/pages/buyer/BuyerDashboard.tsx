@@ -118,8 +118,8 @@ function BuyerDashboard() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
         <div className="relative h-full flex flex-col justify-center p-8 text-white">
-          <h2 className="text-3xl font-bold mb-2">Fresh From Farm</h2>
-          <p className="text-gray-100 mb-4">Get the freshest vegetables delivered to your doorstep</p>
+          <h2 className="text-3xl font-bold mb-2">{t("Fresh From Farm")}</h2>
+          <p className="text-gray-100 mb-4">{t("Get the freshest vegetables delivered to your doorstep")}</p>
           <button className="bg-transparent border border-white text-white w-auto hover:text-green-600 hover:bg-white px-4 py-2 rounded-lg font-semibold w-fit">
             Shop Now
           </button>
@@ -129,7 +129,7 @@ function BuyerDashboard() {
       {/* Filter */}
       <div className="bg-white rounded-xl shadow-sm p-4">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-bold">Filter Products</h3>
+          <h3 className="text-lg font-bold">{t("Filter Products")}</h3>
           <Filter size={20} className="text-gray-500" />
         </div>
 

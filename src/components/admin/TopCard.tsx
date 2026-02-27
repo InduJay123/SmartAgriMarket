@@ -7,7 +7,13 @@ interface TopCardProps {
     iconColor: string;
 }
 
-
+const TopCard:React.FC<TopCardProps> = ({
+    title,
+    description,
+    bottomText,
+    icon: IconComponent,
+    iconBgColor,
+    iconColor,
 }) => {
     return(
         <div className="min-w-[200px] max-w-[250px] flex-1 bg-white border border-gray-100 shadow-md rounded-lg p-4">

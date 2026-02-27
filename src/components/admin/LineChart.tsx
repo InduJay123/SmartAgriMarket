@@ -3,7 +3,10 @@ interface DataPoint {
   price: number;
 }
 
-
+interface LineChartProps {
+  data: DataPoint[];
+  title: string;
+}
 
 export default function LineChart({ data, title }: LineChartProps) {
   const maxPrice = Math.max(...data.map(d => d.price));

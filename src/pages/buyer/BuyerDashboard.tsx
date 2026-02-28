@@ -109,7 +109,7 @@ function BuyerDashboard() {
   }
 
   return (
-    <div className="space-y-4 pt-4">
+    <div className={`space-y-4 pt-4 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
       {/* Banner */}
       <div className="relative rounded-2xl overflow-hidden h-64">
         <img
@@ -133,7 +133,7 @@ function BuyerDashboard() {
           <Filter size={20} className="text-gray-500" />
         </div>
 
-        <label className="block text-sm font-medium mb-3">Seasons</label>
+        <label className="block text-sm font-medium mb-3">{t("Seasons")}</label>
         <div className="flex flex-wrap gap-2 mb-4">
           {seasons.map((season, index) => (
           <button

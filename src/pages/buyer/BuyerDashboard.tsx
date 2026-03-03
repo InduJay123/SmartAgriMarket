@@ -46,7 +46,7 @@ function BuyerDashboard() {
     getProducts();
   }, []);
 
-  const seasons = ["all", "Yala", "Maha"];
+  const seasons = [t("all"), t("Yala"), t("Maha")];
   const [selectedSeason, setSelectedSeason] = useState("all");
 
   const filteredProducts = products.filter(p => 
@@ -121,7 +121,7 @@ function BuyerDashboard() {
           <h2 className="text-3xl font-bold mb-2">{t("Fresh From Farm")}</h2>
           <p className="text-gray-100 mb-4">{t("Get the freshest vegetables delivered to your doorstep")}</p>
           <button className="bg-transparent border border-white text-white w-auto hover:text-green-600 hover:bg-white px-4 py-2 rounded-lg font-semibold w-fit">
-            Shop Now
+           {t("Shop Now")}
           </button>
         </div>
       </div>

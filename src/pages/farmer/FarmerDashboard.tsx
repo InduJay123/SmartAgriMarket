@@ -205,7 +205,7 @@ const FarmerDashboard: React.FC = () => {
             alert(t("Crop deleted successfully."));
         } catch (error) {
             console.error("Error deleting crop:", error);
-            alert("Failed to delete crop");
+            alert(t("Failed to delete crop"));
         }
     };
 

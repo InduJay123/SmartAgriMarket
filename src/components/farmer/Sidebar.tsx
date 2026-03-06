@@ -1,6 +1,7 @@
 // Sidebar.tsx
 import { Bell, FileSpreadsheet, Home, LogOut, MessageSquare, MessagesSquare, PlusCircle, Settings, TrendingUp, User, Brain } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -8,18 +9,23 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+
+     const { t, i18n } = useTranslation();
+     const isSinhala = i18n.language === "si";
+
+
     const navigate = useNavigate();
 
     const handleLogout = () => navigate("/login");
 
     const menuItems = [
-        { name: "Home", icon: Home, path: "/farmer/dashboard" },
-        { name: "AI Insights", icon: Brain, path: "/farmer/ai-insights" },
-        { name: "Add Crops", icon: PlusCircle, path: "/farmer/addcrops" },
-        { name: "Daily Price List", icon: FileSpreadsheet, path: "/farmer/pricelist" },
-        { name: "Messages", icon: MessagesSquare, path: "/farmer/messages" },
-        { name: "Alerts", icon: Bell, path: "/farmer/alerts" }, 
-        { name: "My Profile", icon: User, path: "/farmer/profile" }
+        { name: t("Home"), icon: Home, path: "/farmer/dashboard" },
+        { name: t("AI Insights"), icon: Brain, path: "/farmer/ai-insights" },
+        { name: t("Add Crops"), icon: PlusCircle, path: "/farmer/addcrops" },
+        { name: t("Daily Price List"), icon: FileSpreadsheet, path: "/farmer/pricelist" },
+        { name: t("Messages"), icon: MessagesSquare, path: "/farmer/messages" },
+        { name: t("Alerts"), icon: Bell, path: "/farmer/alerts" },
+        { name: t("My Profile"), icon: User, path: "/farmer/profile" }
     ];
     
     return (
@@ -39,6 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     transform transition-transform duration-300
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}
                     sm:translate-x-0 sm:static sm:block
+                    ${isSinhala ? "font-sinhala" : "font-sans"}
                 `}
             >
                 {/* CLOSE BUTTON MOBILE */}

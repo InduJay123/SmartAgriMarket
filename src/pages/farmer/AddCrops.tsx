@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle, Sprout } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { CropFormData } from "../../@types/CropFormData";
@@ -10,10 +10,39 @@ import Pricing from "../../components/farmer/Pricing";
 import AddLocation from "../../components/farmer/AddLocation";
 
 const AddCrops: React.FC = () => {
-
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<CropFormData>({});
+
+
+
+    type PriceForecastResponse = {
+    prediction_type: string;
+    crop_type: string;
+    forecast_days: number;
+    currency: string;
+    today_price: number;
+    avg_30_days: number;
+    series: {
+        date: string;
+        product: string;
+        predicted_price: number;
+    }[];
+    };
+
+    const [priceForecast, setPriceForecast] = useState<PriceForecastResponse | null>(null);
+    const [forecastLoading, setForecastLoading] = useState(false);
+    const [forecastError, setForecastError] = useState<string | null>(null);
+
+    const cropName = useMemo(() => {
+    return (formData.crop?.trim() || formData.customCrop?.trim() || "");
+    }, [formData.crop, formData.customCrop]);
+
+
+
+
+
+
 
     const validateStep = () => {
         switch(step){
@@ -32,6 +61,44 @@ const AddCrops: React.FC = () => {
                 return true;
         }
     };
+
+
+    useEffect(() => {
+    const fetchPriceForecast = async () => {
+
+        if (step !== 3) return;
+        if (!cropName) return;
+
+        try {
+        setForecastLoading(true);
+        setForecastError(null);
+
+        const response = await axios.post(
+            "http://127.0.0.1:8000/api/ml/price/forecast/",
+            {
+            crop_type: cropName,
+            forecast_days: 30
+            }
+        );
+
+        setPriceForecast(response.data);
+
+        } catch (error: unknown) {
+        console.error("Price forecast error:", error);
+        setPriceForecast(null);
+        setForecastError("Unable to load price forecast");
+        } finally {
+        setForecastLoading(false);
+        }
+
+    };
+
+    fetchPriceForecast();
+
+    }, [step, cropName]);   
+
+
+
 
     const handleNext = () => {
         if(!validateStep()){
@@ -136,7 +203,14 @@ const AddCrops: React.FC = () => {
                 )}
 
                 {step === 3 && (
-                    <Pricing formData={formData} setFormData={setFormData}/>
+                <Pricing
+                    formData={formData}
+                    setFormData={setFormData}
+                    averagePrice={priceForecast?.avg_30_days ?? null}
+                    premiumPrice={priceForecast?.today_price ?? null}
+                    loading={forecastLoading}
+                    error={forecastError}
+                />
                 )}
 
                 {step === 4 && (

@@ -34,8 +34,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
         throw new Error("No access token returned from backend");
       }
 
-      localStorage.setItem("access_token", access);
-      if (refresh) localStorage.setItem("refresh_token", refresh);
+      localStorage.setItem("accessToken", access);
+      if (refresh) localStorage.setItem("refreshToken", refresh);
 
       onClose();
       navigate("/admin/dashboard");

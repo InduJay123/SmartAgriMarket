@@ -15,7 +15,7 @@ export default function ActivityTable({ activities }: ActivityTableProps) {
     <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6 overflow-x-auto">
       <div className="flex gap-4 items-center justify-start mb-4 text-black">
         <Settings/>
-        <h3 className="text-lg lg:text-xl font-bold ">System Activity Logs</h3>     
+           <h3 className="text-lg lg:text-xl font-bold ">System Activity Logs</h3>  
       </div>
 
      <table className="w-full min-w-[500px]">

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter,Routes, Route, useNavigate } from 'react-router-dom';
 
 import PublicLayout from './layout/PublicLayout';
@@ -9,14 +9,9 @@ import AboutUs from './scenes/aboutus/aboutus';
 import Login from './pages/authentication/Login';
 import Signup from './pages/authentication/Signup';
 
-import BillingInfo from './components/buyer/BillingInfo';
-import BuyerShop from './components/buyer/BuyerDashboard';
-import OrderHistory from './components/buyer/OrderHistory';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
-import SideBarLayout from './layout/SidebarLayout';
 
 import Admin from './pages/admin/Admin';
-import AdminDashboard from './pages/admin/AdminDashboard';
 import AIModel from './pages/admin/AIModel';
 import ManageBuyers from './pages/admin/ManageBuyers';
 import ManageCrops from './pages/admin/ManageCrops';
@@ -27,16 +22,32 @@ import UploadPrice from './pages/admin/UploadPrice';
 import AddCrops from './pages/farmer/AddCrops';
 import AiInsights from './pages/farmer/AiInsights';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
-import Messages from './pages/farmer/Messages';
+
+import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
 import Settings from './pages/admin/Settings';
 
 import './App.css'
 
 import AdminLanding from './pages/AdminLanding';
-import ProfileInfo from './pages/farmer/ProfileInfo';
+
+import FavouritesPage from './pages/buyer/FavouritesPage';
+import OrderHistory from './pages/buyer/OrderHistory';
+import BuyerDashboard from './pages/buyer/BuyerDashboard';
+import ProfileInfo from './pages/buyer/ProfileInfo';
+import AiInsight from './pages/buyer/AiInsight';
+import PriceList from './pages/buyer/PriceList';
+import SidebarLayout from './layout/SidebarLayout';
+import ResetPassword from './pages/authentication/ResetPassword';
+import ScrollToTop from './scenes/navbar/ScrollTop';
+import BuyerMessages from './pages/buyer/BuyerMessages';
+import { getFcmToken, onMessageListener } from './lib/firebase-messaging';
+import axios from 'axios';
+import AlertsPanel from './pages/farmer/AlertPanel';
+import FarmerMessages from './pages/farmer/FarmerMessages';
 import ChatBot from './components/chatbot/ChatBot';
 
 function App() {
+
   function LoginWrapper() {
     const navigate = useNavigate();
     return <Login onNavigateToSignup={() => navigate("/signup")} />;
@@ -63,27 +74,61 @@ function App() {
   }, [] 
   );
 
+  useEffect(() => {
+    if (window.location.pathname.startsWith("/admin")) {
+      return;
+    }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then(() => console.log("Service Worker registered"));
+    }
+
+    getFcmToken().then(async (token) => {
+      if (token) {
+        try {
+          await axios.post("http://localhost:8000/api/save-token/", { token }, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+            }
+          });
+          console.log("FCM token saved to backend");
+        } catch (err) {
+          console.error("Failed to save FCM token", err);
+        }
+      }
+    });
+    // Foreground messages
+    onMessageListener().then((payload: any) => {
+      alert(
+        `${payload.notification?.title}\n${payload.notification?.body}`
+      );
+    });
+  }, []);
 
   return (
     <div>
       <BrowserRouter>
+      <ScrollToTop/>
       <Routes>
+        <Route path='/' element = {<Home/>} />
+        <Route path='/farmer' element = {<SidebarLayout/>} >
+          <Route path="dashboard" element={<FarmerDashboard/>}/>
+          <Route path='ai-insights' element={<AiInsights/>} />
+          <Route path='addcrops' element={<AddCrops/>}/>
+          <Route path='pricelist' element={<PriceList />}/>
+          <Route path='messages' element={<FarmerMessages/>}/>
+          <Route path='alerts' element={<AlertsPanel/>}/>
+          <Route path='profile' element={<FarmerProfileInfo/>}/>
+        </Route>
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Home />} />
           <Route path="contactus" element={<ContactUs />} />
           <Route path="aboutus" element={<AboutUs />} />
           <Route path='login' element={<LoginWrapper/>} />
-          <Route path="signup" element={<SignupWrapper />} /> 
+          <Route path="signup" element={<SignupWrapper />} />
         </Route>
-
-        <Route path="/farmer" element={<SideBarLayout />}>
-          <Route path='dashboard' element={<FarmerDashboard/>} />
-          <Route path="ai-insights" element={<AiInsights />} />
-          <Route path="addcrops" element={<AddCrops />} />
-          <Route path="messages" element={<Messages />} />
-          <Route path="settings" element={<ProfileInfo />} />
-        </Route>
-
+         <Route path="/reset-password/:token" element={<ResetPassword />} />
          <Route path="/admin" element={<AdminLanding />} />
 
         {/* Admin routes */}
@@ -98,10 +143,15 @@ function App() {
         <Route path="/admin/settings" element={<Settings />} />
 
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
-          <Route path="shop" element={<BuyerShop />} />
+          <Route path="shop" element={<BuyerDashboard />} />
           <Route path="orders" element={<OrderHistory />} />
-          <Route path="billing" element={<BillingInfo buyerId={''} />} />          
-        </Route>
+          <Route path="favourites" element={<FavouritesPage />} />  
+          <Route path="pricelist" element={<PriceList />} />
+          <Route path="ai-insights" element={<AiInsight />} />
+          <Route path="messages" element={<BuyerMessages/>} />
+          <Route path="alerts" element={<AlertsPanel/>} />
+          <Route path="profile" element={<ProfileInfo />} />
+         </Route>
       </Routes>
       <ChatBot />
     </BrowserRouter>

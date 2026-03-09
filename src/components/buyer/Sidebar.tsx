@@ -1,5 +1,6 @@
 // Sidebar.tsx
-import { CreditCard, Heart,  LogOut, Package,ShoppingBag, ShoppingCart, } from "lucide-react";
+import { Bell, FileSpreadsheet,  Heart,  LogOut, MessagesSquare, Package,ShoppingBag, TrendingUp, User, } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { NavLink, useNavigate } from "react-router-dom";
 
 interface SidebarProps {
@@ -8,16 +9,22 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+
+
+    const { t, i18n } = useTranslation();
+    const isSinhala = i18n.language === "si";
     const navigate = useNavigate();
 
     const handleLogout = () => navigate("/login");
 
     const menuItems = [
-      { name: "Shop", icon: ShoppingBag, path: "/buyer/shop" },
-      { name: "My Orders", icon: Package, path: "/buyer/orders" },
-      { name: "Billing Info", icon: CreditCard, path: "/buyer/billing" },
-      { name: "Favorites", icon: Heart, path: "/buyer/favorites" },
-      { name: "Cart", icon: ShoppingCart, path: "/buyer/cart" },
+      { name: t("Marketplace"), icon: ShoppingBag, path: "/buyer/shop" },
+      { name: t("AI Insights"), icon: TrendingUp, path: "/buyer/ai-insights" },    
+      { name: t("Favorites"), icon: Heart, path: "/buyer/favourites" },
+      { name: t("Daily Price List"), icon: FileSpreadsheet, path: "/buyer/pricelist" },
+      { name: t("Messages"), icon: MessagesSquare, path: "/buyer/messages" },
+      { name: t("Alerts"), icon: Bell, path: "/buyer/alerts" }, 
+      { name: t("My Profile"), icon: User, path: "/buyer/profile" },
     ];
 
     return (
@@ -37,6 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     transform transition-transform duration-300
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}
                     sm:translate-x-0 sm:static sm:block
+                    ${isSinhala ? "font-sinhala" : "font-sans"}
                 `}
             >
                 {/* CLOSE BUTTON MOBILE */}

@@ -1,14 +1,20 @@
 import { useState } from "react";
-import { UserPlus, User, Mail, Lock, Phone, MapPin } from "lucide-react";
+import { UserPlus, User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from "lucide-react";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import type { SignupFormData, UserRole } from "../../types/auth";
 import rightimg from "../../assets/man-seller-sells-fresh-organic-fruit-vegetable-street-shop-seasonal-outdoor-farmer-local-market_575670-344.avif"
+import { useTranslation } from "react-i18next";
+import { signupUser } from "../../api/auth";
 
 interface SignupProps {
   onNavigateToLogin: () => void;
 }
 
 export default function Signup({ onNavigateToLogin }: SignupProps) {
+
+  
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
 
   const [formData, setFormData] = useState<SignupFormData>({
     fullName: "",
@@ -21,7 +27,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     farmLocation: "",
   });
 
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState<
     Partial<Record<keyof SignupFormData, string>>
   >({});
@@ -59,25 +66,49 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Signup submitted:", formData);
+    if (!validateForm()) return;
+
+    try {
+      const payload: any = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role === "farmer" ? "Farmer" : "Buyer",
+        fullname: formData.fullName,
+        contact_number: formData.mobileNumber,
+      };
+
+      if (formData.role === "farmer") {
+        payload.farm_name = formData.farmLocation;
+      }
+
+      const response = await signupUser(payload);
+
+
+      console.log("Signup successful:", response.data);
+      alert("Account created successfully!");
+      onNavigateToLogin();
+
+    } catch (error: any) {
+        console.error(error.response?.data || error.message);
+        alert("Signup failed: " + JSON.stringify(error.response?.data));
     }
   };
 
   return ( 
-      <div className="w-full bg-white grid grid-cols-1 md:grid-cols-2 overflow-hidden py-10 px-16">
+      <div className={`w-full bg-white grid grid-cols-1 md:grid-cols-2 overflow-hidden py-10 px-16 ${isSinhala ? "font-sinhala text-2xl" : "font-sans"}`}>
         {/* LEFT SIDE – SIGNUP FORM */}
         <div className="p-10">
-          <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
-          <p className="text-gray-600 mt-1">
-            Smart Agriculture Market Management System
+          <h1 className="text-3xl font-bold text-gray-800">{t("Create Account")}</h1>
+          <p className={`text-gray-600 mt-1 ${isSinhala ? "font-sans" : "font-sans"}`}>
+            {t("Smart Agriculture Market Management System")}
           </p>
 
           <div className="mt-6">
             <label className="text-sm font-medium text-gray-700">
-              Select Your Role
+              {t("Select Your Role")}
             </label>
 
             <RoleSelector
@@ -90,9 +121,9 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
 
             {/* FULL NAME */}
             <InputField
-              label="Full Name"
+              label={t("Full Name")}
               icon={User}
-              placeholder="Enter your full name"
+              placeholder={t("Enter your full name")}
               value={formData.fullName}
               onChange={(v: any) => setFormData({ ...formData, fullName: v })}
               error={errors.fullName}
@@ -100,9 +131,9 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
 
             {/* USERNAME */}
             <InputField
-              label="Username"
+              label={t("Username")}
               icon={User}
-              placeholder="Choose a username"
+              placeholder={t("Choose a username")}
               value={formData.username}
               onChange={(v: any) => setFormData({ ...formData, username: v })}
               error={errors.username}
@@ -111,18 +142,18 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             {/* EMAIL + PHONE */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
-                label="Email"
+                label={t("Email")}
                 icon={Mail}
-                placeholder="Enter your email"
+                placeholder={t("Enter your email")}
                 value={formData.email}
                 onChange={(v: any) => setFormData({ ...formData, email: v })}
                 error={errors.email}
               />
 
               <InputField
-                label="Mobile Number"
+                label={t("Mobile Number")}
                 icon={Phone}
-                placeholder="10–15 digits"
+                placeholder={t("10 digits")}
                 value={formData.mobileNumber}
                 onChange={(v: any) => setFormData({ ...formData, mobileNumber: v })}
                 error={errors.mobileNumber}
@@ -130,35 +161,52 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             </div>
 
             {/* PASSWORD */}
-            <InputField
-              label="Password"
-              icon={Lock}
-              type="password"
-              placeholder="Create a password"
-              value={formData.password}
-              onChange={(v: any) => setFormData({ ...formData, password: v })}
-              error={errors.password}
-            />
+            <div className="relative">
+              <InputField
+                label={t("Password")}
+                type={showPassword ? "text" : "password"} // toggle type
+                icon={Lock}
+                placeholder={t("Create a password")}
+                value={formData.password}
+                onChange={(v: any) => setFormData({ ...formData, password: v })}
+                error={errors.password}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/6 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
 
             {/* CONFIRM PASSWORD */}
-            <InputField
-              label="Confirm Password"
-              icon={Lock}
-              type="password"
-              placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={(v: any) =>
-                setFormData({ ...formData, confirmPassword: v })
-              }
-              error={errors.confirmPassword}
-            />
-
+            <div className="relative mt-4">
+              <InputField
+                label={t("Confirm Password")}
+                type={showConfirm ? "text" : "password"}
+                icon={Lock}
+                placeholder={t("Confirm your password")}
+                value={formData.confirmPassword}
+                onChange={(v: any) =>
+                  setFormData({ ...formData, confirmPassword: v })
+                }
+                error={errors.confirmPassword}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/6 text-gray-500"
+                onClick={() => setShowConfirm(!showConfirm)}
+              >
+                {showConfirm ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
             {/* FARM LOCATION – only for farmers */}
             {formData.role === "farmer" && (
               <InputField
-                label="Farm Location"
+                label={t("Farm Location")}
                 icon={MapPin}
-                placeholder="City, District"
+                placeholder={t("City, District")}
                 value={formData.farmLocation}
                 onChange={(v: any) => setFormData({ ...formData, farmLocation: v })}
                 error={errors.farmLocation}
@@ -168,24 +216,24 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
             <button 
               className="w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition">
               <UserPlus className="inline w-5 h-5 mr-2" />
-              Sign Up
+              {t("Sign Up")}
             </button>
           </form>
 
           <p className="text-sm text-gray-600 mt-4 text-center">
-            Already have an account?{" "}
+            {t("Already have an account?")}{" "}
             <button
               onClick={onNavigateToLogin}
               className="text-green-700 font-semibold hover:underline"
             >
-              Login
+              {t("Login")}
             </button>
           </p>
         </div>
 
         {/* RIGHT SIDE – Illustration area */}
         <div className="hidden md:flex flex-col  items-center justify-center p-10 ">         
-          <h2 className="text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6 -mt-12">
+          <h2 className={`text-4xl  text-gray-800 leading-snug text-left font-poppins mb-6 -mt-12 ${isSinhala ? "font-sans" : "font-sans"}`}>
           Reach your<br /> customers faster, <br />
           Manage your<br /> harvest without loss, <br />
           <span className="text-green-700 font-bold">With Us.</span>

@@ -1,4 +1,6 @@
 import { User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getFarmerProfile } from "../../api/farmer/farmerProfile";
 
 interface HeaderProps {
     icon?: React.ElementType
@@ -11,13 +13,24 @@ const Header:React.FC <HeaderProps>= ({
     title,
     subTitle,
 }) => {
+
+    const [farmer, setFarmer] = useState<{ first_name: string  } | null>(null);
+    useEffect(() => {
+        const fetchFarmer = async () => {
+          const data = await getFarmerProfile();
+          setFarmer({
+            first_name: data?.first_name,
+          });
+        };
+        fetchFarmer();
+      }, []);
     return(
         <div>
             <div className="flex flex-col items-start justify-start gap-4 mb-6">
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap items-center gap-6">
                     <User/>
                     <div className="flex flex-col items-start justify-start gap-2">
-                        <h1 className="font-extrabold text-3xl"> Welcome back, Neha</h1>                         
+                        <h1 className="font-extrabold text-3xl"> Welcome back, {farmer?.first_name} </h1>                         
                         <p className="text-xs text-gray-400">Here,s what's happening with your farm today</p>
                     </div>
                 </div>                    

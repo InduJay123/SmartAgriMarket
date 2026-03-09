@@ -1,77 +1,25 @@
-import { useState, useEffect } from "react";
-import { Menu, User, TrendingUp, ShoppingCart, Search } from "lucide-react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState} from "react";
+import { Menu, User, TrendingUp,Search, Bell } from "lucide-react";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../components/buyer/Sidebar";
-import Cart from "../components/buyer/Cart";
-import { type CartItem } from "../lib/supabase";
+import { getBuyerProfile } from "../api/profile";
 
 const BuyerSideBarLayout: React.FC = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [showCart, setShowCart] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const buyerId = "demo-buyer-id";
+  const [buyer, setBuyer] = useState<{ fullname: string; profile_image: string } | null>(null);
+  const navigate = useNavigate();
 
-  // Load cart from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem(`cart_${buyerId}`);
-    if (saved) {
-      try {
-        const parsed: CartItem[] = JSON.parse(saved).map((item) => ({
-          ...item,
-          quantity: Number(item.quantity) || 0, // ensure quantity is a number
-        }));
-        setCartItems(parsed);
-      } catch (err) {
-        console.error("Failed to parse cart from localStorage:", err);
-        setCartItems([]);
-      }
-    }
-  }, [buyerId]);
-
-  // Cart count safely computed
-  const cartCount = cartItems.reduce(
-    (sum, item) => sum + (item?.quantity || 0),
-    0
-  );
-
-  // Update quantity
-  const updateCartQuantity = (itemId: string, newQty: number) => {
-    if (newQty < 1) return;
-
-    const updated = cartItems.map((item) =>
-      item.id === itemId ? { ...item, quantity: newQty } : item
-    );
-    setCartItems(updated);
-    localStorage.setItem(`cart_${buyerId}`, JSON.stringify(updated));
+  const fetchBuyer = async () => {
+    const data = await getBuyerProfile();
+    setBuyer({
+      fullname: data?.buyer_details?.fullname,
+      profile_image: data?.buyer_details?.profile_image,
+    });
   };
-
-  // Remove item
-  const removeFromCart = (itemId: string) => {
-    const updated = cartItems.filter((item) => item.id !== itemId);
-    setCartItems(updated);
-    localStorage.setItem(`cart_${buyerId}`, JSON.stringify(updated));
-  };
-
-  // Cart total
-  const cartTotal = cartItems.reduce(
-    (sum, item) => sum + (item.product?.price || 0) * (item.quantity || 0),
-    0
-  );
-
-  // Refresh cart (after order)
-  const fetchCartItems = () => {
-    const saved = localStorage.getItem(`cart_${buyerId}`);
-    if (saved) {
-      const parsed: CartItem[] = JSON.parse(saved).map((item) => ({
-        ...item,
-        quantity: Number(item.quantity) || 0,
-      }));
-      setCartItems(parsed);
-    } else {
-      setCartItems([]);
-    }
-  };
+  fetchBuyer();
+}, []);
 
   return (
     <div className="w-screen bg-gray-50 flex flex-col justify-between">
@@ -94,7 +42,7 @@ const BuyerSideBarLayout: React.FC = () => {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-gray-900">Buyer Portal</h1>
-                  <p className="text-xs text-gray-500">Henrri's Market</p>
+                  <p className="text-xs text-gray-500">{buyer?.fullname || "Buyers Portal"}</p>
                 </div>
               </div>
             </div>
@@ -116,21 +64,29 @@ const BuyerSideBarLayout: React.FC = () => {
 
             {/* RIGHT: Account + Cart */}
             <div className="flex items-center gap-4">
-              <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
-                <User size={20} />
-                <span className="text-sm font-medium">Account</span>
-              </button>
-
-              <button
-                onClick={() => setShowCart(true)}
-                className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+               <button
+                onClick={() => navigate("/buyer/alerts")}
+                className="relative p-2 rounded-lg hover:bg-gray-100"
+                title="Alerts"
               >
-                <ShoppingCart size={24} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
+                <Bell size={22} className="text-gray-700" />
+
+                {/* optional red dot (show when there are unseen alerts) */}
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+               <button 
+                onClick={() => navigate("/buyer/profile")}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                {buyer?.profile_image ? (
+                  <img
+                    src={buyer.profile_image}
+                    alt="Profile"
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <User size={20} />
                 )}
+                <span className="text-sm font-medium">{buyer?.fullname || "Account"}</span>
               </button>
             </div>
           </div>
@@ -140,22 +96,10 @@ const BuyerSideBarLayout: React.FC = () => {
       {/* PAGE CONTENT */}
       <div className="flex flex-1 min-h-0">
         <Sidebar isOpen={showSidebar} onClose={() => setShowSidebar(false)} />
-        <main className="flex-1 overflow-auto min-h-0 pl-10 pr-40">
+        <main className="flex-1 overflow-auto min-h-0 ml-10 pr-40">
           <Outlet />
         </main>
-      </div>
-
-      {/* CART MODAL */}
-      <Cart
-        cartItems={cartItems}
-        showCart={showCart}
-        setShowCart={setShowCart}
-        updateCartQuantity={updateCartQuantity}
-        removeFromCart={removeFromCart}
-        cartTotal={cartTotal}
-        buyerId={buyerId}
-        onOrderComplete={fetchCartItems}
-      />
+      </div>   
     </div>
   );
 };

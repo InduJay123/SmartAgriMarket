@@ -1,11 +1,14 @@
 import { Calendar, DollarSign, Edit, MessageSquare, PlusCircle, Trash2, TrendingUp, Brain } from "lucide-react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/farmer/Header";
 import TopCard from "../../components/farmer/TopCard";
 import EditCrop from "../../components/farmer/EditCrop";
+import ReviewPopup from "../../components/farmer/ReviewPopup";
+import { deleteCrop, fetchCrops } from "../../api/farmer/marketplace";
 import { predictPrice, predictDemand } from "../../lib/MLService";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 interface Crop {
     market_id: number;
@@ -14,12 +17,21 @@ interface Crop {
     predicted_date: number;
     price: number;
     unit: string;
+    farming_season: string;
     status: string;
     created_at: string;
     updated_at: string;
 }
 
+
+
 const FarmerDashboard: React.FC = () => {
+
+    const { t, i18n } = useTranslation();
+    const isSinhala = i18n.language === "si";
+
+    const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+    
     // State for ML predictions
     const [marketPrice, setMarketPrice] = useState<string>("Loading...");
     const [demandForecast, setDemandForecast] = useState<string>("Loading...");
@@ -78,7 +90,7 @@ const FarmerDashboard: React.FC = () => {
 
     const stats = [
         {
-            title: "Market Price",
+            title: t('Market Price'),
             value: isLoadingPredictions ? "Loading..." : marketPrice,
             subTitle:"Tomato avg (AI)",
             icon: DollarSign,
@@ -86,7 +98,7 @@ const FarmerDashboard: React.FC = () => {
             bgColor:"bg-green-50"           
         },
         {
-            title: "Demand Forecast",
+            title: t('Demand Forecast'),
             value: isLoadingPredictions ? "Loading..." : demandForecast,
             subTitle:"Next Week (AI)",
             icon:TrendingUp,
@@ -94,7 +106,7 @@ const FarmerDashboard: React.FC = () => {
             bgColor:"bg-green-50"           
         },
         {
-            title: "Harvest Alerts",
+            title: t('Harvest Alerts'),
             value:"3 Active",
             subTitle:"Due this month",
             icon: Calendar,
@@ -102,7 +114,7 @@ const FarmerDashboard: React.FC = () => {
             bgColor:"bg-orange-50"            
         },
         {
-            title: "Messages",
+            title: t('Messages'),
             value:"5 New",
             subTitle:"From buyers",
             icon:MessageSquare,
@@ -122,6 +134,7 @@ const FarmerDashboard: React.FC = () => {
         "Potato": "🥔",
         "Carrot": "🥕",
         "Banana": "🍌",
+        "Beans": "🫘",
         "Apple": "🍎",
         "Orange": "🍊",
         "Mango": "🥭",
@@ -133,27 +146,26 @@ const FarmerDashboard: React.FC = () => {
         "Coconut": "🥥",
         "Lemon": "🍋",
         "Strawberry": "🍓",
+        "Papaya": "🥭",
         "Pineapple": "🍍",
         "Onion":  "🧅"
     };
 
     const navigate = useNavigate();
-    const [crops, setCrops] = useState<Crop[]>([])
+    const [crops, setCrops] = useState<Crop[]>([]);
     const [selectedCrop, setSelectedCrop] = useState<Crop | null>(null);
 
     useEffect(() => {
-        const fetchCrops = async () => {
-            try{
-                const response = await axios.get("http://127.0.0.1:8000/api/marketplace/" );
-                console.log("Crop fetched", response.data);
-                setCrops(response.data);
-            }catch(error){
+        const loadCrops = async () => {
+            try {
+                const data = await fetchCrops();
+                setCrops(Array.isArray(data) ? data : []);
+            } catch (error) {
                 console.error("Error fetching crops:", error);
             }
         };
-        fetchCrops();
+        loadCrops();
     }, []);
-
     
     const getCropEmoji = (name: string | undefined) => {
         if (!name) return "🌾"; // fallback
@@ -167,36 +179,36 @@ const FarmerDashboard: React.FC = () => {
         return emoji || "🌾"; // fallback emoji
     };
 
-    const handleAddCrop = () => {
-        navigate('/farmer/addcrops');
+    const handleAddCrop = () => { 
+        navigate('/farmer/addcrops'); 
     };
-
-    const handleEditCrop = (crop: Crop) => {
-        setSelectedCrop(crop);    
+    
+    const handleEditCrop = (crop: Crop) => { 
+        setSelectedCrop(crop);
     };
 
     const refreshCrops = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/marketplace/");
-            setCrops(response.data);
+            const data = await fetchCrops();
+            setCrops(data);
         } catch (error) {
-            console.error("Error fetching crops:", error);
+            console.error("Error refreshing crops:", error);
+        }
+    };
+   
+    const handleDeleteCrop = async (marketId: number) => {
+        if (!window.confirm("Are you sure you want to delete this crop?")) return;
+
+        try {
+            await deleteCrop(marketId);
+            setCrops(prev => prev.filter(crop => crop.market_id !== marketId));
+            alert(t("Crop deleted successfully."));
+        } catch (error) {
+            console.error("Error deleting crop:", error);
+            alert(t("Failed to delete crop"));
         }
     };
 
-    
-    const handleDeleteCrop = async (marketId: number) => {
-    if (!window.confirm("Are you sure you want to delete this crop?")) return;
-
-    try {
-        await axios.delete(`http://127.0.0.1:8000/api/marketplace/${marketId}/`);
-        setCrops(prev => prev.filter(crop => crop.market_id !== marketId));
-        alert("Crop deleted successfully!");
-    } catch (error) {
-        console.error("Error deleting crop:", error);
-        alert("Failed to delete crop");
-    }
-};
 
 
     return(
@@ -225,8 +237,8 @@ const FarmerDashboard: React.FC = () => {
                             <Brain className="text-white" size={24} />
                         </div>
                         <div>
-                            <h3 className="text-white font-bold text-lg">AI-Powered Forecasting</h3>
-                            <p className="text-green-100 text-sm">Get detailed price, demand, and yield predictions using our Random Forest ML model</p>
+                            <h3 className="text-white font-bold text-lg">{t('AI-Powered Forecasting')}</h3>
+                            <p className="text-green-100 text-sm">{t('Get detailed price, demand, and yield predictions using our Random Forest ML model')}</p>
                         </div>
                     </div>
                     <button
@@ -234,7 +246,7 @@ const FarmerDashboard: React.FC = () => {
                         className="bg-white text-green-700 px-6 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
                     >
                         <TrendingUp size={18} />
-                        View AI Insights
+                        {t("View AI Insights")}
                     </button>
                 </div>
             </div>
@@ -242,13 +254,13 @@ const FarmerDashboard: React.FC = () => {
             <div className=" bg-white border border-gray-200 rounded-xl shadow-lg mt-8 p-4 sm:p-6">
                 <div className="flex flex-wrap sm: gap-2 items-center justify-between w-full">
                     <div className="flex flex-col items-start justify-start">
-                        <h2 className="text-xl font-bold mb-2">My Crops</h2>
-                        <p className="text-xs text-gray-500">Manage your farm produce</p>
+                        <h2 className="text-xl font-bold mb-2">{t("My Crops")}</h2>
+                        <p className="text-xs text-gray-500">{t("Manage your farm produce")}</p>
                     </div>
                     <button 
                         onClick={handleAddCrop}
                         className="flex items-center gap-3 bg-green-800 rounded-xl py-2 px-4 text-white text-sm font-semibold sm:w-auto">
-                        <PlusCircle size={16} className="font-semibold"/> Add New Crop
+                        <PlusCircle size={16} className="font-semibold"/> {t("Add New Crop")}
                     </button>
                 </div>
 
@@ -264,39 +276,43 @@ const FarmerDashboard: React.FC = () => {
                     </div>
 
                     <div className="flex gap-2">
-                    <button 
-                        onClick={() => handleEditCrop(crop)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200">
-                            <Edit className="w-4 h-4" />
-                    </button>
-                    <button 
-                        onClick={() => handleDeleteCrop(crop.market_id)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-red-600 hover:bg-red-100">
-                            <Trash2 className="w-4 h-4" />
-                    </button>
+                        <button onClick={() => setSelectedProductId(crop.market_id)}>
+                            Reviews
+                        </button>
+                        <button 
+                            onClick={() => handleEditCrop(crop)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200">
+                                <Edit className="w-4 h-4" />
+                        </button>
+                        <button 
+                            onClick={() => handleDeleteCrop(crop.market_id)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-red-600 hover:bg-red-100">
+                                <Trash2 className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
 
                 <div className="text-sm text-gray-700 space-y-1">
-                    <p><span className="font-semibold">Expected Qty:</span> {crop.quantity}{crop.unit}</p>
-                    <p><span className="font-semibold">Expected Date:</span> {crop.predicted_date}</p>
-                    <p><span className="font-semibold">Price:</span> Rs. {crop.price}</p>
-                    <p><span className="font-semibold">Status:</span> {crop.status}</p>
+                    <p><span className="font-semibold">{t("Expected Qty")}:</span> {crop.quantity}{crop.unit}</p>
+                    <p><span className="font-semibold">{t("Expected Date")}:</span> {crop.predicted_date}</p>
+                    <p><span className="font-semibold">{t("Price")}:</span> Rs. {crop.price}</p>
+                    <p><span className="font-semibold">{t("Season")}:</span>{crop.farming_season}</p>
+                    <p><span className="font-semibold">{t("Status")}:</span> {crop.status}</p>
                 </div>
                 </div>
             ))}
-
-                
+               
                 <div className="mt-4 p-2 overflow-x-auto hidden sm:block">
                     <table className="min-w-[700px] w-full text-sm">
                         <thead className="text-sm text-gray-500 bg-gray-100 border-b">
                             <tr>
-                                <th className="px-6 py-4 text-left">Crop</th>
-                                <th className="px-6 py-4 text-left">Expected Quantity/kg</th>
-                                <th className="px-4 py-4 text-left">Expected Date</th>
-                                <th className="px-10 py-4 text-left">Price/Rs</th>
-                                <th className="px-10 py-4 text-left">Status</th>
-                                <th className="px-10 py-4 text-center">Actions</th>
+                                <th className="px-6 py-4 text-left">{t("Crop")}</th>
+                                <th className="px-6 py-4 text-left">{t("Expected Qty")}</th>
+                                <th className="px-4 py-4 text-left">{t("Expected Date")}</th>
+                                <th className="px-10 py-4 text-left">{t("Price")}</th>
+                                <th className="px-10 py-4 text-left">{t("Season")}</th>
+                                <th className="px-10 py-4 text-left">{t("Status")}</th>
+                                <th className="px-10 py-4 text-center">{t("Actions")}</th>
                             </tr>
                         </thead>  
                         <tbody>
@@ -308,13 +324,31 @@ const FarmerDashboard: React.FC = () => {
                                             <span> {crop.crop_name} </span>
                                         </div>
                                     </td>
-                                    <td className="text-sm px-4 py-4">{crop.quantity} {crop.unit} </td>
-                                    <td className="text-sm px-4 py-4">{crop.predicted_date}</td>
+                                    <td className="text-sm px-6 py-4">{crop.quantity} {crop.unit} </td>
+                                    <td className="text-sm px-2 py-4">{crop.predicted_date}</td>
                                     <td className="text-sm px-10 py-4">{crop.price}</td>
+                                    <td className="text-xs px-10 py-4">
+                                        <span
+                                            className={`px-2 py-1 w-full rounded-xl text-black ${
+                                            crop.farming_season === "Yala"
+                                                ? "bg-green-300"
+                                                : crop.farming_season === "Maha"
+                                                ? "bg-orange-300"
+                                                : "bg-gray-300"
+                                            }`}
+                                        >
+                                            {crop.farming_season ?? "Unknown"}
+                                        </span>
+                                    </td>
+
                                     <td className="text-sm px-10 py-4">{crop.status}</td>
                                     <td className="flex gap-10 px-8 py-4">
                                       
                                      <div className="flex items-center justify-end space-x-2">
+                                        <button onClick={() => setSelectedProductId(crop.market_id)}>
+                                            Reviews
+                                        </button>
+
                                         <button  
                                             onClick={() => handleEditCrop(crop)}
                                             className="w-8 h-8 p-2 rounded-lg hover:bg-gray-200">
@@ -336,6 +370,13 @@ const FarmerDashboard: React.FC = () => {
                 {selectedCrop && (
                     <EditCrop crop={selectedCrop} onClose={() => {setSelectedCrop(null); refreshCrops();} }/>                     
                 )}
+                {selectedProductId && (
+                <ReviewPopup
+                    productId={selectedProductId}
+                    onClose={() => setSelectedProductId(null)}
+                />
+                )}
+
             </div>
             
         </div>

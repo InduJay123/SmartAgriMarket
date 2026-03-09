@@ -1,5 +1,5 @@
 import emoji from "emoji-dictionary";
-import { Calendar, Package, Sprout } from "lucide-react";
+import { Calendar, Package, Shovel, Sprout } from "lucide-react";
 import type { CropFormData } from "../../@types/CropFormData";
 
 interface DetailsProps {
@@ -8,6 +8,18 @@ interface DetailsProps {
 }
 
 const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
+    
+    const getSeason = (dateStr: string) => {
+        const date = new Date(dateStr);
+        const month = date.getMonth() + 1; 
+
+        if (month >= 5 && month <= 8) {
+            return "Yala";
+        } else {
+            return "Maha";
+        }
+    };
+
     return(
         <div>
             <h1 className="text-5xl">{emoji.getUnicode("ear_of_rice")}</h1>
@@ -45,28 +57,52 @@ const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
                         </div>
                         <input id="harvestDate" type="date" placeholder="500"
                             value={formData.predictDate ?? ""}
-                            onChange={(e) => setFormData({ ...formData, predictDate: e.target.value })}
+                            onChange={(e) => {
+                                const selectedDate = e.target.value;
+                                const season = getSeason(selectedDate);
+
+                                setFormData({ ...formData, 
+                                    predictDate: e.target.value, 
+                                    farmingSeason: season,
+                                });
+                            }}
                             className="bg-gray-50 text-gray-600 border rounded-xl px-4 py-1"
                         />
                     </div>
                     
                 </div>
                 
-                <div className="flex flex-wrap items-center justify-start gap-2 mt-4 mb-2">
-                    <Sprout size={18} className="text-green-900"/>
-                    <label htmlFor="farmingMethod">  Farming Method </label>   
-                </div>              
-                <select 
-                    id="farmingMethod"
-                    value={formData.farmingMethod ?? ""}
-                    onChange={(e) => setFormData({ ...formData, farmingMethod: e.target.value })}
-                    className="text-gray-700 w-full bg-gray-50 border rounded-xl px-4 py-1 mb-4">
-                    <option value="" disabled> Select farming method... </option>
-                    <option value="organic"> Organic Farming </option>
-                    <option value="conventional"> Conventional farminng </option> 
-                    <option value="hydroponic"> Hydroponic </option>
-                    <option value="greenHouse"> Green House </option>                    
-                </select>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <div className="flex flex-wrap items-center justify-start gap-2 mt-4 mb-2">
+                            <Sprout size={18} className="text-green-900"/>
+                            <label htmlFor="farmingMethod">  Farming Method </label>   
+                        </div>              
+                        <select 
+                            id="farmingMethod"
+                            value={formData.farmingMethod ?? ""}
+                            onChange={(e) => setFormData({ ...formData, farmingMethod: e.target.value })}
+                            className="text-gray-700 w-full bg-gray-50 border rounded-xl px-4 py-1 mb-4">
+                            <option value="" disabled> Select farming method... </option>
+                            <option value="organic"> Organic Farming </option>
+                            <option value="conventional"> Conventional farminng </option> 
+                            <option value="hydroponic"> Hydroponic </option>
+                            <option value="greenHouse"> Green House </option>                    
+                        </select>
+                    </div>
+                    <div>            
+                        <div className="flex flex-wrap items-center justify-start gap-2 mt-4 mb-2">
+                            <Shovel size={18} className="text-green-900"/>
+                            <label> Season </label>
+                        </div>
+                        <input
+                            type="text"
+                            value={formData.farmingSeason ?? ""}
+                            readOnly
+                            className="text-gray-700 w-full bg-gray-50 border rounded-xl px-4 py-1 mb-4"
+                        />
+                    </div>
+                </div>
                 
                 <div className="flex flex-col items-start justify-start mt-2">
                     <label htmlFor="details"> Additional Details (Optional) </label>

@@ -2,7 +2,7 @@ export type UserRole = 'farmer' | 'buyer' | 'admin';
 
 
 export interface LoginFormData {
-  username: string;
+  email: string;
   password: string;
   role: UserRole;
 }

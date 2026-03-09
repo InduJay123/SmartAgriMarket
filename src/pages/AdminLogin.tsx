@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 interface AdminLoginProps {
   onClose: () => void;
@@ -9,30 +10,55 @@ interface AdminLoginProps {
 const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMsg("");
 
-    setTimeout(() => {
-      setIsLoading(false);
-      onClose(); 
+    try {
+      const res = await api.post("/auth/admin/login/", {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      console.log("LOGIN STATUS:", res.status);
+      console.log("LOGIN DATA:", res.data);
+
+      const { access, refresh } = res.data;
+
+      if (!access) {
+        throw new Error("No access token returned from backend");
+      }
+
+      localStorage.setItem("accessToken", access);
+      if (refresh) localStorage.setItem("refreshToken", refresh);
+
+      onClose();
       navigate("/admin/dashboard");
-    }, 1500);
+    } catch (err: any) {
+      console.error("Login failed:", err);
+      const msg =
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Login failed. Check email/password and try again.";
+      setErrorMsg(msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    // Backdrop
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in"
-      onClick={onClose} 
+      onClick={onClose}
     >
-      {/* Modal box */}
       <div
         className="relative w-full max-w-md bg-background/90 p-8 rounded-3xl backdrop-blur-xl border border-white/10 animate-fade-slide-up"
-        onClick={(e) => e.stopPropagation()} 
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
@@ -45,23 +71,27 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
           Admin Login
         </h2>
 
+        {errorMsg && (
+          <div className="mb-4 rounded-xl bg-red-500/20 border border-red-500/40 p-3 text-sm text-red-200">
+            {errorMsg}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Email */}
           <div className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md">
             <User className="text-green-400 w-5" />
             <input
-              type="email"
-              placeholder="admin@example.com"
-              value={formData.email}
+              type="text"
+              placeholder="adminuser"
+              value={formData.username}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setFormData({ ...formData, username: e.target.value })
               }
               className="bg-transparent focus:outline-none w-full text-white"
               required
             />
           </div>
 
-          {/* Password */}
           <div className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md">
             <Lock className="text-green-400 w-5" />
             <input
@@ -86,7 +116,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl mt-4 transition-all"
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl mt-4 transition-all disabled:opacity-60"
           >
             {isLoading ? "Signing in..." : "Login"}
           </button>

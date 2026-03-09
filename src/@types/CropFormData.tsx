@@ -4,11 +4,12 @@ export interface CropFormData {
   quantity?: number;           
   unit?: string;               
   predictDate?: string;        
-  farmingMethod?: string;      
+  farmingMethod?: string;
+  farmingSeason: string;      
   pricePerKg?: number;         
   region?: string;            
   district?: string;          
   cropImage?: File;             
   additionalDetails?: string;  
-  image?:string;
+  image?:String;
 }

@@ -13,8 +13,9 @@ export interface Product {
   predicted_date: string;
   quantity: number;
   farming_method?: string | null;
+  farming_season?: string | null;
   region?: string | null;
-  district?: string | null;
+  additional_details?: string | null;
   image?: string | null;
   status?: string | null;
 }

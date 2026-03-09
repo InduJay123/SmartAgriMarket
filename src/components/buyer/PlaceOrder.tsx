@@ -1,4 +1,4 @@
-import { X, CreditCard, Minus, Plus, ArrowLeft, Truck, User, PhoneCall, Phone } from "lucide-react";
+import { X, CreditCard, Minus, Plus, ArrowLeft, Truck, User, Phone } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../../@types/Product";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
   if (!product) return null;
 
   const maxQuantity = product.quantity ?? 1;
-  const subtotal = product.price * quantity;
+  const subtotal = Number(product.price) * quantity;
   const deliveryFee = subtotal > 500 ? 0 : 50;
   const total = subtotal + deliveryFee;
 
@@ -99,7 +99,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
             {/* Product Summary */}
             <div className="bg-white shadow-sm rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-3">Product Details</h3>
-
+             
               <div className="flex gap-4">
                 <img
                   src={product.image_url || product.crop?.image || "/placeholder.svg"}
@@ -140,7 +140,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
                     <Plus size={18} />
                   </button>
                 </div>
-              </div>
+              </div>         
 
               <p className="text-xs text-right text-gray-500 mt-2">
                 Max available: {maxQuantity} {product.unit}

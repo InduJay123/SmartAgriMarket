@@ -275,8 +275,32 @@
       "Daily Price List":"දෛනික මිල ලැයිස්තු",
       "Messages": "පණිවිඩ",
        "Alerts": "අවවාද",
-      "My Profile":"මගේ පැතිකඩ"
-      
+      "My Profile":"මගේ පැතිකඩ",
+
+      "Location & Photo": "ස්ථානය සහ පින්තූරය",
+      "Province": "පළාත",
+      "Click to change photo": "පින්තූරය වෙනස් කිරීමට ක්ලික් කරන්න",
+      "Click to upload crop photo": "බෝග පින්තූරය උඩුගත කිරීමට ක්ලික් කරන්න",
+      "PNG, JPG up to 10MB": "PNG, JPG 10MB දක්වා",
+      "High-quality photos attract more buyers!": "උසස් තත්ත්වයේ පින්තූර මිලදීගන්නන්ට වැඩි ආකර්ෂණය කරයි!",
+      "What are you growing? 🌱": "ඔයා මොනවද වගා කරන්නේ?🌱",
+      "Select your crop from the options below": "පහත විකල්ප වලින් ඔබගේ බෝගය තෝරන්න",
+      "Enter a different crop name": "වෙනත් බෝග නමක් ඇතුල් කරන්න",
+      "e.g., Lady's Finger, Beetroot...": "උදාහරණයක් ලෙස, බෝංචි, බීට් රූට්...",
+      "Tell us about your harvest": "ඔබේ අස්වැන්න ගැන අපට කියන්න",
+      "Expected quantity (in tonnes)": "අපේක්ෂිත ප්‍රමාණය (ටොන් වලින්)",
+      "Expected harvest date": "අපේක්ෂිත අස්වැන්න දිනය",
+      "Set a price for your crop": "ඔබේ බෝගයට මිලක් තබන්න",
+      "Farming Method": "කෘෂිකර්ම ක්‍රමය",
+      "Select farming method...": "කෘෂිකර්ම ක්‍රමය තෝරන්න...",
+      "Organic Farming": "ජෛව කෘෂිකර්මය",
+      "Conventional Farming": "සාම්ප්‍රදායික කෘෂිකර්මය",
+      "Hydroponic": "හයිඩ්‍රොපොනික",
+      "Green House": "හරිත ගෘහය",
+      "Season": "කාලය",
+      "Additional Details (Optional)": "අතිරේක විස්තර (විකල්ප)",
+      "Tell buyers about quality, certifications,special features...": "ගුණාත්මකභාවය, සහතික, විශේෂාංග ගැන මිලදීගන්නන්ට කියන්න..."
+
       
 
 

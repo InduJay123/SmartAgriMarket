@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { updateCrop } from "../../api/farmer/marketplace";
 import ProductImageUpload from "./ProductImageUpload";
+import { useTranslation } from "react-i18next";
+
+
+
 interface EditCropProps {
   crop: any;
   onClose: () => void;
@@ -8,6 +12,9 @@ interface EditCropProps {
 
 const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
   const [image, setImage] = useState<string | null>(crop.image || null);
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
 
   const [formData, setFormData] = useState({
     quantity: crop.quantity || "",
@@ -70,8 +77,8 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
       <div className="p-6 bg-white rounded shadow-lg w-full max-w-md" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-bold mb-1">Edit Crop Details</h2>
-            <h2 className="text-sm text-gray-400 mb-6">Update your crop information and pricing</h2>
+            <h2 className="text-xl font-bold mb-1">{t("Edit Crop Details")}</h2>
+            <h2 className="text-sm text-gray-400 mb-6">{t("Update your crop information and pricing")}</h2>
           </div>
           <button onClick={onClose} className="text-black border-none"> X </button>
         </div>
@@ -86,13 +93,13 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
 
         {/* Crop Name */}
         <div className="mb-2">
-          <label className="block mb-1 font-semibold text-gray-800">Crop Name: {crop.crop_name}</label>
+          <label className="block mb-1 font-semibold text-gray-800">{t("Crop Name")}: {crop.crop_name}</label>
        </div>
         
         <div className="grid grid-cols-2 gap-4">
           {/* Quantity */}
           <div className="mb-2">
-            <label className="block mb-1 font-semibold text-gray-800">Quantity</label>
+            <label className="block mb-1 font-semibold text-gray-800">{t("Quantity")}</label>
             <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
           </div>
 
@@ -107,19 +114,19 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
         </div>
         {/* Price & Unit */}
         <div className="mb-2">
-            <label className="block mb-1 font-semibold text-gray-800">Price per kg (Rs.)</label>
+            <label className="block mb-1 font-semibold text-gray-800">{t("Price per kg (Rs.)")}</label>
             <input type="number" name="price" value={formData.price} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
            {/* Predicted Date */}
           <div className="mb-2">
-            <label className="block mb-1 font-semibold text-gray-800">Expected Harvest Date</label>
+            <label className="block mb-1 font-semibold text-gray-800">{t("Expected Harvest Date")}</label>
             <input type="date" name="predicted_date" value={formData.predicted_date} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm" />
           </div>
           {/* Season */}
           <div className="mb-2">
-            <label className="block mb-1 font-semibold text-gray-800">Season</label>
+            <label className="block mb-1 font-semibold text-gray-800">{t("Season")}</label>
             <input
               type="text"
               name="farming_season"
@@ -132,16 +139,16 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
 
         {/* Status */}
           <div className="mb-4">
-            <label className="block mb-1 font-semibold text-gray-800">Status</label>
+            <label className="block mb-1 font-semibold text-gray-800">{t("Status")}</label>
             <select name="status" value={formData.status} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm">
-              <option value="Available">Available</option>
-              <option value="Pending">Pending</option>
-              <option value="Sold">Sold</option>
+              <option value="Available">{t("Available")}</option>
+              <option value="Pending">{t("Pending")}</option>
+              <option value="Sold">{t("Sold")}</option>
             </select>
           </div>
 
         <div className="mb-4">
-          <label className="block mb-1 font-semibold text-gray-800">Additional Details</label>
+          <label className="block mb-1 font-semibold text-gray-800">{t("Additional Details")}</label>
           <input name="additional_details" onChange={handleChange} type="text" value={formData.additional_details}
             className="w-full border p-2 rounded-xl text-sm" />
         </div>
@@ -149,8 +156,8 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
 
         {/* Buttons */}
         <div className="flex gap-2">
-          <button onClick={onClose} className="w-1/2 bg-gray-100 border border-gray-300 p-1 rounded-xl">Cancel</button>
-          <button onClick={handleSave} className="w-1/2 bg-green-900 text-white p-1 rounded-xl">Save Changes</button>
+          <button onClick={onClose} className="w-1/2 bg-gray-100 border border-gray-300 p-1 rounded-xl">{t("Cancel")}</button>
+          <button onClick={handleSave} className="w-1/2 bg-green-900 text-white p-1 rounded-xl">{t("Save Changes")}</button>
         </div>
       </div>
     </div>

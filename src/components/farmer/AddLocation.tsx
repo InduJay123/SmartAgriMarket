@@ -79,7 +79,7 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
           </div>
 
           <div>
-            <label>District</label>
+            <label>{t("District")}</label>
             <select
               value={formData.district ?? ""}
               onChange={(e) => setFormData({ ...formData, district: e.target.value })}

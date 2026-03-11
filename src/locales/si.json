@@ -299,7 +299,36 @@
       "Green House": "හරිත ගෘහය",
       "Season": "කාලය",
       "Additional Details (Optional)": "අතිරේක විස්තර (විකල්ප)",
-      "Tell buyers about quality, certifications,special features...": "ගුණාත්මකභාවය, සහතික, විශේෂාංග ගැන මිලදීගන්නන්ට කියන්න..."
+      "Tell buyers about quality, certifications,special features...": "ගුණාත්මකභාවය, සහතික, විශේෂාංග ගැන මිලදීගන්නන්ට කියන්න...",
+
+      "Edit Crop Details": "බෝග විස්තර සංස්කරණය කරන්න",
+      "Update your crop information and pricing": "ඔබේ බෝග තොරතුරු සහ මිල ගණන් යාවත්කාලීන කරන්න",
+      "Crop Name": "බෝග නාමය",
+      "Quantity": "ප්‍රමාණය",
+      "Price per kg (Rs.)": "කිලෝග්‍රෑම් එකකට මිල (රු.)",
+      "Expected Harvest Date": "අපේක්ෂිත අස්වැන්න දිනය",
+      "Status":"තත්වය",
+      "Available": "ලබාගත හැකි",
+      "Pending": "පමණ පවතී",
+      "Sold": "විකුණා දමන ලදි",
+      "Cancel": "අවලංගු කරන්න",
+      "Save Changes": "වෙනස්කම් සුරකින්න",
+      "District": "ප්‍රාන්තය",
+
+      "Welcome back, {name}": "සාදරයෙන් පිළිගනිමු,",
+      "Here's what's happening with your farm today": "ඔබේ ගොවිපළට අද දවසේ සිදුවන දේ මෙන්න",
+
+      "Set your price": "ඔබේ මිල සකසන්න",
+      "What's your expected price?": "ඔබේ අපේක්ෂිත මිල කුමක්ද?",
+      "Pricing Tip:": "මිල සැකසීමේ අවධානය:",
+      "Check current market prices in your region. Competitive pricing attracts more buyers!": "ඔබේ ප්‍රදේශයේ වර්තමාන වෙළඳපොළ මිල පරීක්ෂා කරන්න. තරඟකාරී මිල ගණන් මිලදීගන්නන්ට වැඩි ආකර්ෂණය කරයි!",
+      "Price per kg": "කිලෝග්‍රෑම් එකකට මිල",
+      "Market Average": "වෙළඳපොළ සාමාන්‍යය",
+      "Your Price": "ඔබේ මිල",
+      "Premium Price": "ප්‍රිමියම් මිල"
+
+
+
 
       
 

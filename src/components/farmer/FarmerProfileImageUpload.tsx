@@ -35,11 +35,10 @@ const FarmerProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, on
       if (error) throw error;
 
       // Get public URL
-      const { data: publicData, error: urlError } = supabase.storage
+      const { data: publicData } = supabase.storage
         .from('profile_image')
         .getPublicUrl(`farmer_images/${fileName}`);
 
-      if (urlError) throw urlError;
       if (!publicData?.publicUrl) throw new Error('Failed to get public URL');
 
       const publicUrl = publicData.publicUrl;
@@ -64,7 +63,7 @@ const FarmerProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, on
           await supabase.storage.from('profile_image').remove([path]);
         }
       }
-      await deleteFarmerProfileImage(1);
+      await deleteFarmerProfileImage();
 
       setPreview('');
       onChange('');

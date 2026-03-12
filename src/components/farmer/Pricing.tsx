@@ -52,14 +52,14 @@ const Pricing: React.FC<PricingProps> = ({
               pricePerKg: e.target.value === "" ? undefined : Number(e.target.value),
             })
           }
-          className="w-full bg-gray-50 border rounded-xl p-2"
+          className="w-full bg-gray-50 border rounded-xl p-2 text-gray-900"
         />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4 mt-6 mb-4">
         <div className="border rounded-xl p-3 hover:border-green-700">
           <p className="text-gray-600 text-sm">{t("Market Average")}</p>
-          <p className="text-lg font-semibold">
+          <p className="text-lg font-semibold text-green-800">
             {loading ? "Loading..." : averagePrice !== null ? `Rs. ${averagePrice}` : "Rs. --"}
           </p>
         </div>
@@ -73,7 +73,7 @@ const Pricing: React.FC<PricingProps> = ({
 
         <div className="border rounded-xl p-3 hover:border-green-700">
           <p className="text-gray-600 text-sm">{t("Premium Price")}</p>
-          <p className="text-lg font-semibold">
+          <p className="text-lg font-semibold text-green-800">
             {loading ? "Loading..." : premiumPrice !== null ? `Rs. ${premiumPrice}` : "Rs. --"}
           </p>
         </div>

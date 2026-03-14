@@ -113,8 +113,7 @@ const AdminDashboard: React.FC = () => {
   const fetchPendingUsers = async () => {
     setLoadingPending(true);
     try {
-      
-      const res = await api.get("/auth/admin/farmers/");
+      const res = await api.get("/auth/admin/farmers/?status=pending");
       setPendingUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Pending users error", err);
@@ -144,30 +143,28 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleApprove = async (u: PendingUser) => {
-  const payload = { role: u.role, user_id: u.user_id, is_active: true };
-  console.log("VERIFY PAYLOAD =>", payload);
+    const payload = { role: u.role, user_id: u.user_id, is_active: true, is_verified: true };
+    try {
+      await api.patch("/auth/admin/verify/", payload);
+      setOpen(false);
+      fetchPendingUsers();
+      fetchDashboardStats();
+    } catch (err) {
+      console.error("Approve failed", err);
+    }
+  };
 
-  try {
-    await api.patch("/auth/admin/verify/", payload);
-    fetchPendingUsers();
-    fetchDashboardStats();
-  } catch (err) {
-    console.error("Approve failed", err);
-  }
-};
-
-const handleReject = async (u: PendingUser) => {
-  const payload = { role: u.role, user_id: u.user_id, is_active: false };
-  console.log("VERIFY PAYLOAD =>", payload);
-
-  try {
-    await api.patch("/auth/admin/verify/", payload);
-    fetchPendingUsers();
-    fetchDashboardStats();
-  } catch (err) {
-    console.error("Reject failed", err);
-  }
-};
+  const handleReject = async (u: PendingUser) => {
+    const payload = { role: u.role, user_id: u.user_id, is_active: false, is_verified: false };
+    try {
+      await api.patch("/auth/admin/verify/", payload);
+      setOpen(false);
+      fetchPendingUsers();
+      fetchDashboardStats();
+    } catch (err) {
+      console.error("Reject failed", err);
+    }
+  };
 
 
   useEffect(() => {

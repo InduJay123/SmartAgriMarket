@@ -1,6 +1,7 @@
 import emoji from "emoji-dictionary";
 import { Info } from "lucide-react";
 import type { CropFormData } from "../../@types/CropFormData";
+import { useTranslation } from "react-i18next";
 
 interface ChooseCropProps {
   formData: CropFormData
@@ -8,6 +9,11 @@ interface ChooseCropProps {
 }
 
 const ChooseCrop:React.FC<ChooseCropProps> = ({ formData,setFormData }) => {
+
+     const { t, i18n } = useTranslation();
+     const isSinhala = i18n.language === "si";
+
+
     const crops = [
         {name: "Tomato", nameSinhala: "තක්කාලි", image: emoji.getUnicode("tomato") },
         {name: "Carrot", nameSinhala: "කැරට්", image: emoji.getUnicode("carrot") },
@@ -37,9 +43,9 @@ const ChooseCrop:React.FC<ChooseCropProps> = ({ formData,setFormData }) => {
   };
 
     return(
-        <div className="py-2 px-4">
-           <h3 className="text-2xl font-bold mb-2">What are you growing? 🌱</h3>
-            <p className="text-sm text-gray-500 mb-4">Select your crop from the options below</p>
+        <div className={`py-2 px-4 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
+           <h3 className="text-2xl font-bold mb-2">{t("What are you growing? 🌱")}</h3>
+            <p className="text-sm text-gray-500 mb-4">{t("Select your crop from the options below")}</p>
 
             <div className=" grid grid-cols-2 sm:grid-cols-4 lg:grid-col-4 gap-4">
                 {crops.map((crop) => (
@@ -65,10 +71,10 @@ const ChooseCrop:React.FC<ChooseCropProps> = ({ formData,setFormData }) => {
                 
             <label htmlFor="customCrop" className="flex gap-2 mt-4 mb-2 items-center justify-start">
                 <Info size={18}/>
-                   <h3 className="font-semibold">Enter a different crop name</h3>
+                   <h3 className="font-semibold">{t("Enter a different crop name")}</h3>
             </label>
 
-            <input id="customCrop" placeholder= "e.g., Lady's Finger, Beetroot..." 
+            <input id="customCrop" placeholder= {t("e.g., Lady's Finger, Beetroot...")} 
                 value={formData.customCrop}
                 onChange={(e) => handleCustomChange(e.target.value)} 
                 className="px-3 py-1 mb-4 rounded-md border bg-gray-50 w-full text-sm"/>

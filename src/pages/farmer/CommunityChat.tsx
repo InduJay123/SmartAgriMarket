@@ -4,8 +4,13 @@ import {
   sendCommunityMessage,
   type CommunityMessage,
 } from "../../api/farmer/communityChat";
+import { useTranslation } from "react-i18next";
 
 const CommunityChat = () => {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [text, setText] = useState("");
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -93,7 +98,7 @@ const CommunityChat = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          placeholder="Write something to the farmers community..."
+          placeholder={isSinhala ? "කෘෂකරු සමාජයට ලියන්න..." : "Write something to the farmers community..."}
           onKeyDown={(e) => e.key === "Enter" && onSend()}
         />
         <button

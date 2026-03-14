@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GetPriceListPDF } from "../../api/pricelist";
 import { Download, ExternalLink } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PriceListItem {
     id: number;
@@ -10,6 +11,12 @@ interface PriceListItem {
 }
 
 const PriceList:React.FC = () => {
+
+    const { t, i18n } = useTranslation();
+    const isSinhala = i18n.language === "si";
+    
+
+
     const [priceLists, setPriceLists] = useState<PriceListItem[]>([]);
 
     useEffect(() => {
@@ -21,9 +28,9 @@ const PriceList:React.FC = () => {
 }, []);
 
     return(
-        <div className="p-8">
-            <h1 className="text-4xl text-blue-900 font-bold p-4">Daily Price Lists</h1>
-            <p className="text-lg text-gray-500 mb-6">Access and download the latest pricing documents for your reference</p>
+        <div className={`p-8 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
+            <h1 className="text-4xl text-blue-900 font-bold p-4">{t("Daily Price Lists")}</h1>
+            <p className="text-lg text-gray-500 mb-6">{t("Access and download the latest pricing documents for your reference")}</p>
             {priceLists.length > 0 ? (
                 <ul >
                     {priceLists.map((doc) => (
@@ -31,7 +38,7 @@ const PriceList:React.FC = () => {
                             <div className ="border p-6 rounded-lg shadow-md flex flex-wrap items-center justify-between mb-4">
                                 <div>
                                 <strong>{doc.filename}</strong>
-                                <p>Uploaded by: {doc.uploaded_by} </p>
+                                <p>{t("Uploaded by")}: {doc.uploaded_by}</p>
                             </div>
                             
                            <div className=" flex flex-wrap gap-6">
@@ -40,7 +47,7 @@ const PriceList:React.FC = () => {
                                 >
                                     <div className="flex flex-wrap items-center gap-3 font-bold">
                                         <ExternalLink size={16}/> 
-                                        View 
+                                       {t("View")}
                                     </div>
                                 </a>
                                 <button className="bg-gray-100 px-2 py-1 hover:bg-gray-300"> <Download/></button>
@@ -50,7 +57,7 @@ const PriceList:React.FC = () => {
                     ))}
                 </ul>
             ) : (
-                <p>No documents found.</p>
+                <p>{t("No documents found")}</p>
             )}
 
         </div>

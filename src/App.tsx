@@ -34,6 +34,7 @@ import FavouritesPage from './pages/buyer/FavouritesPage';
 import OrderHistory from './pages/buyer/OrderHistory';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import ProfileInfo from './pages/buyer/ProfileInfo';
+import AiInsight from './pages/buyer/AiInsight';
 import PriceList from './pages/buyer/PriceList';
 import SidebarLayout from './layout/SidebarLayout';
 import ResetPassword from './pages/authentication/ResetPassword';
@@ -146,6 +147,7 @@ function App() {
           <Route path="orders" element={<OrderHistory />} />
           <Route path="favourites" element={<FavouritesPage />} />  
           <Route path="pricelist" element={<PriceList />} />
+          <Route path="ai-insights" element={<AiInsight />} />
           <Route path="messages" element={<BuyerMessages/>} />
           <Route path="alerts" element={<AlertsPanel/>} />
           <Route path="profile" element={<ProfileInfo />} />

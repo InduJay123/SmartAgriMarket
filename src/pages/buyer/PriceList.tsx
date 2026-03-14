@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GetPriceListPDF } from "../../api/pricelist";
 import { Download, ExternalLink, Timer, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PriceListItem {
     id: number;
@@ -11,6 +12,10 @@ interface PriceListItem {
 }
 
 const PriceList:React.FC = () => {
+
+    const { t, i18n } = useTranslation();
+    const isSinhala = i18n.language === "si";
+
     const [priceLists, setPriceLists] = useState<PriceListItem[]>([]);
 
      const formatDate = (dateString?: string) => {
@@ -40,9 +45,9 @@ const PriceList:React.FC = () => {
     };
 
     return(
-        <div className="px-8 pt-2 pb-8">
-            <h1 className="text-4xl text-black font-bold px-4 py-2">🏷️ Daily Price Lists</h1>
-            <p className="text-md text-gray-500 mb-6 px-4">Access and download the latest pricing documents for your reference</p>
+        <div className={`px-8 pt-2 pb-8 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
+            <h1 className="text-4xl text-black font-bold px-4 py-2">🏷️{t("Daily Price Lists")}</h1>
+            <p className="text-md text-gray-500 mb-6 px-4">{t("Access and download the latest pricing documents for your reference")}</p>
             {priceLists.length > 0 ? (
                 <ul className="lg:h-[80vh] overflow-y-auto">
                     {priceLists.map((doc) => (
@@ -66,7 +71,7 @@ const PriceList:React.FC = () => {
                                     >
                                         <div className="flex flex-wrap items-center gap-2 font-semibold">
                                             <ExternalLink size={16}/> 
-                                            View 
+                                           {t("View")}
                                         </div>
                                     </a>
                                     <button
@@ -82,7 +87,7 @@ const PriceList:React.FC = () => {
                     ))}
                 </ul>
             ) : (
-                <p>No documents found.</p>
+                <p>{t("No documents found")}</p>
             )}
 
         </div>

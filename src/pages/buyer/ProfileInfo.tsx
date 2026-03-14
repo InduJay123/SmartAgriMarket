@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CreditCard, MapPin, Phone, Mail, User, Save} from 'lucide-react';
 import { getBuyerProfile, updateBuyerProfile } from '../../api/profile';
 import ProfileImageUpload from '../../components/buyer/ProfileImageUpload';
@@ -19,6 +20,10 @@ interface BuyerProfile {
 }
 
 function ProfileInfo() {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
   const [profile, setProfile] = useState<BuyerProfile>({
     user_id: '',
     fullname: '',
@@ -117,15 +122,15 @@ function ProfileInfo() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
       {/* Personal Information */}
       <div>
-          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 Profile Settings</h1>
-          <p className="text-md text-gray-500 mb-6 px-4">Manage your farm profile and preferences</p>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 {t("Profile Settings")}</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">{t("Manage your farm profile and preferences")}</p>
         </div>
 
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">{t("Personal Information")}</h3>
         <div className='flex flex-wrap items-center gap-10'>
           <div>
             <ProfileImageUpload  
@@ -141,7 +146,7 @@ function ProfileInfo() {
               <div className="w-full">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                   <User size={16} />
-                  Full Name
+                  {t("Full Name")}
                 </label>
                 <input
                   type="text"
@@ -156,7 +161,7 @@ function ProfileInfo() {
                 <div>
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                     <Mail size={16} />
-                    Email Address
+                   {t("Email Address")}
                   </label>
                   <input
                     type="email"
@@ -170,7 +175,7 @@ function ProfileInfo() {
                 <div>
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                     <Phone size={16} />
-                    Phone Number
+                   {t("Phone Number")}
                   </label>
                   <input
                     type="tel"
@@ -186,12 +191,12 @@ function ProfileInfo() {
         </div>
       {/* Market / Company Information */}
       <div className="bg-white rounded-xl shadow-sm px-6 py-4">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Market / Company Information</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">{t("Market / Company Information")}</h3>
         <div className="space-y-5">
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
               <User size={16} />
-              Market / Company Name
+             {t("Company Name")}
             </label>
             <input
               type="text"
@@ -206,7 +211,7 @@ function ProfileInfo() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Mail size={16} />
-                Company Email
+                {t("Company Email")}
               </label>
               <input
                 type="email"
@@ -220,7 +225,7 @@ function ProfileInfo() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Phone size={16} />
-                Company Phone
+               {t("Company Phone")}
               </label>
               <input
                 type="tel"
@@ -238,12 +243,12 @@ function ProfileInfo() {
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex items-center gap-2 mb-4">
           <MapPin size={20} className="text-green-600" />
-          <h3 className="text-lg font-bold text-gray-900">Address</h3>
+          <h3 className="text-lg font-bold text-gray-900">{t("Address")}</h3>
         </div>
 
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t("Street Address")}</label>
             <textarea
               value={profile.address || ''}
               onChange={(e) => handleChange('address', e.target.value)}
@@ -255,7 +260,7 @@ function ProfileInfo() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("City")}</label>
               <input
                 type="text"
                 value={profile.city || ''}
@@ -266,7 +271,7 @@ function ProfileInfo() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("Postal Code")}</label>
               <input
                 type="text"
                 value={profile.postal_code || ''}

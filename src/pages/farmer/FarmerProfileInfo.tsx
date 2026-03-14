@@ -3,8 +3,13 @@ import { useState , useEffect} from "react";
 import Header from "../../components/farmer/Header";
 import FarmerProfileImageUpload from "../../components/farmer/FarmerProfileImageUpload";
 import { getFarmerProfile, updateFarmerProfile } from "../../api/farmer/farmerProfile";
+import { useTranslation } from "react-i18next";
 
 const FarmerProfileInfo:React.FC = () => {
+
+    const { t, i18n } = useTranslation();
+    const isSinhala = i18n.language === "si";
+
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         farmName: "",
@@ -97,47 +102,47 @@ const FarmerProfileInfo:React.FC = () => {
 
 
     return(
-        <div className="bg-gray-50 p-4">
+        <div className={`bg-gray-50 p-4 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
         <div>
-          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 Profile Settings</h1>
-          <p className="text-md text-gray-500 mb-6 px-4">Manage your farm profile and preferences</p>
+          <h1 className="text-4xl text-black font-bold px-4 py-2">👤 {t('Profile Settings')}</h1>
+          <p className="text-md text-gray-500 mb-6 px-4">{t('Manage your farm profile and preferences')}</p>
         </div>
             <div className="grid lg:grid-cols-2 gap-6 mt-6 mb-2">
                 <div className="flex flex-col bg-white p-6 w-full shadow-md rounded-md border border-gray-200 items-start justify-start">
-                    <h2 className="text-lg font-bold mb-4">Farm Information</h2>
+                    <h2 className="text-lg font-bold mb-4">{t('Farm Information')}</h2>
                     <FarmerProfileImageUpload
                         image={formData.profileImage}
                         onChange={handleImageChange}
                     />
                     <form className="flex flex-col w-full items-start justify-start space-y-4">
                         <div className="flex flex-col items-start w-full">
-                            <label className="text-gray-700 font-medium mb-1 block">Farm Name</label>
+                            <label className="text-gray-700 font-medium mb-1 block">{t('Farm Name')}</label>
                             <input type="text" name="farmName" value={formData.farmName} onChange={handleChange}
                             className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>
                         <div className="flex flex-col items-start w-full">
-                            <label className="text-gray-700 font-medium mb-1 block">Farmer Name</label>
+                            <label className="text-gray-700 font-medium mb-1 block">{t('Farmer Name')}</label>
                             <input type="text" name="farmerName" value={formData.farmerName} onChange={handleChange}
                             className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>
                         <div className="flex flex-col items-start w-full">
-                            <label className="text-gray-700 font-medium mb-1 block">Email Address</label>
+                            <label className="text-gray-700 font-medium mb-1 block">{t('Email Address')}</label>
                             <input type="text" name="email" value={formData.email} onChange={handleChange}
                             className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>
                         <div className="flex flex-col items-start w-full">
-                            <label className="text-gray-700 font-medium mb-1 block">Contact Number</label>
+                            <label className="text-gray-700 font-medium mb-1 block">{t('Contact Number')}</label>
 
                             <input type="text" name="contact" value={formData.contact} onChange={handleChange}
                              className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>
                         <div className="flex flex-col items-start w-full">
-                            <label className="text-gray-700 font-medium mb-1 block">Farm Address</label>
+                            <label className="text-gray-700 font-medium mb-1 block">{t('Farm Address')}</label>
                             <input type="text" name="address" value={formData.address} onChange={handleChange}
                             className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>
                         <div className="flex flex-col items-start w-full">
-                            <label className="text-gray-700 font-medium mb-1 block">Region</label>
+                            <label className="text-gray-700 font-medium mb-1 block">{t('Region')}</label>
                             <input type="text" name="region" value={formData.region} onChange={handleChange}
                             className="bg-gray-0 border border-gray-200 rounded-xl px-3 py-1 w-full text-gray-600"/>
                         </div>              
@@ -146,13 +151,13 @@ const FarmerProfileInfo:React.FC = () => {
 
               <div className="flex-col">
                  <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-md p-6 border border-gray-200 w-full max-w-md mx-auto">
-                    <h2 className="text-lg font-bold mb-4">Notification Preferences</h2>
+                    <h2 className="text-lg font-bold mb-4">{t('Notification Preferences')}</h2>
 
                     {[
-                    { name: "price_alert", label: "Price Alerts" },
-                    { name: "buyer_msg", label: "Buyer Messages" },
-                    { name: "harvest_rem", label: "Harvest Reminders" },
-                    { name: "market_update", label: "Market Updates" },
+                    { name: "price_alert", label: t("Price Alerts") },
+                    { name: "buyer_msg", label: t("Buyer Messages") },
+                    { name: "harvest_rem", label: t("Harvest Reminders") },
+                    { name: "market_update", label: t("Market Updates") },
                     ].map((item) => (
                     <div key={item.name} className="flex items-center justify-between w-full mb-2">
                         <label className="text-gray-800 w-2/3">{item.label}</label>
@@ -168,7 +173,7 @@ const FarmerProfileInfo:React.FC = () => {
                 </div>
 
                 <div className="flex flex-col items-start justify-start mt-6 mb-4 rounded-lg shadow-md border border-gray-200 p-4">
-                    <h2 className="text-lg font-bold mb-4">About Your Farm</h2>
+                    <h2 className="text-lg font-bold mb-4">{t('About Your Farm')}</h2>
                     <textarea
                         className="w-full bg-gray-100 border border-gray-200 rounded-md text-gray-600 text-sm mb-4 p-4 resize-none min-h-[240px] max-h-[240px] overflow-auto"
                         value={formData.about}
@@ -180,7 +185,7 @@ const FarmerProfileInfo:React.FC = () => {
                 <button 
                     onClick={handleSave}
                     className="flex items-end justify-end bg-green-700 text-white font-bold px-4 py-1 rounded-md hover:bg-green-800 transition-colors"> 
-                    Save Changes
+                    {t('Save Changes')}
                 </button>      
             </div>
               </div>

@@ -75,23 +75,8 @@ const AdminDashboard: React.FC = () => {
   const [details, setDetails] = useState<UserDetails | null>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsError, setDetailsError] = useState("");
-
-  const priceData = [
-    { month: "Jan", price: 110 },
-    { month: "Feb", price: 90 },
-    { month: "Mar", price: 70 },
-    { month: "Apr", price: 150 },
-    { month: "May", price: 100 },
-    { month: "Jun", price: 80 },
-  ];
-
-  const supplyData = [
-    { crop: "Carrots", supply: 65 },
-    { crop: "Tomato", supply: 52 },
-    { crop: "Onion", supply: 45 },
-    { crop: "Potato", supply: 38 },
-    { crop: "Chilli", supply: 18 },
-  ];
+  const [priceData, setPriceData] = useState<Array<{ month: string; price: number }>>([]);
+  const [supplyData, setSupplyData] = useState<Array<{ crop: string; supply: number }>>([]);
 
   const activities = [
     { date: "2025-11-09", activity: "Uploaded new crop price data", user: "Admin" },
@@ -107,6 +92,41 @@ const AdminDashboard: React.FC = () => {
       setCrops(res.data.crops ?? 0);
     } catch (err) {
       console.error("Dashboard stats error", err);
+    }
+  };
+
+  const fetchDashboardCharts = async () => {
+    try {
+      const res = await api.get("/auth/admin/dashboard-charts/");
+
+      const priceTrendLabels = Array.isArray(res.data?.price_trend?.labels)
+        ? res.data.price_trend.labels
+        : [];
+      const priceTrendValues = Array.isArray(res.data?.price_trend?.values)
+        ? res.data.price_trend.values
+        : [];
+      const mappedPriceData = priceTrendLabels.map((label: string, index: number) => ({
+        month: label,
+        price: Number(priceTrendValues[index] ?? 0),
+      }));
+
+      const supplyByCropLabels = Array.isArray(res.data?.supply_by_crop?.labels)
+        ? res.data.supply_by_crop.labels
+        : [];
+      const supplyByCropValues = Array.isArray(res.data?.supply_by_crop?.values)
+        ? res.data.supply_by_crop.values
+        : [];
+      const mappedSupplyData = supplyByCropLabels.map((label: string, index: number) => ({
+        crop: label,
+        supply: Number(supplyByCropValues[index] ?? 0),
+      }));
+
+      setPriceData(mappedPriceData);
+      setSupplyData(mappedSupplyData);
+    } catch (err) {
+      console.error("Dashboard charts error", err);
+      setPriceData([]);
+      setSupplyData([]);
     }
   };
 
@@ -169,6 +189,7 @@ const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchDashboardStats();
+    fetchDashboardCharts();
     fetchPendingUsers();
   }, []);
 

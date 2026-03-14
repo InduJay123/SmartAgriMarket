@@ -30,6 +30,8 @@ const Pricing: React.FC<PricingProps> = ({
       <h3 className="text-2xl font-bold mt-2 mb-2">{t("Set your price")}</h3>
       <p className="text-sm text-gray-500 mb-4">{t("What's your expected price?")}</p>
 
+
+
       <p className="flex flex-wrap gap-2 bg-gray-50 border rounded-xl p-4 text-gray-600 text-sm mt-2 mb-6">
         <Info size={18} className="text-green-800" />
         <span className="font-semibold text-black">{t("Pricing Tip:")}</span>

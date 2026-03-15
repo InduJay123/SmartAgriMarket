@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, Filter as FilterIcon, Eye, Trash2 } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
 import api from "../../services/api";
 
 type BuyerStatusFilter = "all" | "verified" | "pending" | "blocked";
@@ -17,6 +18,30 @@ interface BuyerApi {
   type?: string; // Retailer/Wholesaler (optional)
 }
 
+interface BuyerDetails {
+  id: number;
+  role?: string;
+  email?: string;
+  username?: string;
+  fullname?: string;
+  contact_number?: string;
+  region?: string;
+  company_name?: string;
+  company_email?: string;
+  company_phone?: string;
+  address?: string;
+  city?: string;
+  is_active?: boolean;
+  is_verified?: boolean;
+}
+
+const isStatusMatch = (b: BuyerApi, filter: BuyerStatusFilter) => {
+  if (filter === "all") return true;
+  if (filter === "verified") return b.is_active && b.is_verified;
+  if (filter === "pending") return b.is_active && !b.is_verified;
+  return !b.is_active;
+};
+
 export default function ManageBuyers() {
   const [buyers, setBuyers] = useState<BuyerApi[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,15 +49,16 @@ export default function ManageBuyers() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<BuyerStatusFilter>("all");
 
-  const fetchBuyers = async (filter: BuyerStatusFilter) => {
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedBuyer, setSelectedBuyer] = useState<BuyerApi | null>(null);
+  const [viewDetails, setViewDetails] = useState<BuyerDetails | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewError, setViewError] = useState("");
+
+  const fetchBuyers = async () => {
     setLoading(true);
     try {
-      const url =
-        filter === "all"
-          ? "/auth/admin/buyers/"
-          : `/auth/admin/buyers/?status=${filter}`;
-
-      const res = await api.get(url);
+      const res = await api.get("/auth/admin/buyers/");
       setBuyers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Failed to load buyers:", err);
@@ -43,32 +69,30 @@ export default function ManageBuyers() {
   };
 
   useEffect(() => {
-    fetchBuyers("all");
+    fetchBuyers();
   }, []);
-
-  useEffect(() => {
-    fetchBuyers(statusFilter);
-  }, [statusFilter]);
 
   const filteredBuyers = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return buyers;
 
-    return buyers.filter((b) => {
-      const username = (b.username || "").toLowerCase();
-      const email = (b.email || "").toLowerCase();
-      const phone = (b.phone || "").toLowerCase();
-      const location = (b.location || "").toLowerCase();
-      const type = (b.type || "").toLowerCase();
-      return (
-        username.includes(q) ||
-        email.includes(q) ||
-        phone.includes(q) ||
-        location.includes(q) ||
-        type.includes(q)
-      );
-    });
-  }, [buyers, search]);
+    return buyers
+      .filter((b) => isStatusMatch(b, statusFilter))
+      .filter((b) => {
+        if (!q) return true;
+        const username = (b.username || "").toLowerCase();
+        const email = (b.email || "").toLowerCase();
+        const phone = (b.phone || "").toLowerCase();
+        const location = (b.location || "").toLowerCase();
+        const type = (b.type || "").toLowerCase();
+        return (
+          username.includes(q) ||
+          email.includes(q) ||
+          phone.includes(q) ||
+          location.includes(q) ||
+          type.includes(q)
+        );
+      });
+  }, [buyers, search, statusFilter]);
 
   const getDisplayName = (b: BuyerApi) => b.username?.trim() || b.email;
 
@@ -80,6 +104,35 @@ export default function ManageBuyers() {
 
   const getBuyerType = (b: BuyerApi) => b.type || "—";
   const getBuyerLocation = (b: BuyerApi) => b.location || "—";
+
+  const openViewModal = async (b: BuyerApi) => {
+    setSelectedBuyer(b);
+    setViewDetails(null);
+    setViewError("");
+    setViewOpen(true);
+    setViewLoading(true);
+    try {
+      const res = await api.get(`/auth/admin/user/${b.id}/`);
+      setViewDetails(res.data);
+    } catch (err: any) {
+      setViewError(err?.response?.data?.error || "Failed to load buyer details.");
+    } finally {
+      setViewLoading(false);
+    }
+  };
+
+  const handleDelete = async (b: BuyerApi) => {
+    if (!window.confirm(`Delete buyer "${getDisplayName(b)}"? This cannot be undone.`)) return;
+    try {
+      await api.delete(`/auth/admin/user/${b.id}/`);
+      if (selectedBuyer?.id === b.id) {
+        setViewOpen(false);
+      }
+      fetchBuyers();
+    } catch (err) {
+      console.error("Delete failed", err);
+    }
+  };
 
   return (
     <div className="space-y-6 pr-28">
@@ -166,10 +219,18 @@ export default function ManageBuyers() {
                       </td>
 
                       <td className="py-3 px-4">
-                        <button className="text-emerald-600 hover:text-emerald-800 p-2 hover:bg-emerald-200 rounded">
+                        <button
+                          onClick={() => openViewModal(b)}
+                          className="text-emerald-600 hover:text-emerald-800 p-2 hover:bg-emerald-200 rounded"
+                          title="View details"
+                        >
                           <Eye size={16} />
                         </button>
-                        <button className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded">
+                        <button
+                          onClick={() => handleDelete(b)}
+                          className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded"
+                          title="Delete buyer"
+                        >
                           <Trash2 size={16} />
                         </button>
                       </td>
@@ -181,6 +242,68 @@ export default function ManageBuyers() {
           </div>
         )}
       </div>
+
+      <Dialog.Root open={viewOpen} onOpenChange={setViewOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <Dialog.Title className="text-xl font-bold">Buyer Details</Dialog.Title>
+                <Dialog.Description className="text-sm text-gray-500">
+                  {selectedBuyer ? `${getDisplayName(selectedBuyer)} - ${selectedBuyer.email}` : ""}
+                </Dialog.Description>
+              </div>
+              <Dialog.Close className="p-2 rounded-lg hover:bg-gray-100">✕</Dialog.Close>
+            </div>
+
+            {viewLoading ? (
+              <p className="text-gray-500">Loading details...</p>
+            ) : viewError ? (
+              <p className="text-red-600">{viewError}</p>
+            ) : viewDetails ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <InfoRow label="Username" value={viewDetails.username || "—"} />
+                  <InfoRow label="Email" value={viewDetails.email || "—"} />
+                  <InfoRow label="Full Name" value={viewDetails.fullname || "—"} />
+                  <InfoRow label="Phone" value={viewDetails.contact_number || "—"} />
+                  <InfoRow label="Region/City" value={viewDetails.region || viewDetails.city || "—"} />
+                  <InfoRow label="Company Name" value={viewDetails.company_name || "—"} />
+                  <InfoRow label="Company Email" value={viewDetails.company_email || "—"} />
+                  <InfoRow label="Company Phone" value={viewDetails.company_phone || "—"} />
+                  <InfoRow label="Address" value={viewDetails.address || "—"} />
+                  <InfoRow
+                    label="Status"
+                    value={
+                      !viewDetails.is_active
+                        ? "Blocked"
+                        : viewDetails.is_verified
+                        ? "Verified"
+                        : "Pending"
+                    }
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500">No details available.</p>
+            )}
+
+            <div className="mt-6 flex justify-end">
+              <Dialog.Close className="px-4 py-2 rounded-lg border hover:bg-gray-50">Close</Dialog.Close>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border p-3">
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="font-medium text-gray-900 break-words">{value}</p>
     </div>
   );
 }

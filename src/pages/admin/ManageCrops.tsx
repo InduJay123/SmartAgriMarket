@@ -61,7 +61,7 @@ export default function ManageCrops() {
     if (!ok) return;
 
     try {
-      // ✅ correct delete endpoint: DELETE /api/v1/crops/<id>/
+
       await api.delete(`/crops/${cropId}/`);
       setCrops((prev) => prev.filter((c) => c.crop_id !== cropId));
     } catch (err) {

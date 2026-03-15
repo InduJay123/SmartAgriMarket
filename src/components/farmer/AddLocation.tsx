@@ -2,6 +2,8 @@ import { useState } from "react";
 import { MapPin, Upload, UploadIcon, Info } from "lucide-react";
 import type { CropFormData } from "../../@types/CropFormData";
 import { supabase } from "../../lib/supabase";
+import { useTranslation } from "react-i18next";
+
 
 interface LocationProps {
   formData: CropFormData;
@@ -9,6 +11,11 @@ interface LocationProps {
 }
 
 const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
+
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+  
+
   const [imagePreview, setImagePreview] = useState<string | null>(formData.image ? formData.image.toString() : null);
   const [uploading, setUploading] = useState(false);
 
@@ -55,12 +62,12 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
   };
 
   return (
-    <div>
-      <h3 className="text-2xl font-bold mt-2 mb-2">Location & Photo</h3>
+    <div className={`py-2 px-4 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
+      <h3 className="text-2xl font-bold mt-2 mb-2">{t("Location & Photo")}</h3>
       <form className="p-4 text-sm font-semibold">
         <div className="grid lg:grid-cols-2 gap-8">
           <div>
-            <label>Province</label>
+            <label>{t("Province")}</label>
             <select
               value={formData.region ?? ""}
               onChange={(e) => setFormData({ ...formData, region: e.target.value, district: "" })}
@@ -72,7 +79,7 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
           </div>
 
           <div>
-            <label>District</label>
+            <label>{t("District")}</label>
             <select
               value={formData.district ?? ""}
               onChange={(e) => setFormData({ ...formData, district: e.target.value })}
@@ -96,20 +103,20 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
                                 <img src={imagePreview} alt="Preview"
                                 className="object-contain w-full h-full"/>
                                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition-opacity">
-                                    <p className="text-white text-sm"> Click to change photo </p>
+                                    <p className="text-white text-sm"> {t("Click to change photo")} </p>
                                 </div>
                             </div>
                         ) : (
                             <div className="w-full flex flex-col items-center justify-center py-16 px-4 text-gray-700 gap-2">
                                 <UploadIcon/>
-                                <p> Click to upload crop photo</p>
-                                <p className="text-gray-600 text-xs font-normal"> PNG, JPG up to 10MB </p>
+                                <p> {t("Click to upload crop photo")} </p>
+                                <p className="text-gray-600 text-xs font-normal"> {t("PNG, JPG up to 10MB")} </p>
                             </div>
                         )}
                     </label>
                 </div>
 
-        <p className="text-xs text-gray-500 mt-2"><Info size={12}/> High-quality photos attract more buyers!</p>
+        <p className="text-xs text-gray-500 mt-2"><Info size={12}/> {t("High-quality photos attract more buyers!")}</p>
       </form>
     </div>
   )

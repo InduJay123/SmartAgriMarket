@@ -275,8 +275,61 @@
       "Daily Price List":"දෛනික මිල ලැයිස්තු",
       "Messages": "පණිවිඩ",
        "Alerts": "අවවාද",
-      "My Profile":"මගේ පැතිකඩ"
-      
+      "My Profile":"මගේ පැතිකඩ",
+
+      "Location & Photo": "ස්ථානය සහ පින්තූරය",
+      "Province": "පළාත",
+      "Click to change photo": "පින්තූරය වෙනස් කිරීමට ක්ලික් කරන්න",
+      "Click to upload crop photo": "බෝග පින්තූරය උඩුගත කිරීමට ක්ලික් කරන්න",
+      "PNG, JPG up to 10MB": "PNG, JPG 10MB දක්වා",
+      "High-quality photos attract more buyers!": "උසස් තත්ත්වයේ පින්තූර මිලදීගන්නන්ට වැඩි ආකර්ෂණය කරයි!",
+      "What are you growing? 🌱": "ඔයා මොනවද වගා කරන්නේ?🌱",
+      "Select your crop from the options below": "පහත විකල්ප වලින් ඔබගේ බෝගය තෝරන්න",
+      "Enter a different crop name": "වෙනත් බෝග නමක් ඇතුල් කරන්න",
+      "e.g., Lady's Finger, Beetroot...": "උදාහරණයක් ලෙස, බෝංචි, බීට් රූට්...",
+      "Tell us about your harvest": "ඔබේ අස්වැන්න ගැන අපට කියන්න",
+      "Expected quantity (in tonnes)": "අපේක්ෂිත ප්‍රමාණය (ටොන් වලින්)",
+      "Expected harvest date": "අපේක්ෂිත අස්වැන්න දිනය",
+      "Set a price for your crop": "ඔබේ බෝගයට මිලක් තබන්න",
+      "Farming Method": "කෘෂිකර්ම ක්‍රමය",
+      "Select farming method...": "කෘෂිකර්ම ක්‍රමය තෝරන්න...",
+      "Organic Farming": "ජෛව කෘෂිකර්මය",
+      "Conventional Farming": "සාම්ප්‍රදායික කෘෂිකර්මය",
+      "Hydroponic": "හයිඩ්‍රොපොනික",
+      "Green House": "හරිත ගෘහය",
+      "Season": "කාලය",
+      "Additional Details (Optional)": "අතිරේක විස්තර (විකල්ප)",
+      "Tell buyers about quality, certifications,special features...": "ගුණාත්මකභාවය, සහතික, විශේෂාංග ගැන මිලදීගන්නන්ට කියන්න...",
+
+      "Edit Crop Details": "බෝග විස්තර සංස්කරණය කරන්න",
+      "Update your crop information and pricing": "ඔබේ බෝග තොරතුරු සහ මිල ගණන් යාවත්කාලීන කරන්න",
+      "Crop Name": "බෝග නාමය",
+      "Quantity": "ප්‍රමාණය",
+      "Price per kg (Rs.)": "කිලෝග්‍රෑම් එකකට මිල (රු.)",
+      "Expected Harvest Date": "අපේක්ෂිත අස්වැන්න දිනය",
+      "Status":"තත්වය",
+      "Available": "ලබාගත හැකි",
+      "Pending": "පමණ පවතී",
+      "Sold": "විකුණා දමන ලදි",
+      "Cancel": "අවලංගු කරන්න",
+      "Save Changes": "වෙනස්කම් සුරකින්න",
+      "District": "ප්‍රාන්තය",
+
+      "Welcome back, {name}": "සාදරයෙන් පිළිගනිමු,",
+      "Here's what's happening with your farm today": "ඔබේ ගොවිපළට අද දවසේ සිදුවන දේ මෙන්න",
+
+      "Set your price": "ඔබේ මිල සකසන්න",
+      "What's your expected price?": "ඔබේ අපේක්ෂිත මිල කුමක්ද?",
+      "Pricing Tip:": "මිල සැකසීමේ අවධානය:",
+      "Check current market prices in your region. Competitive pricing attracts more buyers!": "ඔබේ ප්‍රදේශයේ වර්තමාන වෙළඳපොළ මිල පරීක්ෂා කරන්න. තරඟකාරී මිල ගණන් මිලදීගන්නන්ට වැඩි ආකර්ෂණය කරයි!",
+      "Price per kg": "කිලෝග්‍රෑම් එකකට මිල",
+      "Market Average": "වෙළඳපොළ සාමාන්‍යය",
+      "Your Price": "ඔබේ මිල",
+      "Premium Price": "ප්‍රිමියම් මිල"
+
+
+
+
       
 
 

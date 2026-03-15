@@ -13,7 +13,7 @@ interface PriceUploadApi {
 }
 
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
-const ACCEPTED_EXT = [".csv", ".xls", ".xlsx"];
+const ACCEPTED_EXT = [".csv", ".xls", ".xlsx", ".pdf"]; // allowed file extensions
 
 
 const UPLOAD_URL = "/prices/uploads/"; // POST
@@ -143,7 +143,7 @@ export default function UploadPrice() {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".csv,.xls,.xlsx"
+            accept=".csv,.xls,.xlsx,.pdf"
             className="hidden"
             onChange={onFileChange}
           />
@@ -159,7 +159,7 @@ export default function UploadPrice() {
               Drop files here or click to upload
             </h3>
             <p className="text-gray-500 mb-4">
-              Supports CSV, Excel files (max 10MB)
+              Supports CSV, Excel, PDF files (max 10MB)
             </p>
 
             <button

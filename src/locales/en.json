@@ -273,7 +273,60 @@
     "Daily Price List":"Daily Price List",
     "Messages": "Messages",
     "Alerts": "Alerts",
-    "My Profile":"My Profile"
+    "My Profile":"My Profile",
+
+    "Click to change photo": "Click to change photo",
+    "Location & Photo": "Location & Photo",
+    "Province": "Province",
+    "Click to upload crop photo": "Click to upload crop photo",
+    "PNG, JPG up to 10MB": "PNG, JPG up to 10MB",
+    "High-quality photos attract more buyers!": "High-quality photos attract more buyers!",
+    "What are you growing? 🌱": "What are you growing? 🌱",
+    "Select your crop from the options below": "Select your crop from the options below",
+    "Enter a different crop name": "Enter a different crop name",
+    "e.g., Lady's Finger, Beetroot...": "e.g., Lady's Finger, Beetroot...",
+    "Tell us about your harvest": "Tell us about your harvest",
+    "Quantity and harvest details": "Quantity and harvest details",
+    "Expected Quantity": "Expected Quantity",
+    "Expected Harvest Date": "Expected Harvest Date",
+    "Farming Method": "Farming Method",
+    "Select farming method...": "Select farming method...",
+    "Organic Farming": "Organic Farming",
+    "Conventional Farming": "Conventional Farming",
+    "Hydroponic": "Hydroponic",
+    "Green House": "Green House",
+    "Season": "Season",
+    "Additional Details (Optional)": "Additional Details (Optional)",
+    "Tell buyers about quality, certifications,special features...": "Tell buyers about quality, certifications,special features...",
+
+    "Edit Crop Details": "Edit Crop Details",
+    "Update your crop information and pricing": "Update your crop information and pricing",
+    "Crop Name": "Crop Name",
+    "Quantity": "Quantity",
+    "Price per kg (Rs.)": "Price per kg (Rs.)",
+    "Expected Harvest Date": "Expected Harvest Date",
+    "Status":"Status",
+    "Available": "Available",
+    "Pending": "Pending",
+    "Sold": "Sold",
+    "Additional Details": "Additional Details",
+    "Cancel": "Cancel",
+    "Save Changes": "Save Changes",
+    "District": "District",
+
+    "Welcome back, {name}": "Welcome back, {name}",
+    "Here's what's happening with your farm today": "Here's what's happening with your farm today",
+
+    "Set your price": "Set your price",
+    "What's your expected price?": "What's your expected price?",
+    "Pricing Tip:": "Pricing Tip:",
+    "Check current market prices in your region. Competitive pricing attracts more buyers!": "Check current market prices in your region. Competitive pricing attracts more buyers!",
+    "Price per kg": "Price per kg",
+    "Market Average": "Market Average",
+    "Your Price": "Your Price",
+    "Premium Price": "Premium Price"
+
+
     
 
 

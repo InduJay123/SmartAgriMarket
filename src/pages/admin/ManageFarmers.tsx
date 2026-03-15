@@ -10,8 +10,24 @@ import {
   Eye,
   Trash2,
 } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
 import api from "../../services/api";
+
+interface FarmerDetails {
+  id: number;
+  role: string;
+  email?: string;
+  username?: string;
+  fullname?: string;
+  contact_number?: string;
+  region?: string;
+  farm_name?: string;
+  about?: string;
+  address?: string;
+  is_active?: boolean;
+  is_verified?: boolean;
+}
 
 type FarmerStatusFilter = "all" | "verified" | "pending" | "blocked";
 
@@ -39,6 +55,13 @@ const ManageFarmers: React.FC = () => {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<FarmerStatusFilter>("all");
+
+  // View modal state
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedFarmer, setSelectedFarmer] = useState<FarmerApi | null>(null);
+  const [viewDetails, setViewDetails] = useState<FarmerDetails | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewError, setViewError] = useState("");
 
   const fetchDashboardStats = async () => {
     try {
@@ -81,6 +104,33 @@ const ManageFarmers: React.FC = () => {
   useEffect(() => {
     fetchFarmers(statusFilter);
   }, [statusFilter]);
+
+  const openViewModal = async (f: FarmerApi) => {
+    setSelectedFarmer(f);
+    setViewDetails(null);
+    setViewError("");
+    setViewOpen(true);
+    setViewLoading(true);
+    try {
+      const res = await api.get(`/auth/admin/user/${f.id}/`);
+      setViewDetails(res.data);
+    } catch (err: any) {
+      setViewError(err?.response?.data?.error || "Failed to load farmer details.");
+    } finally {
+      setViewLoading(false);
+    }
+  };
+
+  const handleDelete = async (f: FarmerApi) => {
+    if (!window.confirm(`Delete farmer "${getDisplayName(f)}"? This cannot be undone.`)) return;
+    try {
+      await api.delete(`/auth/admin/user/${f.id}/`);
+      fetchFarmers(statusFilter);
+      fetchDashboardStats();
+    } catch (err) {
+      console.error("Delete failed", err);
+    }
+  };
 
   const filteredFarmers = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -244,10 +294,18 @@ const ManageFarmers: React.FC = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <button className="text-emerald-600 hover:text-emerald-800 p-2 hover:bg-emerald-200 rounded">
+                        <button
+                          onClick={() => openViewModal(f)}
+                          className="text-emerald-600 hover:text-emerald-800 p-2 hover:bg-emerald-200 rounded"
+                          title="View details"
+                        >
                           <Eye size={16} />
                         </button>
-                        <button className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded">
+                        <button
+                          onClick={() => handleDelete(f)}
+                          className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded"
+                          title="Delete farmer"
+                        >
                           <Trash2 size={16} />
                         </button>
                       </td>
@@ -259,8 +317,70 @@ const ManageFarmers: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Farmer View Modal */}
+      <Dialog.Root open={viewOpen} onOpenChange={setViewOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <Dialog.Title className="text-xl font-bold">Farmer Details</Dialog.Title>
+                <Dialog.Description className="text-sm text-gray-500">
+                  {selectedFarmer ? `${getDisplayName(selectedFarmer)} — ${selectedFarmer.email}` : ""}
+                </Dialog.Description>
+              </div>
+              <Dialog.Close className="p-2 rounded-lg hover:bg-gray-100">✕</Dialog.Close>
+            </div>
+
+            {viewLoading ? (
+              <p className="text-gray-500">Loading details...</p>
+            ) : viewError ? (
+              <p className="text-red-600">{viewError}</p>
+            ) : viewDetails ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <InfoRow label="Username" value={viewDetails.username || "—"} />
+                  <InfoRow label="Email" value={viewDetails.email || "—"} />
+                  <InfoRow label="Full Name" value={viewDetails.fullname || "—"} />
+                  <InfoRow label="Phone" value={viewDetails.contact_number || "—"} />
+                  <InfoRow label="Region" value={viewDetails.region || "—"} />
+                  <InfoRow label="Farm Name" value={viewDetails.farm_name || "—"} />
+                  <InfoRow label="About" value={viewDetails.about || "—"} />
+                  <InfoRow label="Address" value={viewDetails.address || "—"} />
+                  <InfoRow
+                    label="Status"
+                    value={
+                      !viewDetails.is_active
+                        ? "Blocked"
+                        : viewDetails.is_verified
+                        ? "Verified"
+                        : "Pending"
+                    }
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500">No details available.</p>
+            )}
+
+            <div className="mt-6 flex justify-end">
+              <Dialog.Close className="px-4 py-2 rounded-lg border hover:bg-gray-50">Close</Dialog.Close>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 };
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border p-3">
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="font-medium text-gray-900 break-words">{value}</p>
+    </div>
+  );
+}
 
 export default ManageFarmers;

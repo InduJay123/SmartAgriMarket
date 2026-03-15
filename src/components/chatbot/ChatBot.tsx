@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessageCircle, X, Send, Bot, User, Minimize2, GripHorizontal, BarChart3, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MLDashboard from './MLDashboard';
@@ -38,6 +39,9 @@ const saveChatHistory = (messages: Message[]) => {
 };
 
 export default function ChatBot() {
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === 'si';
+  const welcomeMessage = t('chatbot.welcome');
   const [isOpen, setIsOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -52,7 +56,7 @@ export default function ChatBot() {
     // Always start with fresh welcome message
     return [{
       id: '1',
-      text: "Hello! 👋 I'm AgriBot AI, powered by machine learning models trained on real agricultural data.\n\n🧠 **I can help with:**\n• Price predictions (based on 9 years of market data)\n• Demand forecasting (trained on historical demand patterns)\n• Yield predictions (environmental factors + crop data)\n• Explaining predictions\n\n💡 **Try saying:**\n• \"What will Tomato price be next week?\"\n• \"Predict Carrot demand\"\n• \"What's the yield for Beans?\"\n\nI learn from our conversations - ask me anything! 🌾",
+      text: welcomeMessage,
       sender: 'bot',
       timestamp: new Date(),
       confidence: 1.0
@@ -71,6 +75,25 @@ export default function ChatBot() {
       saveChatHistory(messages);
     }
   }, [messages]);
+
+  useEffect(() => {
+    setMessages((previousMessages) => {
+      if (
+        previousMessages.length === 1 &&
+        previousMessages[0]?.id === '1' &&
+        previousMessages[0]?.sender === 'bot' &&
+        previousMessages[0]?.text !== welcomeMessage
+      ) {
+        return [{ ...previousMessages[0], text: welcomeMessage }];
+      }
+
+      return previousMessages;
+    });
+  }, [welcomeMessage]);
+
+  useEffect(() => {
+    conversationManager.setLanguage(i18n.language);
+  }, [conversationManager, i18n.language]);
 
   // Dragging state
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
@@ -236,11 +259,12 @@ export default function ChatBot() {
   // Handle demand prediction API call
   const handleDemandPrediction = async (crop: string): Promise<any> => {
     try {
-      const now = new Date();
       const response = await predictDemand({
         crop_type: crop,
-        year: now.getFullYear(),
-        month: now.getMonth() + 2, // Next month
+        season: 'northeast_monsoon',
+        historical_demand: 1000,
+        population: 22000000,
+        consumption_trend: 'stable',
       });
       
       // Store prediction in context for explanations
@@ -501,7 +525,7 @@ export default function ChatBot() {
       
       const errorResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Sorry, I encountered an error. Please try again! 🤖",
+        text: t('chatbot.errorFallback'),
         sender: 'bot',
         timestamp: new Date(),
         confidence: 0
@@ -515,14 +539,42 @@ export default function ChatBot() {
   // Generate explanation for predictions
   const generateExplanation = (predictionData: any): string => {
     if (!predictionData) {
-      return "No prediction data available to explain.";
+      return t('chatbot.noPredictionData');
     }
 
     const { crop, predicted_price, model_accuracy } = predictionData;
     const r2Score = model_accuracy?.r2_score || 0.78;
-    
+    const priceText = predicted_price?.toFixed(2) ?? '0.00';
+
+    if (isSinhala) {
+      return `🔍 **${crop} මිල අනාවැකිය සඳහා පැහැදිලි කිරීම**\n\n` +
+        `රු. ${priceText} ලෙස ලැබුණු අනාවැකිය පහත කරුණු මත පදනම් වේ:\n\n` +
+        `📊 **ප්‍රධාන සාධක:**\n` +
+        `1. **සෘතුමය රටා** (40% බලපෑම)\n` +
+        `   • වත්මන් කාලය සැපයුමට බලපායි\n` +
+        `   • මෙම කාල පරාසයේ ඉතිහාසගත මිල ප්‍රවණතා\n\n` +
+        `2. **සැපයුම සහ ඉල්ලුම** (35% බලපෑම)\n` +
+        `   • වත්මන් වෙළඳපොළ සැපයුම් මට්ටම්\n` +
+        `   • පාරිභෝගික ඉල්ලුම් රටා\n` +
+        `   • ප්‍රාදේශීය වෙනස්කම්\n\n` +
+        `3. **මෑත ප්‍රවණතා** (15% බලපෑම)\n` +
+        `   • පසුගිය දින 7 හි මිල වෙනස්වීම්\n` +
+        `   • පසුගිය දින 30 ක ගැලපෙන සාමාන්‍යය\n` +
+        `   • මිල ගමන් වේග දර්ශක\n\n` +
+        `4. **වෙළඳපොළ තත්ත්වයන්** (10% බලපෑම)\n` +
+        `   • කාලගුණ රටා\n` +
+        `   • ප්‍රවාහන පිරිවැය\n` +
+        `   • වෙළඳපොළ ස්ථානීය සාධක\n\n` +
+        `💡 **මොඩල විස්තර:**\n` +
+        `• ඇල්ගොරිතමය: Random Forest (ගස් 15)\n` +
+        `• විශේෂාංග: ඉංජිනේරුකරණය කළ 30+ විශේෂාංග\n` +
+        `• පුහුණු දත්ත: වසර 9 ක වෙළඳපොළ දත්ත\n` +
+        `• වලංගුකරණ නිරවද්‍යතාව: R² = ${(r2Score * 100).toFixed(2)}%\n\n` +
+        `වෙනත් අනාවැකියක් උත්සාහ කරන්නද?`;
+    }
+
     return `🔍 **Explanation for ${crop} price prediction**\n\n` +
-      `The predicted price of Rs. ${predicted_price?.toFixed(2)} is based on:\n\n` +
+      `The predicted price of Rs. ${priceText} is based on:\n\n` +
       `📊 **Key Factors:**\n` +
       `1. **Seasonal Patterns** (40% influence)\n` +
       `   • Current season affects supply availability\n` +
@@ -567,11 +619,11 @@ export default function ChatBot() {
   };
 
   const quickActions = [
-    { label: '💰 Predict Price', query: 'Predict price' },
-    { label: '📈 Predict Demand', query: 'Predict demand' },
-    { label: '🌾 Predict Yield', query: 'Predict yield' },
-    { label: '🎯 Model Accuracy', query: 'What is model accuracy?' },
-    { label: '💡 Help', query: 'Help me' },
+    { label: t('chatbot.quickActionPrice'), query: 'Predict price' },
+    { label: t('chatbot.quickActionDemand'), query: 'Predict demand' },
+    { label: t('chatbot.quickActionYield'), query: 'Predict yield' },
+    { label: t('chatbot.quickActionAccuracy'), query: 'What is model accuracy?' },
+    { label: t('chatbot.quickActionHelp'), query: 'Help me' },
   ];
 
   return (
@@ -598,10 +650,10 @@ export default function ChatBot() {
               cursor: isDragging ? 'grabbing' : 'grab',
             }}
             className="fixed z-50 bg-custom-green hover:bg-green-700 text-white p-4 rounded-full shadow-lg flex items-center gap-2 transition-colors select-none"
-            aria-label="Open chat"
+            aria-label={t('chatbot.openChat')}
           >
             <MessageCircle size={24} />
-            <span className="hidden sm:inline font-medium">Chat with us</span>
+            <span className="hidden sm:inline font-medium">{t('chatbot.toggleText')}</span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -637,16 +689,16 @@ export default function ChatBot() {
                   <Bot size={24} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">AgriBot AI</h3>
-                  <p className="text-xs text-green-100">ML-powered • Random Forest • 9 Years of Data</p>
+                  <h3 className="font-semibold text-lg">{t('chatbot.headerTitle')}</h3>
+                  <p className="text-xs text-green-100">{t('chatbot.headerSubtitle')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setIsDashboardOpen(true)}
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
-                  aria-label="Open ML Dashboard"
-                  title="Open ML Dashboard"
+                  aria-label={t('chatbot.openDashboard')}
+                  title={t('chatbot.openDashboard')}
                 >
                   <BarChart3 size={18} />
                 </button>
@@ -656,14 +708,16 @@ export default function ChatBot() {
                 <button
                   onClick={() => setIsMinimized(!isMinimized)}
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
-                  aria-label={isMinimized ? "Expand chat" : "Minimize chat"}
+                  aria-label={isMinimized ? t('chatbot.expandChat') : t('chatbot.minimizeChat')}
+                  title={isMinimized ? t('chatbot.expandChat') : t('chatbot.minimizeChat')}
                 >
                   <Minimize2 size={18} />
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
-                  aria-label="Close chat"
+                  aria-label={t('chatbot.closeChat')}
+                  title={t('chatbot.closeChat')}
                 >
                   <X size={18} />
                 </button>
@@ -731,7 +785,7 @@ export default function ChatBot() {
                                     message.confidence >= 0.8 ? 'text-green-700 font-medium' :
                                     message.confidence >= 0.5 ? 'text-yellow-700' : 'text-gray-600'
                                   }>
-                                    Confidence: {(message.confidence * 100).toFixed(0)}%
+                                      {t('chatbot.confidenceLabel')}: {(message.confidence * 100).toFixed(0)}%
                                   </span>
                                 </div>
                               )}
@@ -821,7 +875,7 @@ export default function ChatBot() {
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        placeholder="Type your message..."
+                        placeholder={t('chatbot.inputPlaceholder')}
                         className="flex-1 px-4 py-2.5 bg-gray-100 rounded-full text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-custom-green focus:bg-white transition-all"
                       />
                       <motion.button
@@ -830,7 +884,8 @@ export default function ChatBot() {
                         onClick={handleSendMessage}
                         disabled={!inputValue.trim()}
                         className="p-2.5 bg-custom-green hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-full transition-colors"
-                        aria-label="Send message"
+                        aria-label={t('chatbot.sendMessage')}
+                        title={t('chatbot.sendMessage')}
                       >
                         <Send size={18} />
                       </motion.button>

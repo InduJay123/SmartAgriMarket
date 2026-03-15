@@ -325,7 +325,102 @@
       "Price per kg": "කිලෝග්‍රෑම් එකකට මිල",
       "Market Average": "වෙළඳපොළ සාමාන්‍යය",
       "Your Price": "ඔබේ මිල",
-      "Premium Price": "ප්‍රිමියම් මිල"
+      "Premium Price": "ප්‍රිමියම් මිල",
+      "chatbot": {
+        "welcome": "ආයුබෝවන්! 👋 මම සැබෑ කෘෂිකාර්මික දත්ත මත පුහුණු කළ යන්ත්‍ර ඉගෙනුම් මොඩල වලින් බලගැන්වූ AgriBot AI.\n\n🧠 **මට උදව් කළ හැක්කේ:**\n• මිල අනාවැකි (වසර 9ක වෙළඳපොළ දත්ත මත)\n• ඉල්ලුම් පුරෝකථනය (ඉතිහාසගත ඉල්ලුම් රටා මත)\n• අස්වැන්න අනාවැකි (පාරිසරික සාධක + බෝග දත්ත)\n• අනාවැකි පැහැදිලි කිරීම\n\n💡 **මෙහෙම අහලා බලන්න:**\n• \"ලබන සතියේ තක්කාලි මිල කීය වෙයිද?\"\n• \"කැරට් ඉල්ලුම අනාවැකි කරන්න\"\n• \"බෝංචි අස්වැන්න කීයද?\"\n\nඅපේ සංවාද වලින් මම ඉගෙන ගන්නවා - ඕනෑම දෙයක් අහන්න! 🌾",
+        "errorFallback": "කණගාටුයි, දෝෂයක් ඇතිවුණා. කරුණාකර නැවත උත්සාහ කරන්න! 🤖",
+        "noPredictionData": "පැහැදිලි කිරීමට අනාවැකි දත්ත නොමැත.",
+        "quickActionPrice": "💰 මිල අනාවැකිය",
+        "quickActionDemand": "📈 ඉල්ලුම අනාවැකිය",
+        "quickActionYield": "🌾 අස්වැන්න අනාවැකිය",
+        "quickActionAccuracy": "🎯 මොඩල නිරවද්‍යතාව",
+        "quickActionHelp": "💡 උදව්",
+        "toggleText": "අප සමඟ කතාබහ කරන්න",
+        "openChat": "චැට් විවෘත කරන්න",
+        "headerTitle": "AgriBot AI",
+        "headerSubtitle": "ML බලගැන්වූ • Random Forest • වසර 9ක දත්ත",
+        "openDashboard": "ML පුවරුව විවෘත කරන්න",
+        "expandChat": "චැට් පුළුල් කරන්න",
+        "minimizeChat": "චැට් සංකුචිත කරන්න",
+        "closeChat": "චැට් වසන්න",
+        "sendMessage": "පණිවිඩය යවන්න",
+        "confidenceLabel": "විශ්වාස මට්ටම",
+        "inputPlaceholder": "ඔබේ පණිවිඩය ටයිප් කරන්න...",
+        "mlDashboard": {
+          "tabs": {
+            "overview": "සාරාංශය",
+            "price": "මිල ප්‍රවණතා",
+            "demand": "ඉල්ලුම",
+            "accuracy": "නිරවද්‍යතාව"
+          },
+          "header": {
+            "title": "ML මොඩල් කාර්යසාධන පුවරුව",
+            "subtitle": "AI බලගැන්වූ අනාවැකි මොඩල් වලින් සජීවී අවබෝධයන්"
+          },
+          "cards": {
+            "common": {
+              "r2Accuracy": "R² අගය (නිරවද්‍යතාව)",
+              "mae": "සාමාන්‍ය නිරපේක්ෂ දෝෂය"
+            },
+            "priceModel": {
+              "title": "මිල මොඩලය"
+            },
+            "demandModel": {
+              "title": "ඉල්ලුම් මොඩලය"
+            },
+            "yieldModel": {
+              "title": "අස්වැන්න මොඩලය"
+            },
+            "priceMae": {
+              "title": "මිල MAE"
+            },
+            "demandMae": {
+              "title": "ඉල්ලුම් MAE"
+            },
+            "yieldMae": {
+              "title": "අස්වැන්න MAE"
+            },
+            "modelStatus": {
+              "title": "මොඩල් තත්වය",
+              "value": "සක්‍රීය",
+              "subtitle": "Random Forest (මොඩල් 3ම)"
+            }
+          },
+          "charts": {
+            "actualVsPredicted": "සැබෑ මිල සහ අනාවැකි මිල සැසඳීම",
+            "accuracyByProduct": "නිෂ්පාදන අනුව නිරවද්‍යතාව",
+            "sevenDayForecast": "දින 7ක මිල අනාවැකිය",
+            "demandTrendsLastSixMonths": "ඉල්ලුම් ප්‍රවණතා (පසුගිය මාස 6)",
+            "modelAccuracyComparison": "මොඩල් නිරවද්‍යතා සැසඳීම (R² අගය)"
+          },
+          "labels": {
+            "actualPrice": "සැබෑ මිල",
+            "predictedPrice": "අනාවැකි මිල",
+            "accuracy": "නිරවද්‍යතාව",
+            "notAvailable": "නොමැත",
+            "demandKg": "ඉල්ලුම (kg)",
+            "pricePredictor": "මිල අනාවැකි මොඩලය",
+            "demandPredictor": "ඉල්ලුම් අනාවැකි මොඩලය",
+            "yieldPredictor": "අස්වැන්න අනාවැකි මොඩලය",
+            "trainingAccuracy": "පුහුණු නිරවද්‍යතාව",
+            "testAccuracy": "පරීක්ෂණ නිරවද්‍යතාව",
+            "r2Score": "R² අගය",
+            "accurate": "නිවැරදි",
+            "error": "දෝෂය",
+            "good": "හොඳයි"
+          },
+          "table": {
+            "title": "විස්තරාත්මක මොඩල් මැනුම්",
+            "headers": {
+              "model": "මොඩලය",
+              "r2Score": "R² අගය",
+              "mae": "MAE",
+              "rmse": "RMSE",
+              "status": "තත්වය"
+            }
+          }
+        }
+      }
 
 
 

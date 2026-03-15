@@ -46,7 +46,7 @@ export class IntentEngine {
       // Price Prediction Intent
       {
         name: 'predict_price',
-        keywords: ['price', 'cost', 'predict', 'forecast', 'what will', 'how much', 'pricing', 'rate', 'estimate'],
+        keywords: ['price', 'cost', 'predict', 'forecast', 'what will', 'how much', 'pricing', 'rate', 'estimate', 'මිල', 'අනාවැකි', 'පුරෝකථනය', 'කීය'],
         weight: 1.5,
         response: 'I can predict crop prices for you. Which crop are you interested in?',
         requiredEntities: ['crop'],
@@ -56,7 +56,7 @@ export class IntentEngine {
       // Yield Prediction Intent
       {
         name: 'predict_yield',
-        keywords: ['yield', 'harvest', 'production', 'output', 'how much will grow', 'crop output'],
+        keywords: ['yield', 'harvest', 'production', 'output', 'how much will grow', 'crop output', 'අස්වැන්න', 'නිෂ්පාදනය', 'වගා ප්‍රතිඵල'],
         weight: 1.5,
         response: 'I can help predict crop yield. Which crop and location?',
         requiredEntities: ['crop'],
@@ -66,7 +66,7 @@ export class IntentEngine {
       // Demand Prediction Intent
       {
         name: 'predict_demand',
-        keywords: ['demand', 'market need', 'consumption', 'buyers', 'market demand', 'popular'],
+        keywords: ['demand', 'market need', 'consumption', 'buyers', 'market demand', 'popular', 'ඉල්ලුම', 'වෙළඳපොළ ඉල්ලුම'],
         weight: 1.5,
         response: 'I can forecast market demand. Which crop are you asking about?',
         requiredEntities: ['crop'],
@@ -76,7 +76,7 @@ export class IntentEngine {
       // Explanation Intent
       {
         name: 'explain_prediction',
-        keywords: ['why', 'explain', 'reason', 'how come', 'because', 'factors', 'what causes', 'explain this'],
+        keywords: ['why', 'explain', 'reason', 'how come', 'because', 'factors', 'what causes', 'explain this', 'ඇයි', 'පැහැදිලි', 'හේතුව'],
         weight: 1.3,
         response: 'Let me explain the factors affecting this prediction.',
         requiredEntities: [],
@@ -86,7 +86,7 @@ export class IntentEngine {
       // Greeting Intent
       {
         name: 'greeting',
-        keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'wassup'],
+        keywords: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'wassup', 'ආයුබෝවන්', 'සුභ උදෑසනක්', 'හෙලෝ'],
         weight: 1.0,
         response: "Hello! 👋 Welcome to SmartAgriMarket. I'm your AI agricultural assistant. I can help with:\n• Price predictions 📊\n• Yield forecasting 🌾\n• Demand analysis 📈\n• Market insights 💡\n\nWhat would you like to know?",
         requiredEntities: []
@@ -95,7 +95,7 @@ export class IntentEngine {
       // Help Intent
       {
         name: 'help',
-        keywords: ['help', 'assist', 'support', 'what can you do', 'features', 'options', 'guide', 'can you', 'what'],
+        keywords: ['help', 'assist', 'support', 'what can you do', 'features', 'options', 'guide', 'can you', 'what', 'උදව්', 'සහාය'],
         weight: 1.2,
         response: "I'm your AI farming assistant! 🤖 I can help with:\n\n📊 **Price Predictions**: Ask 'What will Tomato price be next week?'\n🌾 **Yield Forecasting**: Ask 'What yield can I expect for Carrot?'\n📈 **Demand Analysis**: Ask 'What's the demand for Beans?'\n💡 **Explanations**: Ask 'Why is the price increasing?'\n\nJust ask naturally - I'll understand!",
         requiredEntities: []
@@ -113,7 +113,7 @@ export class IntentEngine {
       // Market Trends Intent
       {
         name: 'market_trends',
-        keywords: ['trend', 'trends', 'market', 'insights', 'analysis', 'statistics', 'patterns', 'movement'],
+        keywords: ['trend', 'trends', 'market', 'insights', 'analysis', 'statistics', 'patterns', 'movement', 'වෙළඳපොළ', 'ප්‍රවණතා', 'විශ්ලේෂණය'],
         weight: 1.3,
         response: "📊 Current Market Trends:\n• Seasonal patterns affecting supply\n• Price volatility indicators\n• Demand-supply balance\n\nWhich crop's trends would you like to see?",
         requiredEntities: []
@@ -149,7 +149,7 @@ export class IntentEngine {
       // Gratitude Intent
       {
         name: 'gratitude',
-        keywords: ['thank', 'thanks', 'appreciate', 'helpful', 'great'],
+        keywords: ['thank', 'thanks', 'appreciate', 'helpful', 'great', 'ස්තුතියි', 'බොහොම ස්තුතියි'],
         weight: 0.8,
         response: "You're welcome! 😊 Anything else I can help with?",
         requiredEntities: []
@@ -158,7 +158,7 @@ export class IntentEngine {
       // Farewell Intent
       {
         name: 'farewell',
-        keywords: ['bye', 'goodbye', 'see you', 'exit', 'quit', 'later'],
+        keywords: ['bye', 'goodbye', 'see you', 'exit', 'quit', 'later', 'බායි', 'ආයුබෝවන්'],
         weight: 0.8,
         response: "Goodbye! 👋 Happy farming! 🌾",
         requiredEntities: []
@@ -167,7 +167,7 @@ export class IntentEngine {
       // Model Accuracy Intent
       {
         name: 'model_accuracy',
-        keywords: ['accuracy', 'r2', 'mae', 'rmse', 'how accurate', 'model performance', 'reliable', 'model', 'performance', 'what is'],
+        keywords: ['accuracy', 'r2', 'mae', 'rmse', 'how accurate', 'model performance', 'reliable', 'model', 'performance', 'what is', 'නිරවද්‍යතාව', 'මොඩල කාර්යසාධනය'],
         weight: 1.4,
         response: "🎯 AI Model Performance:\n\n**Price Predictor:**\n• Uses Random Forest with 9 years of historical data\n• Predicts prices based on market trends & seasonality\n\n**Demand Predictor:**\n• Trained on vegetable demand patterns\n• Predicts demand in metric tons\n\n**Yield Predictor:**\n• Environmental factors: rainfall, temperature, soil\n• Predicts yield per hectare\n\n📊 Click 'View Dashboard' for real-time accuracy metrics from our trained models!",
         requiredEntities: []
@@ -176,7 +176,7 @@ export class IntentEngine {
       // Dashboard Intent
       {
         name: 'show_dashboard',
-        keywords: ['dashboard', 'chart', 'graph', 'analytics', 'visualization', 'show model', 'performance'],
+        keywords: ['dashboard', 'chart', 'graph', 'analytics', 'visualization', 'show model', 'performance', 'පුවරුව', 'සටහන'],
         weight: 1.3,
         response: "📊 Opening ML Dashboard...",
         requiredEntities: [],

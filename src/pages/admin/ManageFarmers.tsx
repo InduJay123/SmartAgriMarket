@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  MapPin,
   Search,
   Filter as FilterIcon,
   AlertTriangle,
@@ -8,7 +7,6 @@ import {
   ShoppingCart,
   Users,
   Eye,
-  Trash2,
 } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
@@ -33,6 +31,7 @@ type FarmerStatusFilter = "all" | "verified" | "verified" | "blocked";
 
 interface FarmerApi {
   id: number;
+  user_id?: number;
   email: string;
   username: string;
   phone: string;
@@ -51,8 +50,6 @@ const ManageFarmers: React.FC = () => {
   
   const [buyers, setBuyers] = useState(0);
   const [crops, setCrops] = useState(0);
-
-  const [showMap, setShowMap] = useState(false);
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<FarmerStatusFilter>("all");
@@ -119,17 +116,6 @@ const ManageFarmers: React.FC = () => {
       setViewError(err?.response?.data?.error || "Failed to load farmer details.");
     } finally {
       setViewLoading(false);
-    }
-  };
-
-  const handleDelete = async (f: FarmerApi) => {
-    if (!window.confirm(`Delete farmer "${getDisplayName(f)}"? This cannot be undone.`)) return;
-    try {
-      await api.delete(`/auth/admin/user/${f.id}/`);
-      fetchFarmers(statusFilter);
-      fetchDashboardStats();
-    } catch (err) {
-      console.error("Delete failed", err);
     }
   };
 
@@ -301,13 +287,6 @@ const ManageFarmers: React.FC = () => {
                           title="View details"
                         >
                           <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(f)}
-                          className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded"
-                          title="Delete farmer"
-                        >
-                          <Trash2 size={16} />
                         </button>
                       </td>
                     </tr>

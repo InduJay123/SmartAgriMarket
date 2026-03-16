@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Filter as FilterIcon, Eye, Trash2 } from "lucide-react";
+import { Search, Filter as FilterIcon, Eye } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import api from "../../services/api";
 
@@ -7,6 +7,7 @@ type BuyerStatusFilter = "all" | "verified" | "pending" | "blocked";
 
 interface BuyerApi {
   id: number;
+  user_id?: number;
   email: string;
   username: string;
   phone?: string;
@@ -15,6 +16,7 @@ interface BuyerApi {
   is_active: boolean;
 
   location?: string;
+  city?: string;
   type?: string;// Retailer/Wholesaler (optional)
   contact_number?: string; 
 }
@@ -103,8 +105,7 @@ export default function ManageBuyers() {
     return { text: "Verified", cls: "bg-green-100 text-green-800" };
   };
 
-  const getBuyerType = (b: BuyerApi) => b.type || "—";
-  const getBuyerLocation = (b: BuyerApi) => b.location || "—";
+  const getBuyerLocation = (b: BuyerApi) => b.city || "—";
 
   const openViewModal = async (b: BuyerApi) => {
     setSelectedBuyer(b);
@@ -119,19 +120,6 @@ export default function ManageBuyers() {
       setViewError(err?.response?.data?.error || "Failed to load buyer details.");
     } finally {
       setViewLoading(false);
-    }
-  };
-
-  const handleDelete = async (b: BuyerApi) => {
-    if (!window.confirm(`Delete buyer "${getDisplayName(b)}"? This cannot be undone.`)) return;
-    try {
-      await api.delete(`/auth/admin/user/${b.id}/`);
-      if (selectedBuyer?.id === b.id) {
-        setViewOpen(false);
-      }
-      fetchBuyers();
-    } catch (err) {
-      console.error("Delete failed", err);
     }
   };
 
@@ -226,13 +214,6 @@ export default function ManageBuyers() {
                           title="View details"
                         >
                           <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(b)}
-                          className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded"
-                          title="Delete buyer"
-                        >
-                          <Trash2 size={16} />
                         </button>
                       </td>
                     </tr>

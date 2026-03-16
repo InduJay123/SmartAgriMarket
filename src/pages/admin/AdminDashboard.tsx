@@ -278,14 +278,14 @@ const AdminDashboard: React.FC = () => {
                   className="inline-flex items-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg"
                 >
                   <CheckCircle size={16} />
-                  Approve
+                  Active
                 </button>
                 <button
                   onClick={() => handleReject(u)}
                   className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg"
                 >
                   <XCircle size={16} />
-                  Reject
+                  Disable
                 </button>
               </div>
             </div>

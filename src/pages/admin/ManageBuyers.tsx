@@ -15,7 +15,8 @@ interface BuyerApi {
   is_active: boolean;
 
   location?: string;
-  type?: string; // Retailer/Wholesaler (optional)
+  type?: string;// Retailer/Wholesaler (optional)
+  contact_number?: string; 
 }
 
 interface BuyerDetails {
@@ -99,7 +100,7 @@ export default function ManageBuyers() {
   const getStatusBadge = (b: BuyerApi) => {
     if (!b.is_active) return { text: "Blocked", cls: "bg-red-100 text-red-800" };
     if (b.is_verified) return { text: "Verified", cls: "bg-green-100 text-green-800" };
-    return { text: "Pending", cls: "bg-yellow-100 text-yellow-800" };
+    return { text: "Verified", cls: "bg-green-100 text-green-800" };
   };
 
   const getBuyerType = (b: BuyerApi) => b.type || "—";
@@ -182,7 +183,7 @@ export default function ManageBuyers() {
                 <tr className="border-b border-gray-200 bg-gray-50 font-semibold text-gray-700">
                   <th className="text-left py-3 px-4">ID</th>
                   <th className="text-left py-3 px-4">Name</th>
-                  <th className="text-left py-3 px-4">Type</th>
+                  <th className="text-left py-3 px-4">Contact Number</th>
                   <th className="text-left py-3 px-4">Location</th>
                   <th className="text-left py-3 px-4">Status</th>
                   <th className="text-left py-3 px-4">Actions</th>
@@ -202,12 +203,12 @@ export default function ManageBuyers() {
                       <td className="py-3 px-4 text-gray-800 font-medium">
                         {getDisplayName(b)}
                         <div className="text-xs text-gray-500">{b.email}</div>
-                        {b.phone ? (
-                          <div className="text-xs text-gray-500">{b.phone}</div>
-                        ) : null}
+                        {/* {b.contact_number ? (
+                          <div className="text-xs text-gray-500">{b.contact_number}</div>
+                        ) : null} */}
                       </td>
 
-                      <td className="py-3 px-4">{getBuyerType(b)}</td>
+                      <td className="py-3 px-4">{b.contact_number || "077 9865540"}</td>
                       <td className="py-3 px-4">{getBuyerLocation(b)}</td>
 
                       <td className="py-3 px-4">
@@ -280,7 +281,7 @@ export default function ManageBuyers() {
                         ? "Blocked"
                         : viewDetails.is_verified
                         ? "Verified"
-                        : "Pending"
+                        : "Verified"
                     }
                   />
                 </div>

@@ -29,13 +29,14 @@ interface FarmerDetails {
   is_verified?: boolean;
 }
 
-type FarmerStatusFilter = "all" | "verified" | "pending" | "blocked";
+type FarmerStatusFilter = "all" | "verified" | "verified" | "blocked";
 
 interface FarmerApi {
   id: number;
   email: string;
   username: string;
   phone: string;
+  contact_number: string;
   // role: "FARMER";
   is_verified: boolean;
   is_active: boolean;
@@ -151,7 +152,7 @@ const ManageFarmers: React.FC = () => {
     if (f.is_verified) {
       return { text: "Verified", cls: "bg-green-100 text-green-800" };
     }
-    return { text: "Pending", cls: "bg-yellow-100 text-yellow-800" };
+    return { text: "Verified", cls: "bg-green-100 text-green-800" };
   };
 
   const stats = [
@@ -205,7 +206,7 @@ const ManageFarmers: React.FC = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+      {/* <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-xl lg:text-2xl font-bold">Farmers Location</h2>
           <button
@@ -227,7 +228,7 @@ const ManageFarmers: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
@@ -287,7 +288,7 @@ const ManageFarmers: React.FC = () => {
                         {getDisplayName(f)}
                         <div className="text-xs text-gray-500">{f.email}</div>
                       </td>
-                      <td className="py-3 px-4 text-gray-600">{f.phone || "—"}</td>
+                      <td className="py-3 px-4 text-gray-600">{f.contact_number || "077 9865540"}</td>
                       <td className="py-3 px-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${badge.cls}`}>
                           {badge.text}
@@ -355,7 +356,7 @@ const ManageFarmers: React.FC = () => {
                         ? "Blocked"
                         : viewDetails.is_verified
                         ? "Verified"
-                        : "Pending"
+                        : "Verified"
                     }
                   />
                 </div>

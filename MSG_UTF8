@@ -1,0 +1,10 @@
+feat: add flood detection feature with risk prediction and alerts
+
+- Integrated FloodDetection component for assessing flood risk based on various parameters.
+- Implemented API calls for flood risk prediction, active flood alerts, and current weather data.
+- Enhanced Sidebar to include navigation to Flood Detection page.
+- Added new translations for flood detection feature in English and Sinhala.
+- Updated AI Model page to include flood detection model information and retraining functionality.
+- Created UI for displaying prediction results, recommendations, and affected crops.
+- Added quick tips and risk level guide for user assistance.
+

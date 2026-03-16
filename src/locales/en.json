@@ -314,7 +314,7 @@
     "Save Changes": "Save Changes",
     "District": "District",
 
-    "Welcome back, {name}": "Welcome back, {name}",
+    "Welcome back, {name}": "Welcome back,",
     "Here's what's happening with your farm today": "Here's what's happening with your farm today",
 
     "Set your price": "Set your price",
@@ -324,7 +324,102 @@
     "Price per kg": "Price per kg",
     "Market Average": "Market Average",
     "Your Price": "Your Price",
-    "Premium Price": "Premium Price"
+    "Premium Price": "Premium Price",
+    "chatbot": {
+      "welcome": "Hello! 👋 I'm AgriBot AI, powered by machine learning models trained on real agricultural data.\n\n🧠 **I can help with:**\n• Price predictions (based on 9 years of market data)\n• Demand forecasting (trained on historical demand patterns)\n• Yield predictions (environmental factors + crop data)\n• Explaining predictions\n\n💡 **Try saying:**\n• \"What will Tomato price be next week?\"\n• \"Predict Carrot demand\"\n• \"What's the yield for Beans?\"\n\nI learn from our conversations - ask me anything! 🌾",
+      "errorFallback": "Sorry, I encountered an error. Please try again! 🤖",
+      "noPredictionData": "No prediction data available to explain.",
+      "quickActionPrice": "💰 Predict Price",
+      "quickActionDemand": "📈 Predict Demand",
+      "quickActionYield": "🌾 Predict Yield",
+      "quickActionAccuracy": "🎯 Model Accuracy",
+      "quickActionHelp": "💡 Help",
+      "toggleText": "Chat with us",
+      "openChat": "Open chat",
+      "headerTitle": "AgriBot AI",
+      "headerSubtitle": "ML-powered • Random Forest • 9 Years of Data",
+      "openDashboard": "Open ML Dashboard",
+      "expandChat": "Expand chat",
+      "minimizeChat": "Minimize chat",
+      "closeChat": "Close chat",
+      "sendMessage": "Send message",
+      "confidenceLabel": "Confidence",
+      "inputPlaceholder": "Type your message...",
+      "mlDashboard": {
+        "tabs": {
+          "overview": "Overview",
+          "price": "Price Trends",
+          "demand": "Demand",
+          "accuracy": "Accuracy"
+        },
+        "header": {
+          "title": "ML Model Performance Dashboard",
+          "subtitle": "Real-time insights from our AI-powered prediction models"
+        },
+        "cards": {
+          "common": {
+            "r2Accuracy": "R² Score (Accuracy)",
+            "mae": "Mean Absolute Error"
+          },
+          "priceModel": {
+            "title": "Price Model"
+          },
+          "demandModel": {
+            "title": "Demand Model"
+          },
+          "yieldModel": {
+            "title": "Yield Model"
+          },
+          "priceMae": {
+            "title": "Price MAE"
+          },
+          "demandMae": {
+            "title": "Demand MAE"
+          },
+          "yieldMae": {
+            "title": "Yield MAE"
+          },
+          "modelStatus": {
+            "title": "Model Status",
+            "value": "Active",
+            "subtitle": "Random Forest (All 3)"
+          }
+        },
+        "charts": {
+          "actualVsPredicted": "Actual vs Predicted Prices",
+          "accuracyByProduct": "Accuracy by Product",
+          "sevenDayForecast": "7-Day Price Forecast",
+          "demandTrendsLastSixMonths": "Demand Trends (Last 6 Months)",
+          "modelAccuracyComparison": "Model Accuracy Comparison (R² Score)"
+        },
+        "labels": {
+          "actualPrice": "Actual Price",
+          "predictedPrice": "Predicted Price",
+          "accuracy": "Accuracy",
+          "notAvailable": "N/A",
+          "demandKg": "Demand (kg)",
+          "pricePredictor": "Price Predictor",
+          "demandPredictor": "Demand Predictor",
+          "yieldPredictor": "Yield Predictor",
+          "trainingAccuracy": "Training Accuracy",
+          "testAccuracy": "Test Accuracy",
+          "r2Score": "R² Score",
+          "accurate": "Accurate",
+          "error": "Error",
+          "good": "Good"
+        },
+        "table": {
+          "title": "Detailed Model Metrics",
+          "headers": {
+            "model": "Model",
+            "r2Score": "R² Score",
+            "mae": "MAE",
+            "rmse": "RMSE",
+            "status": "Status"
+          }
+        }
+      }
+    }
 
 
     

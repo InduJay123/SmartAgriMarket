@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   LineChart,
   Line,
@@ -86,6 +87,7 @@ const sampleDemandData = [
 ];
 
 export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'overview' | 'price' | 'demand' | 'accuracy'>('overview');
   const [isLoading, setIsLoading] = useState(false);
   const [allMetrics, setAllMetrics] = useState<AllModelMetrics>({
@@ -191,10 +193,10 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
   }, [isOpen]);
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: Activity },
-    { id: 'price', label: 'Price Trends', icon: LineChartIcon },
-    { id: 'demand', label: 'Demand', icon: BarChart3 },
-    { id: 'accuracy', label: 'Accuracy', icon: PieChartIcon },
+    { id: 'overview', label: t('chatbot.mlDashboard.tabs.overview'), icon: Activity },
+    { id: 'price', label: t('chatbot.mlDashboard.tabs.price'), icon: LineChartIcon },
+    { id: 'demand', label: t('chatbot.mlDashboard.tabs.demand'), icon: BarChart3 },
+    { id: 'accuracy', label: t('chatbot.mlDashboard.tabs.accuracy'), icon: PieChartIcon },
   ];
 
   return (
@@ -220,10 +222,10 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                 <div>
                   <h2 className="text-2xl font-bold flex items-center gap-2">
                     <Activity size={28} />
-                    ML Model Performance Dashboard
+                    {t('chatbot.mlDashboard.header.title')}
                   </h2>
                   <p className="text-green-50 mt-1">
-                    Real-time insights from our AI-powered prediction models
+                    {t('chatbot.mlDashboard.header.subtitle')}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -269,25 +271,25 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                   {/* Model Accuracies - Separate Cards */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <MetricCard
-                      title="Price Model"
+                      title={t('chatbot.mlDashboard.cards.priceModel.title')}
                       value={`${(allMetrics.price.test_r2 * 100).toFixed(1)}%`}
-                      subtitle="R² Score (Accuracy)"
+                      subtitle={t('chatbot.mlDashboard.cards.common.r2Accuracy')}
                       icon={TrendingUp}
                       color="green"
                       trend="up"
                     />
                     <MetricCard
-                      title="Demand Model"
+                      title={t('chatbot.mlDashboard.cards.demandModel.title')}
                       value={`${(allMetrics.demand.test_r2 * 100).toFixed(1)}%`}
-                      subtitle="R² Score (Accuracy)"
+                      subtitle={t('chatbot.mlDashboard.cards.common.r2Accuracy')}
                       icon={BarChart3}
                       color="blue"
                       trend="up"
                     />
                     <MetricCard
-                      title="Yield Model"
+                      title={t('chatbot.mlDashboard.cards.yieldModel.title')}
                       value={`${(allMetrics.yield.test_r2 * 100).toFixed(1)}%`}
-                      subtitle="R² Score (Accuracy)"
+                      subtitle={t('chatbot.mlDashboard.cards.common.r2Accuracy')}
                       icon={Target}
                       color="purple"
                       trend="up"
@@ -297,30 +299,30 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                   {/* Secondary Metrics */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <MetricCard
-                      title="Price MAE"
+                      title={t('chatbot.mlDashboard.cards.priceMae.title')}
                       value={`Rs. ${allMetrics.price.test_mae.toFixed(2)}`}
-                      subtitle="Mean Absolute Error"
+                      subtitle={t('chatbot.mlDashboard.cards.common.mae')}
                       icon={Activity}
                       color="green"
                     />
                     <MetricCard
-                      title="Demand MAE"
+                      title={t('chatbot.mlDashboard.cards.demandMae.title')}
                       value={`${allMetrics.demand.test_mae.toFixed(0)} kg`}
-                      subtitle="Mean Absolute Error"
+                      subtitle={t('chatbot.mlDashboard.cards.common.mae')}
                       icon={Activity}
                       color="blue"
                     />
                     <MetricCard
-                      title="Yield MAE"
+                      title={t('chatbot.mlDashboard.cards.yieldMae.title')}
                       value={`${allMetrics.yield.test_mae.toFixed(0)} kg/ha`}
-                      subtitle="Mean Absolute Error"
+                      subtitle={t('chatbot.mlDashboard.cards.common.mae')}
                       icon={Activity}
                       color="purple"
                     />
                     <MetricCard
-                      title="Model Status"
-                      value="Active"
-                      subtitle="Random Forest (All 3)"
+                      title={t('chatbot.mlDashboard.cards.modelStatus.title')}
+                      value={t('chatbot.mlDashboard.cards.modelStatus.value')}
+                      subtitle={t('chatbot.mlDashboard.cards.modelStatus.subtitle')}
                       icon={Award}
                       color="yellow"
                       trend="up"
@@ -332,7 +334,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                     {/* Price Prediction Chart */}
                     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                       <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                        Actual vs Predicted Prices
+                        {t('chatbot.mlDashboard.charts.actualVsPredicted')}
                       </h3>
                       <ResponsiveContainer width="100%" height={250}>
                         <LineChart data={samplePriceHistory}>
@@ -353,7 +355,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                             stroke="#3b82f6"
                             strokeWidth={2}
                             dot={{ r: 4 }}
-                            name="Actual Price"
+                            name={t('chatbot.mlDashboard.labels.actualPrice')}
                           />
                           <Line
                             type="monotone"
@@ -362,7 +364,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                             strokeWidth={2}
                             strokeDasharray="5 5"
                             dot={{ r: 4 }}
-                            name="Predicted Price"
+                            name={t('chatbot.mlDashboard.labels.predictedPrice')}
                           />
                         </LineChart>
                       </ResponsiveContainer>
@@ -371,7 +373,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                     {/* Accuracy by Product */}
                     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                       <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                        Accuracy by Product
+                        {t('chatbot.mlDashboard.charts.accuracyByProduct')}
                       </h3>
                       <ResponsiveContainer width="100%" height={250}>
                         <BarChart data={sampleProductAccuracy} layout="vertical">
@@ -379,7 +381,9 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                           <XAxis type="number" domain={[80, 95]} stroke="#888" />
                           <YAxis type="category" dataKey="product" stroke="#888" width={80} />
                           <Tooltip
-                            formatter={(value: number | undefined) => value ? [`${value.toFixed(2)}%`, 'Accuracy'] : ['N/A', 'Accuracy']}
+                            formatter={(value: number | undefined) => value
+                              ? [`${value.toFixed(2)}%`, t('chatbot.mlDashboard.labels.accuracy')]
+                              : [t('chatbot.mlDashboard.labels.notAvailable'), t('chatbot.mlDashboard.labels.accuracy')]}
                             contentStyle={{
                               backgroundColor: '#fff',
                               border: '1px solid #e5e7eb',
@@ -398,7 +402,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                 <div className="space-y-6">
                   <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      7-Day Price Forecast
+                      {t('chatbot.mlDashboard.charts.sevenDayForecast')}
                     </h3>
                     <ResponsiveContainer width="100%" height={400}>
                       <AreaChart data={samplePriceHistory}>
@@ -425,7 +429,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                           stroke="#22c55e"
                           fillOpacity={1}
                           fill="url(#colorPredicted)"
-                          name="Predicted Price"
+                          name={t('chatbot.mlDashboard.labels.predictedPrice')}
                         />
                         <Line
                           type="monotone"
@@ -433,7 +437,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                           stroke="#3b82f6"
                           strokeWidth={2}
                           dot={{ r: 5 }}
-                          name="Actual Price"
+                          name={t('chatbot.mlDashboard.labels.actualPrice')}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -445,7 +449,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                 <div className="space-y-6">
                   <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      Demand Trends (Last 6 Months)
+                      {t('chatbot.mlDashboard.charts.demandTrendsLastSixMonths')}
                     </h3>
                     <ResponsiveContainer width="100%" height={400}>
                       <BarChart data={sampleDemandData}>
@@ -459,7 +463,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                             borderRadius: '8px',
                           }}
                         />
-                        <Bar dataKey="demand" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Demand (kg)" />
+                        <Bar dataKey="demand" fill="#3b82f6" radius={[4, 4, 0, 0]} name={t('chatbot.mlDashboard.labels.demandKg')} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -471,14 +475,14 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                   {/* Model Comparison Bar Chart */}
                   <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      Model Accuracy Comparison (R² Score)
+                      {t('chatbot.mlDashboard.charts.modelAccuracyComparison')}
                     </h3>
                     <ResponsiveContainer width="100%" height={300}>
                       <BarChart
                         data={[
-                          { model: 'Price Predictor', accuracy: Number((allMetrics.price.test_r2 * 100).toFixed(1)), train: Number((allMetrics.price.train_r2 * 100).toFixed(1)) },
-                          { model: 'Demand Predictor', accuracy: Number((allMetrics.demand.test_r2 * 100).toFixed(1)), train: Number((allMetrics.demand.train_r2 * 100).toFixed(1)) },
-                          { model: 'Yield Predictor', accuracy: Number((allMetrics.yield.test_r2 * 100).toFixed(1)), train: Number((allMetrics.yield.train_r2 * 100).toFixed(1)) },
+                          { model: t('chatbot.mlDashboard.labels.pricePredictor'), accuracy: Number((allMetrics.price.test_r2 * 100).toFixed(1)), train: Number((allMetrics.price.train_r2 * 100).toFixed(1)) },
+                          { model: t('chatbot.mlDashboard.labels.demandPredictor'), accuracy: Number((allMetrics.demand.test_r2 * 100).toFixed(1)), train: Number((allMetrics.demand.train_r2 * 100).toFixed(1)) },
+                          { model: t('chatbot.mlDashboard.labels.yieldPredictor'), accuracy: Number((allMetrics.yield.test_r2 * 100).toFixed(1)), train: Number((allMetrics.yield.train_r2 * 100).toFixed(1)) },
                         ]}
                       >
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -493,8 +497,8 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                           }}
                         />
                         <Legend />
-                        <Bar dataKey="train" fill="#3b82f6" name="Training Accuracy" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="accuracy" fill="#22c55e" name="Test Accuracy" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="train" fill="#3b82f6" name={t('chatbot.mlDashboard.labels.trainingAccuracy')} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="accuracy" fill="#22c55e" name={t('chatbot.mlDashboard.labels.testAccuracy')} radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -503,15 +507,15 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                     {/* Price Model Pie */}
                     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                       <h3 className="text-lg font-semibold text-gray-800 mb-2 text-center">
-                        Price Model
+                        {t('chatbot.mlDashboard.cards.priceModel.title')}
                       </h3>
-                      <p className="text-sm text-gray-500 text-center mb-4">R² Score: {(allMetrics.price.test_r2 * 100).toFixed(1)}%</p>
+                      <p className="text-sm text-gray-500 text-center mb-4">{t('chatbot.mlDashboard.labels.r2Score')}: {(allMetrics.price.test_r2 * 100).toFixed(1)}%</p>
                       <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
                           <Pie
                             data={[
-                              { name: 'Accurate', value: Number((allMetrics.price.test_r2 * 100).toFixed(1)) },
-                              { name: 'Error', value: Number(((1 - allMetrics.price.test_r2) * 100).toFixed(1)) },
+                              { name: t('chatbot.mlDashboard.labels.accurate'), value: Number((allMetrics.price.test_r2 * 100).toFixed(1)) },
+                              { name: t('chatbot.mlDashboard.labels.error'), value: Number(((1 - allMetrics.price.test_r2) * 100).toFixed(1)) },
                             ]}
                             cx="50%"
                             cy="50%"
@@ -532,15 +536,15 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                     {/* Demand Model Pie */}
                     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                       <h3 className="text-lg font-semibold text-gray-800 mb-2 text-center">
-                        Demand Model
+                        {t('chatbot.mlDashboard.cards.demandModel.title')}
                       </h3>
-                      <p className="text-sm text-gray-500 text-center mb-4">R² Score: {(allMetrics.demand.test_r2 * 100).toFixed(1)}%</p>
+                      <p className="text-sm text-gray-500 text-center mb-4">{t('chatbot.mlDashboard.labels.r2Score')}: {(allMetrics.demand.test_r2 * 100).toFixed(1)}%</p>
                       <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
                           <Pie
                             data={[
-                              { name: 'Accurate', value: Number((allMetrics.demand.test_r2 * 100).toFixed(1)) },
-                              { name: 'Error', value: Number(((1 - allMetrics.demand.test_r2) * 100).toFixed(1)) },
+                              { name: t('chatbot.mlDashboard.labels.accurate'), value: Number((allMetrics.demand.test_r2 * 100).toFixed(1)) },
+                              { name: t('chatbot.mlDashboard.labels.error'), value: Number(((1 - allMetrics.demand.test_r2) * 100).toFixed(1)) },
                             ]}
                             cx="50%"
                             cy="50%"
@@ -561,15 +565,15 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                     {/* Yield Model Pie */}
                     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                       <h3 className="text-lg font-semibold text-gray-800 mb-2 text-center">
-                        Yield Model
+                        {t('chatbot.mlDashboard.cards.yieldModel.title')}
                       </h3>
-                      <p className="text-sm text-gray-500 text-center mb-4">R² Score: {(allMetrics.yield.test_r2 * 100).toFixed(1)}%</p>
+                      <p className="text-sm text-gray-500 text-center mb-4">{t('chatbot.mlDashboard.labels.r2Score')}: {(allMetrics.yield.test_r2 * 100).toFixed(1)}%</p>
                       <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
                           <Pie
                             data={[
-                              { name: 'Accurate', value: Number((allMetrics.yield.test_r2 * 100).toFixed(1)) },
-                              { name: 'Error', value: Number(((1 - allMetrics.yield.test_r2) * 100).toFixed(1)) },
+                              { name: t('chatbot.mlDashboard.labels.accurate'), value: Number((allMetrics.yield.test_r2 * 100).toFixed(1)) },
+                              { name: t('chatbot.mlDashboard.labels.error'), value: Number(((1 - allMetrics.yield.test_r2) * 100).toFixed(1)) },
                             ]}
                             cx="50%"
                             cy="50%"
@@ -591,22 +595,22 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                   {/* Detailed Metrics Table */}
                   <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                      Detailed Model Metrics
+                      {t('chatbot.mlDashboard.table.title')}
                     </h3>
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead>
                           <tr className="border-b border-gray-200">
-                            <th className="text-left py-3 px-4 text-gray-600 font-medium">Model</th>
-                            <th className="text-center py-3 px-4 text-gray-600 font-medium">R² Score</th>
-                            <th className="text-center py-3 px-4 text-gray-600 font-medium">MAE</th>
-                            <th className="text-center py-3 px-4 text-gray-600 font-medium">RMSE</th>
-                            <th className="text-center py-3 px-4 text-gray-600 font-medium">Status</th>
+                            <th className="text-left py-3 px-4 text-gray-600 font-medium">{t('chatbot.mlDashboard.table.headers.model')}</th>
+                            <th className="text-center py-3 px-4 text-gray-600 font-medium">{t('chatbot.mlDashboard.table.headers.r2Score')}</th>
+                            <th className="text-center py-3 px-4 text-gray-600 font-medium">{t('chatbot.mlDashboard.table.headers.mae')}</th>
+                            <th className="text-center py-3 px-4 text-gray-600 font-medium">{t('chatbot.mlDashboard.table.headers.rmse')}</th>
+                            <th className="text-center py-3 px-4 text-gray-600 font-medium">{t('chatbot.mlDashboard.table.headers.status')}</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr className="border-b border-gray-100">
-                            <td className="py-3 px-4 font-medium text-gray-800">💰 Price Predictor</td>
+                            <td className="py-3 px-4 font-medium text-gray-800">💰 {t('chatbot.mlDashboard.labels.pricePredictor')}</td>
                             <td className="py-3 px-4 text-center font-semibold text-green-600">
                               {(allMetrics.price.test_r2 * 100).toFixed(1)}%
                             </td>
@@ -614,12 +618,12 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                             <td className="py-3 px-4 text-center text-gray-700">Rs. {allMetrics.price.test_rmse.toFixed(2)}</td>
                             <td className="py-3 px-4 text-center">
                               <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-                                Good
+                                {t('chatbot.mlDashboard.labels.good')}
                               </span>
                             </td>
                           </tr>
                           <tr className="border-b border-gray-100">
-                            <td className="py-3 px-4 font-medium text-gray-800">📊 Demand Predictor</td>
+                            <td className="py-3 px-4 font-medium text-gray-800">📊 {t('chatbot.mlDashboard.labels.demandPredictor')}</td>
                             <td className="py-3 px-4 text-center font-semibold text-blue-600">
                               {(allMetrics.demand.test_r2 * 100).toFixed(1)}%
                             </td>
@@ -627,12 +631,12 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                             <td className="py-3 px-4 text-center text-gray-700">{allMetrics.demand.test_rmse.toFixed(0)} kg</td>
                             <td className="py-3 px-4 text-center">
                               <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
-                                Good
+                                {t('chatbot.mlDashboard.labels.good')}
                               </span>
                             </td>
                           </tr>
                           <tr>
-                            <td className="py-3 px-4 font-medium text-gray-800">🌾 Yield Predictor</td>
+                            <td className="py-3 px-4 font-medium text-gray-800">🌾 {t('chatbot.mlDashboard.labels.yieldPredictor')}</td>
                             <td className="py-3 px-4 text-center font-semibold text-purple-600">
                               {(allMetrics.yield.test_r2 * 100).toFixed(1)}%
                             </td>
@@ -640,7 +644,7 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
                             <td className="py-3 px-4 text-center text-gray-700">{allMetrics.yield.test_rmse.toFixed(0)} kg/ha</td>
                             <td className="py-3 px-4 text-center">
                               <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs">
-                                Good
+                                {t('chatbot.mlDashboard.labels.good')}
                               </span>
                             </td>
                           </tr>

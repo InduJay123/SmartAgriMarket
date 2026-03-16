@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle, Sprout } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { CropFormData } from "../../@types/CropFormData";
+import api from "../../api/api";
 import axios from "axios";
 import ProgressBar from "../../components/farmer/ProgressBar";
 import ChooseCrop from "../../components/farmer/ChooseCrop";
@@ -73,8 +74,8 @@ const AddCrops: React.FC = () => {
         setForecastLoading(true);
         setForecastError(null);
 
-        const response = await axios.post(
-            "http://127.0.0.1:8000/api/ml/price/forecast/",
+        const response = await api.post(
+            "/ml/price/forecast/",
             {
             crop_type: cropName,
             forecast_days: 30
@@ -95,9 +96,7 @@ const AddCrops: React.FC = () => {
 
     fetchPriceForecast();
 
-    }, [step, cropName]);   
-
-
+    }, [step, cropName]);  
 
 
     const handleNext = () => {
@@ -117,9 +116,7 @@ const AddCrops: React.FC = () => {
         }
 
         try{
-
             const cropData = new FormData();
-
             const cropName = (formData.crop?.trim() || formData.customCrop?.trim() || "").toString();
             cropData.append("crop_name", cropName);
             console.log("Step 1 formData:", formData);
@@ -133,8 +130,10 @@ const AddCrops: React.FC = () => {
 
             
 
-            const cropResponse = await axios.post("http://127.0.0.1:8000/api/crops/", cropData, {
-                headers: { "Content-Type": "multipart/form-data" },
+            const cropResponse = await api.post("/crops/", cropData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                }
             });
 
             console.log(cropResponse.data);
@@ -151,22 +150,34 @@ const AddCrops: React.FC = () => {
             marketplaceData.append("price", String(formData.pricePerKg));
             marketplaceData.append("unit", formData.unit || "kg");
             marketplaceData.append("predicted_date", String(formData.predictDate));
+            if (formData.farmingSeason) {
+                marketplaceData.append("farming_season", String(formData.farmingSeason));
+            }
             marketplaceData.append("quantity", String(formData.quantity));
             marketplaceData.append("farming_method", String(formData.farmingMethod));
             marketplaceData.append("region", String(formData.region));
             marketplaceData.append("district", String(formData.district));
             marketplaceData.append("status", "Available");
-
-            marketplaceData.append("farmer_id", "1"); // or get from auth
-
-
-            if(formData.image){
-                marketplaceData.append("image", formData.image);
+            if (formData.additionalDetails) {
+                marketplaceData.append("additional_details", String(formData.additionalDetails));
             }
 
+            const now = new Date().toISOString();
+            marketplaceData.append("created_at", now);
+            marketplaceData.append("updated_at", now);
+            
+            const userId = localStorage.getItem("user_id");
+            if (userId) {
+                marketplaceData.append("farmer_id", userId);
+            }
 
-            const marketResponse = await axios.post("http://127.0.0.1:8000/api/marketplace/", marketplaceData, {
-                headers: { "Content-Type": "multipart/form-data" }
+            if(formData.image){
+                marketplaceData.append("image", String(formData.image));
+            }
+            const marketResponse = await api.post("/marketplace/marketplace/", marketplaceData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                }
             });
 
            console.log("Marketplace Response:", marketResponse.data);
@@ -175,11 +186,13 @@ const AddCrops: React.FC = () => {
             setTimeout(() => navigate("/farmer/addcrops"), 1500);
             
             
-        }catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
+        }catch (error: any) {
+            if (axios.isAxiosError(error) || error.response) {
                 console.log("ERROR RESPONSE:", error.response?.data);
+                alert("Error adding crop: " + JSON.stringify(error.response?.data));
             } else {
                 console.log("Unknown error", error);
+                alert("Unknown error occurred");
             }
        }
     }

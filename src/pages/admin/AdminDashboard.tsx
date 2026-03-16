@@ -60,6 +60,18 @@ interface UserDetails {
   is_active?: boolean;
 }
 
+interface ActivityLogItem {
+  id: number;
+  date: string;
+  message: string;
+  user: string;
+}
+
+interface ActivityLogResponse {
+  results?: ActivityLogItem[];
+  count?: number;
+}
+
 const AdminDashboard: React.FC = () => {
   const [farmers, setFarmers] = useState(0);
   const [pendingApprovals, setPendingApprovals] = useState(0);
@@ -77,11 +89,9 @@ const AdminDashboard: React.FC = () => {
   const [detailsError, setDetailsError] = useState("");
   const [priceData, setPriceData] = useState<Array<{ month: string; price: number }>>([]);
   const [supplyData, setSupplyData] = useState<Array<{ crop: string; supply: number }>>([]);
-
-  const activities = [
-    { date: "2025-11-09", activity: "Uploaded new crop price data", user: "Admin" },
-    { date: "2025-11-08", activity: "Verified farmer account", user: "Admin" },
-  ];
+  const [activities, setActivities] = useState<Array<{ id: number; date: string; activity: string; user: string }>>([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
+  const [activitiesError, setActivitiesError] = useState("");
 
   const fetchDashboardStats = async () => {
     try {
@@ -143,6 +153,30 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const fetchActivityLogs = async () => {
+    setActivitiesLoading(true);
+    setActivitiesError("");
+    try {
+      const res = await api.get<ActivityLogResponse>("/auth/admin/activity-logs/?limit=10");
+      const results = Array.isArray(res.data?.results) ? res.data.results : [];
+
+      const mappedActivities = results.map((item) => ({
+        id: item.id,
+        date: item.date,
+        activity: item.message,
+        user: item.user,
+      }));
+
+      setActivities(mappedActivities);
+    } catch (err: any) {
+      console.error("Activity logs error", err);
+      setActivities([]);
+      setActivitiesError(err?.response?.data?.error || "Failed to load activity logs.");
+    } finally {
+      setActivitiesLoading(false);
+    }
+  };
+
   const openUserModal = async (u: PendingUser) => {
     setSelectedUser(u);
     setDetails(null);
@@ -191,6 +225,7 @@ const AdminDashboard: React.FC = () => {
     fetchDashboardStats();
     fetchDashboardCharts();
     fetchPendingUsers();
+    fetchActivityLogs();
   }, []);
 
   const stats = [
@@ -375,7 +410,21 @@ const AdminDashboard: React.FC = () => {
         </Dialog.Portal>
       </Dialog.Root>
 
-      <ActivityTable activities={activities} />
+      {activitiesLoading ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-gray-500">Loading activity logs...</p>
+        </div>
+      ) : activitiesError ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-red-600">{activitiesError}</p>
+        </div>
+      ) : activities.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-gray-500">No system activity logs available.</p>
+        </div>
+      ) : (
+        <ActivityTable activities={activities} />
+      )}
     </div>
   );
 };

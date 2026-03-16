@@ -1,6 +1,7 @@
 import { Settings } from "lucide-react";
 
 interface Activity {
+  id?: number;
   date: string;
   activity: string;
   user: string;
@@ -28,7 +29,7 @@ export default function ActivityTable({ activities }: ActivityTableProps) {
         </thead>
         <tbody>
           {activities.map((activity, index) => (
-            <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 text-gray-600 text-sm">
+            <tr key={activity.id ?? `${activity.date}-${activity.user}-${index}`} className="border-b border-gray-100 hover:bg-gray-50 text-gray-600 text-sm">
               <td className="py-3 px-4 ">{activity.date}</td>
               <td className="py-3 px-4 ">{activity.activity}</td>
               <td className="py-3 px-4 ">{activity.user}</td>

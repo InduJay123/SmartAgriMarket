@@ -9,6 +9,7 @@ import { deleteCrop, fetchCrops } from "../../api/farmer/marketplace";
 import { predictPrice, predictDemand } from "../../lib/MLService";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { fetchUserAlerts } from "../../api/farmer/alerts";
 
 interface Crop {
     market_id: number;
@@ -36,7 +37,24 @@ const FarmerDashboard: React.FC = () => {
     const [marketPrice, setMarketPrice] = useState<string>("Loading...");
     const [demandForecast, setDemandForecast] = useState<string>("Loading...");
     const [isLoadingPredictions, setIsLoadingPredictions] = useState<boolean>(true);
+    const [unseenAlerts, setUnseenAlerts] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
 
+    const loadAlerts = async () => {
+        try {
+          const res = await fetchUserAlerts();
+          setUnseenAlerts(res.data.unseen_count ?? 0);
+          console.log("Fetched alerts:", res.data);
+        } catch (err) {
+          console.error("Failed to load alerts", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      useEffect(() => {
+        loadAlerts();
+      }, []);
     // Fetch ML predictions
     useEffect(() => {
         const fetchPredictions = async () => {
@@ -107,7 +125,7 @@ const FarmerDashboard: React.FC = () => {
         },
         {
             title: t('Harvest Alerts'),
-            value:"3 Active",
+            value:unseenAlerts,
             subTitle:"Due this month",
             icon: Calendar,
             color:"text-orange-300",

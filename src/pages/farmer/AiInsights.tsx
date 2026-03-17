@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-
+import api from "../../services/api";
 
 import {
 
@@ -245,19 +245,16 @@ const AiInsights: React.FC = () => {
     setYieldChart(data);
   };
 
-  const predictYieldForecast = async (payload: { crop_type: string; months: number; horizon_months?: number }) => {
-    const res = await fetch("http://localhost:8000/api/ml/yield/forecast/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+const predictYieldForecast = async (payload: {
+  crop_type: string;
+  months: number;
+  horizon_months?: number;
+}) => {
+  const res = await api.post("/ml/yield/forecast/", payload);
+  return res.data as YieldForecastResponse;
+};
 
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(txt || "Yield forecast failed");
-    }
-    return (await res.json()) as YieldForecastResponse;
-  };
+
 
   const handleYieldPrediction = async () => {
     setIsLoading(true);

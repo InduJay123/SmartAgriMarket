@@ -1,6 +1,6 @@
-import axios from "axios";
+import api from "../services/api";
 
-const ML_API_BASE = "http://127.0.0.1:8000/api/ml";
+const ML_API_BASE = "/ml";
 
 // Types for ML API requests and responses
 export interface PricePredictionRequest {
@@ -88,7 +88,7 @@ export interface PredictionHistory {
 export const predictPrice = async (
   data: PricePredictionRequest
 ): Promise<PricePredictionResponse> => {
-  const response = await axios.post(`${ML_API_BASE}/predict/price/`, data);
+  const response = await api.post(`${ML_API_BASE}/predict/price/`, data);
   return response.data;
 };
 
@@ -96,7 +96,7 @@ export const predictPrice = async (
 export const predictDemand = async (
   data: DemandPredictionRequest
 ): Promise<DemandPredictionResponse> => {
-  const response = await axios.post(`${ML_API_BASE}/predict/demand/`, data);
+  const response = await api.post(`${ML_API_BASE}/predict/demand/`, data);
   return response.data;
 };
 
@@ -104,13 +104,13 @@ export const predictDemand = async (
 export const predictYield = async (
   data: YieldPredictionRequest
 ): Promise<YieldPredictionResponse> => {
-  const response = await axios.post(`${ML_API_BASE}/predict/yield/`, data);
+  const response = await api.post(`${ML_API_BASE}/predict/yield/`, data);
   return response.data;
 };
 
 // Get Prediction History
 export const getPredictionHistory = async (): Promise<PredictionHistory[]> => {
-  const response = await axios.get(`${ML_API_BASE}/history/`);
+  const response = await api.get(`${ML_API_BASE}/history/`);
   return response.data;
 };
 
@@ -118,7 +118,7 @@ export const getPredictionHistory = async (): Promise<PredictionHistory[]> => {
 export const getPredictionHistoryByType = async (
   type: "price" | "demand" | "yield"
 ): Promise<PredictionHistory[]> => {
-  const response = await axios.get(`${ML_API_BASE}/history/by_type/?type=${type}`);
+  const response = await api.get(`${ML_API_BASE}/history/by_type/?type=${type}`);
   return response.data;
 };
 
@@ -126,7 +126,7 @@ export const getPredictionHistoryByType = async (
 export const getPredictionHistoryByCrop = async (
   cropName: string
 ): Promise<PredictionHistory[]> => {
-  const response = await axios.get(`${ML_API_BASE}/history/by_crop/?crop=${cropName}`);
+  const response = await api.get(`${ML_API_BASE}/history/by_crop/?crop=${cropName}`);
   return response.data;
 };
 
@@ -138,7 +138,6 @@ export const generatePriceForecast = async (
   const forecasts: ForecastDataPoint[] = [];
   const today = new Date();
 
-  // Get current season based on month
   const month = today.getMonth();
   const season = getSeason(month);
 
@@ -147,12 +146,11 @@ export const generatePriceForecast = async (
     forecastDate.setDate(today.getDate() + i);
 
     try {
-      // Simulate varying market conditions for each day
       const response = await predictPrice({
         crop_type: cropType,
         season: season,
-        supply: 1000 + Math.random() * 500, // Simulated supply variation
-        demand: 1200 + Math.random() * 400, // Simulated demand variation
+        supply: 1000 + Math.random() * 500,
+        demand: 1200 + Math.random() * 400,
         market_trend: getMarketTrend(i),
       });
 
@@ -163,7 +161,6 @@ export const generatePriceForecast = async (
       });
     } catch (error) {
       console.error(`Error predicting price for day ${i}:`, error);
-      // Add fallback data point
       forecasts.push({
         date: forecastDate.toISOString().split("T")[0],
         predicted_price: 0,
@@ -175,21 +172,18 @@ export const generatePriceForecast = async (
   return forecasts;
 };
 
-// Helper function to get season based on month (Sri Lanka seasons)
 const getSeason = (month: number): string => {
-  if (month >= 2 && month <= 4) return "first_inter_monsoon"; // March-May
-  if (month >= 5 && month <= 8) return "southwest_monsoon"; // June-September
-  if (month >= 9 && month <= 10) return "second_inter_monsoon"; // October-November
-  return "northeast_monsoon"; // December-February
+  if (month >= 2 && month <= 4) return "first_inter_monsoon";
+  if (month >= 5 && month <= 8) return "southwest_monsoon";
+  if (month >= 9 && month <= 10) return "second_inter_monsoon";
+  return "northeast_monsoon";
 };
 
-// Helper function to simulate market trend
 const getMarketTrend = (dayIndex: number): string => {
   const trends = ["stable", "increasing", "decreasing"];
   return trends[dayIndex % 3];
 };
 
-// Available crops for prediction
 export const AVAILABLE_CROPS = [
   "Tomato",
   "Potato",
@@ -209,14 +203,12 @@ export const AVAILABLE_CROPS = [
   "Lettuce",
 ];
 
-// Market trend options
 export const MARKET_TRENDS = [
   { value: "stable", label: "Stable" },
   { value: "increasing", label: "Increasing" },
   { value: "decreasing", label: "Decreasing" },
 ];
 
-// Season options (Sri Lanka)
 export const SEASONS = [
   { value: "northeast_monsoon", label: "Northeast Monsoon (Dec-Feb)" },
   { value: "first_inter_monsoon", label: "First Inter Monsoon (Mar-May)" },
@@ -224,7 +216,6 @@ export const SEASONS = [
   { value: "second_inter_monsoon", label: "Second Inter Monsoon (Oct-Nov)" },
 ];
 
-// Consumption trend options
 export const CONSUMPTION_TRENDS = [
   { value: "stable", label: "Stable" },
   { value: "increasing", label: "Increasing" },
@@ -233,7 +224,6 @@ export const CONSUMPTION_TRENDS = [
   { value: "seasonal_low", label: "Seasonal Low" },
 ];
 
-// Soil quality options
 export const SOIL_QUALITIES = [
   { value: "excellent", label: "Excellent" },
   { value: "good", label: "Good" },

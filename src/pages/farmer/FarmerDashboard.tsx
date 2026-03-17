@@ -25,16 +25,12 @@ interface Crop {
     updated_at: string;
 }
 
-
-
 const FarmerDashboard: React.FC = () => {
 
     const { t, i18n } = useTranslation();
     const isSinhala = i18n.language === "si";
 
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-    
-    // State for ML predictions
     const [marketPrice, setMarketPrice] = useState<string>("Loading...");
     const [demandForecast, setDemandForecast] = useState<string>("Loading...");
     const [isLoadingPredictions, setIsLoadingPredictions] = useState<boolean>(true);
@@ -62,7 +58,6 @@ const FarmerDashboard: React.FC = () => {
     const loadUnreadMessages = async () => {
         try {
             const data = await getChatList();
-
             // Sum all unread counts
             const totalUnread = data.reduce(
                 (sum: number, chat: any) => sum + (chat.unread_count || 0),
@@ -248,8 +243,6 @@ const FarmerDashboard: React.FC = () => {
             alert(t("Failed to delete crop"));
         }
     };
-
-
 
     return(
         <div className="bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full">

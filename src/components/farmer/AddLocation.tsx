@@ -48,6 +48,7 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
 
     if (error) {
       console.error("Supabase upload error:", error.message);
+      alert("Failed to upload image: " + error.message);
       setUploading(false);
       return;
     }
@@ -96,9 +97,15 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
         <div className="relative mt-6">
                     <input id="crop-image" type="file" accept="image/*" 
                     onChange={handleImageUpload}
+                    disabled={uploading}
                     className="hidden"/>
                     <label htmlFor="crop-image" className={`flex border-2 border-dashed rounded-xl hover:bg-green-50 hover:border-green-800 ${imagePreview ? "border bg-green-50" : "border"}`}>
-                        {imagePreview ? (
+                        {uploading ? (
+                            <div className="w-full flex-col h-64 flex items-center justify-center p-4">
+                                <span className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-800 mb-2"></span>
+                                <p className="text-gray-600 font-semibold">{t("Uploading image...")}</p>
+                            </div>
+                        ) : imagePreview ? (
                             <div className="w-full h-64 flex flex-col items-center justify-center overflow-hidden relative">
                                 <img src={imagePreview} alt="Preview"
                                 className="object-contain w-full h-full"/>

@@ -88,7 +88,7 @@ function App() {
     getFcmToken().then(async (token) => {
       if (token) {
         try {
-          await axios.post("http://localhost:8000/api/save-token/", { token }, {
+          await axios.post("http://localhost:8000/api/notifications/save-token/", { token }, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }

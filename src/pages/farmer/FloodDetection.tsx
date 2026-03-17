@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  AlertTriangle,
-  CloudRain,
-  Droplets,
-  MapPin,
+  AlertTriangle,CloudRain,Droplets,MapPin,
   Thermometer,
   Wind,
   Waves,
@@ -29,7 +26,6 @@ import {
   getFloodModelInfo,
 } from "../../api/farmer/floodDetection";
 
-// Sri Lankan districts
 const districts = [
   "Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya",
   "Galle", "Matara", "Hambantota", "Jaffna", "Kilinochchi", "Mannar",
@@ -193,9 +189,8 @@ const FloodDetection: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-2 py-8">
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">

@@ -83,6 +83,11 @@ export class ConversationManager {
    * Process user message and generate appropriate response
    */
   public async processMessage(message: string): Promise<BotResponse> {
+    // Check if we're waiting for a clarification answer (e.g. user was asked "Which crop?")
+    if (this.state.waitingFor && this.state.pendingIntent) {
+      return this.handleClarificationResponse(message);
+    }
+
     // Detect intents with confidence scores
     const intentMatches = this.intentEngine.detectIntents(message, 0.1);
 
@@ -102,6 +107,75 @@ export class ConversationManager {
     } else {
       return await this.handleLowConfidenceIntent(bestMatch, intentMatches, message);
     }
+  }
+
+  /**
+   * Handle user's answer to a clarification question.
+   * Resumes the pending intent with the newly extracted entity.
+   */
+  private async handleClarificationResponse(message: string): Promise<BotResponse> {
+    const waitingFor = this.state.waitingFor;
+    const pendingIntent = this.state.pendingIntent;
+
+    // Try to extract the entity we asked for
+    let entityFound = false;
+
+    if (waitingFor === 'crop') {
+      const crop = this.contextManager.extractCrop(message);
+      if (crop) {
+        this.contextManager.updateContext(message, pendingIntent || '', '');
+        entityFound = true;
+      }
+    } else if (waitingFor === 'timeframe') {
+      const tf = this.contextManager.extractTimeframe(message);
+      if (tf) {
+        this.contextManager.updateContext(message, pendingIntent || '', '');
+        entityFound = true;
+      }
+    } else if (waitingFor === 'market') {
+      const mk = this.contextManager.extractMarket(message);
+      if (mk) {
+        this.contextManager.updateContext(message, pendingIntent || '', '');
+        entityFound = true;
+      }
+    }
+
+    // Clear clarification state
+    this.state.waitingFor = undefined;
+    this.state.pendingIntent = undefined;
+    this.state.clarificationAttempts = 0;
+
+    if (entityFound && pendingIntent) {
+      // Resolve entities now (will use context since we just stored them)
+      const entities = this.contextManager.resolveEntities(message);
+      const predictionType = pendingIntent.replace('predict_', '') as 'price' | 'yield' | 'demand';
+
+      const progressText = this.isSinhala()
+        ? `🤖 ${entities.crop || 'crop'} සඳහා ${predictionType} අනාවැකිය විශ්ලේෂණය කරමින්...`
+        : `🤖 Analyzing ${predictionType} prediction for ${entities.crop || 'crop'}...`;
+
+      return {
+        text: progressText,
+        confidence: 0.95,
+        requiresAction: true,
+        actionType: pendingIntent as any,
+        predictionType: predictionType,
+        actionData: {
+          crop: entities.crop || message.trim(),
+          timeframe: entities.timeframe || 'next week',
+          market: entities.market || 'colombo'
+        }
+      };
+    }
+
+    // Entity not found even after clarification — just process as a new message
+    // Reset state and re-run intent detection
+    const intentMatches = this.intentEngine.detectIntents(message, 0.1);
+    if (intentMatches.length > 0) {
+      const bestMatch = intentMatches[0];
+      return await this.handleHighConfidenceIntent(bestMatch, message);
+    }
+    return this.handleUnknownIntent(message);
   }
 
   /**
@@ -133,6 +207,19 @@ export class ConversationManager {
     if (intent.apiAction === 'show_dashboard') {
       return {
         text: this.getLocalizedIntentResponse(intent.name, intent.response),
+        confidence: match.confidence,
+        requiresAction: true,
+        actionType: 'show_dashboard'
+      };
+    }
+
+    // For model_accuracy intent, show the dashboard with real metrics
+    if (intent.name === 'model_accuracy') {
+      const text = this.getLocalizedIntentResponse(intent.name, intent.response);
+      return {
+        text: text + (this.isSinhala()
+          ? '\n\n📊 සජීවී දත්ත බැලීමට Dashboard විවෘත කරමින්...'
+          : '\n\n📊 Opening dashboard for live metrics...'),
         confidence: match.confidence,
         requiresAction: true,
         actionType: 'show_dashboard'

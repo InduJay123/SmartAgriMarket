@@ -220,111 +220,65 @@ export default function ChatBot() {
 
   // Handle price prediction API call
   const handlePricePrediction = async (crop: string, timeframe?: string, market?: string): Promise<any> => {
-    try {
-      const response = await predictPrice({
-        crop_type: crop,
-        season: 'northeast_monsoon',
-        supply: 1000,
-        demand: 1200,
-        market_trend: 'stable',
-      });
-      
-      // Store prediction in context for explanations
-      contextManager.storePrediction({
-        ...response,
-        crop,
-        timeframe,
-        market,
-        timestamp: new Date()
-      });
-      
-      return response;
-    } catch (error) {
-      console.error('Price prediction error:', error);
-      return {
-        predicted_price: 150,
-        confidence: 0.9245,
-        model_accuracy: {
-          r2_score: 0.9245,
-          mae: 4.82,
-          rmse: 6.73
-        },
-        error: true
-      };
-    } finally {
-      // Prediction complete
-    }
+    const response = await predictPrice({
+      crop_type: crop,
+      season: 'northeast_monsoon',
+      supply: 1000,
+      demand: 1200,
+      market_trend: 'stable',
+    });
+    
+    // Store prediction in context for explanations
+    contextManager.storePrediction({
+      ...response,
+      crop,
+      timeframe,
+      market,
+      timestamp: new Date()
+    });
+    
+    return response;
   };
 
   // Handle demand prediction API call
   const handleDemandPrediction = async (crop: string): Promise<any> => {
-    try {
-      const response = await predictDemand({
-        crop_type: crop,
-        season: 'northeast_monsoon',
-        historical_demand: 1000,
-        population: 22000000,
-        consumption_trend: 'stable',
-      });
-      
-      // Store prediction in context for explanations
-      contextManager.storePrediction({
-        ...response,
-        crop,
-        timestamp: new Date()
-      });
-      
-      return response;
-    } catch (error) {
-      console.error('Demand prediction error:', error);
-      return {
-        predicted_demand: 35000,
-        unit: 'metric tons',
-        confidence: 0.87,
-        model_accuracy: {
-          r2_score: 0.87,
-          mae: 3500,
-          rmse: 5000
-        },
-        error: true
-      };
-    }
+    const response = await predictDemand({
+      crop_type: crop,
+      season: 'northeast_monsoon',
+      historical_demand: 1000,
+      population: 22000000,
+      consumption_trend: 'stable',
+    });
+    
+    // Store prediction in context for explanations
+    contextManager.storePrediction({
+      ...response,
+      crop,
+      timestamp: new Date()
+    });
+    
+    return response;
   };
 
   // Handle yield prediction API call
   const handleYieldPrediction = async (crop: string): Promise<any> => {
-    try {
-      const response = await predictYield({
-        crop_type: crop,
-        rainfall: 150,
-        temperature: 28,
-        soil_quality: 'good',
-        fertilizer: 50,
-        irrigation: true,
-      });
-      
-      // Store prediction in context for explanations
-      contextManager.storePrediction({
-        ...response,
-        crop,
-        timestamp: new Date()
-      });
-      
-      return response;
-    } catch (error) {
-      console.error('Yield prediction error:', error);
-      return {
-        predicted_yield: 3000,
-        unit: 'kg/hectare',
-        confidence: 0.88,
-        model_accuracy: {
-          r2_score: 0.88,
-          mae: 250,
-          rmse: 380
-        },
-        error: true
-      };
-    }
+    const response = await predictYield({
+      crop_type: crop,
+      rainfall: 150,
+      temperature: 28,
+      soil_quality: 'good',
+      fertilizer: 50,
+      irrigation: true,
+    });
+    
+    // Store prediction in context for explanations
+    contextManager.storePrediction({
+      ...response,
+      crop,
+      timestamp: new Date()
+    });
+    
+    return response;
   };
 
   const handleSendMessage = async () => {
@@ -375,31 +329,43 @@ export default function ChatBot() {
           };
           setMessages(prev => [...prev, processingMsg]);
           
-          // Call prediction API
-          const prediction = await handlePricePrediction(crop, timeframe, market);
-          
-          // Use actual model confidence from response (validation R²)
-          const modelConfidence = prediction.model_accuracy?.r2_score || 0.8245;
-          
-          // Generate confidence-aware response
-          const predictionText = conversationManager.formatPredictionWithConfidence(
-            prediction,
-            modelConfidence,
-            crop,
-            'price'
-          );
-          
-          const predictionMsg: Message = {
-            id: (Date.now() + 2).toString(),
-            text: predictionText,
-            sender: 'bot',
-            timestamp: new Date(),
-            type: 'prediction',
-            confidence: modelConfidence,
-            data: prediction
-          };
-          
-          setMessages(prev => [...prev, predictionMsg]);
+          try {
+            // Call prediction API
+            const prediction = await handlePricePrediction(crop, timeframe, market);
+            
+            // Use actual model confidence from response (validation R²)
+            const modelConfidence = prediction.model_accuracy?.r2_score || 0.8245;
+            
+            // Generate confidence-aware response
+            const predictionText = conversationManager.formatPredictionWithConfidence(
+              prediction,
+              modelConfidence,
+              crop,
+              'price'
+            );
+            
+            const predictionMsg: Message = {
+              id: (Date.now() + 2).toString(),
+              text: predictionText,
+              sender: 'bot',
+              timestamp: new Date(),
+              type: 'prediction',
+              confidence: modelConfidence,
+              data: prediction
+            };
+            
+            setMessages(prev => [...prev, predictionMsg]);
+          } catch (err: any) {
+            console.error('Price prediction failed:', err);
+            const errorMsg: Message = {
+              id: (Date.now() + 2).toString(),
+              text: `❌ Sorry, I couldn't get the price prediction for ${crop} right now. The ML service may be unavailable.\n\nPlease make sure the backend server is running and try again.`,
+              sender: 'bot',
+              timestamp: new Date(),
+              confidence: 0
+            };
+            setMessages(prev => [...prev, errorMsg]);
+          }
           setIsTyping(false);
           return;
         }
@@ -417,31 +383,43 @@ export default function ChatBot() {
           };
           setMessages(prev => [...prev, processingMsg]);
           
-          // Call demand prediction API
-          const prediction = await handleDemandPrediction(crop);
-          
-          // Use actual model confidence from response (validation R²)
-          const modelConfidence = prediction.model_accuracy?.r2_score || 0.7747;
-          
-          // Generate confidence-aware response
-          const predictionText = conversationManager.formatPredictionWithConfidence(
-            prediction,
-            modelConfidence,
-            crop,
-            'demand'
-          );
-          
-          const predictionMsg: Message = {
-            id: (Date.now() + 2).toString(),
-            text: predictionText,
-            sender: 'bot',
-            timestamp: new Date(),
-            type: 'prediction',
-            confidence: modelConfidence,
-            data: prediction
-          };
-          
-          setMessages(prev => [...prev, predictionMsg]);
+          try {
+            // Call demand prediction API
+            const prediction = await handleDemandPrediction(crop);
+            
+            // Use actual model confidence from response (validation R²)
+            const modelConfidence = prediction.model_accuracy?.r2_score || 0.7747;
+            
+            // Generate confidence-aware response
+            const predictionText = conversationManager.formatPredictionWithConfidence(
+              prediction,
+              modelConfidence,
+              crop,
+              'demand'
+            );
+            
+            const predictionMsg: Message = {
+              id: (Date.now() + 2).toString(),
+              text: predictionText,
+              sender: 'bot',
+              timestamp: new Date(),
+              type: 'prediction',
+              confidence: modelConfidence,
+              data: prediction
+            };
+            
+            setMessages(prev => [...prev, predictionMsg]);
+          } catch (err: any) {
+            console.error('Demand prediction failed:', err);
+            const errorMsg: Message = {
+              id: (Date.now() + 2).toString(),
+              text: `❌ Sorry, I couldn't get the demand prediction for ${crop} right now. The ML service may be unavailable.\n\nPlease make sure the backend server is running and try again.`,
+              sender: 'bot',
+              timestamp: new Date(),
+              confidence: 0
+            };
+            setMessages(prev => [...prev, errorMsg]);
+          }
           setIsTyping(false);
           return;
         }
@@ -459,31 +437,43 @@ export default function ChatBot() {
           };
           setMessages(prev => [...prev, processingMsg]);
           
-          // Call yield prediction API
-          const prediction = await handleYieldPrediction(crop);
-          
-          // Use actual model confidence from response (validation R²)
-          const modelConfidence = prediction.model_accuracy?.r2_score || 0.88;
-          
-          // Generate confidence-aware response
-          const predictionText = conversationManager.formatPredictionWithConfidence(
-            prediction,
-            modelConfidence,
-            crop,
-            'yield'
-          );
-          
-          const predictionMsg: Message = {
-            id: (Date.now() + 2).toString(),
-            text: predictionText,
-            sender: 'bot',
-            timestamp: new Date(),
-            type: 'prediction',
-            confidence: modelConfidence,
-            data: prediction
-          };
-          
-          setMessages(prev => [...prev, predictionMsg]);
+          try {
+            // Call yield prediction API
+            const prediction = await handleYieldPrediction(crop);
+            
+            // Use actual model confidence from response (validation R²)
+            const modelConfidence = prediction.model_accuracy?.r2_score || 0.88;
+            
+            // Generate confidence-aware response
+            const predictionText = conversationManager.formatPredictionWithConfidence(
+              prediction,
+              modelConfidence,
+              crop,
+              'yield'
+            );
+            
+            const predictionMsg: Message = {
+              id: (Date.now() + 2).toString(),
+              text: predictionText,
+              sender: 'bot',
+              timestamp: new Date(),
+              type: 'prediction',
+              confidence: modelConfidence,
+              data: prediction
+            };
+            
+            setMessages(prev => [...prev, predictionMsg]);
+          } catch (err: any) {
+            console.error('Yield prediction failed:', err);
+            const errorMsg: Message = {
+              id: (Date.now() + 2).toString(),
+              text: `❌ Sorry, I couldn't get the yield prediction for ${crop} right now. The ML service may be unavailable.\n\nPlease make sure the backend server is running and try again.`,
+              sender: 'bot',
+              timestamp: new Date(),
+              confidence: 0
+            };
+            setMessages(prev => [...prev, errorMsg]);
+          }
           setIsTyping(false);
           return;
         }

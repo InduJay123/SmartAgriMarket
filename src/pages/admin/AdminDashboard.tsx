@@ -194,12 +194,11 @@ const AdminDashboard: React.FC = () => {
 
     setDetailsLoading(true);
     try {
-      
-      const res = await api.get(`/auth/admin/user/${u.id}/`);
+      const roleParam = u.role.toLowerCase() === "buyer" ? "buyer" : "farmer";
+      const res = await api.get(`/auth/admin/user/${u.id}/?role=${roleParam}`);
       setDetails(res.data);
     } catch (err: any) {
-      console.error("Load user details failed", err);
-      setDetailsError(err?.response?.data?.error || "Failed to load user details.");
+      setDetailsError(err?.response?.data?.error || "Failed to load user details");
     } finally {
       setDetailsLoading(false);
     }
@@ -446,5 +445,5 @@ function Info({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
+  
 export default AdminDashboard;

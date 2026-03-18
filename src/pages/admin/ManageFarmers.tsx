@@ -113,7 +113,7 @@ const ManageFarmers: React.FC = () => {
     setViewOpen(true);
     setViewLoading(true);
     try {
-      const res = await api.get(`/auth/admin/user/${f.id}/`);
+      const res = await api.get(`/auth/admin/user/${f.id}/?role=farmer`);
       setViewDetails(res.data);
     } catch (err: any) {
       setViewError(err?.response?.data?.error || "Failed to load farmer details.");

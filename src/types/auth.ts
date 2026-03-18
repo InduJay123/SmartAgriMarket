@@ -15,5 +15,6 @@ export interface SignupFormData {
   password: string;
   confirmPassword: string;
   role: UserRole;
-  farmLocation?: string;
+  farmName?: string;
+  farmRegion?: string;
 }

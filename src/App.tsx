@@ -35,7 +35,6 @@ import FavouritesPage from './pages/buyer/FavouritesPage';
 import OrderHistory from './pages/buyer/OrderHistory';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import ProfileInfo from './pages/buyer/ProfileInfo';
-import AiInsight from './pages/buyer/AiInsight';
 import BuyerPriceList from './pages/buyer/PriceList';
 import FarmerPriceList from './pages/farmer/PriceList';
 import SidebarLayout from './layout/SidebarLayout';
@@ -142,7 +141,7 @@ function App() {
         <Route path="/admin/crops" element={<ManageCrops />} />
         <Route path="/admin/upload" element={<UploadPrice />} />
         <Route path="/admin/reports" element={<Reports />} />
-        <Route path="/admin/ai" element={<AIModel />} />
+        <Route path="/admin/ai" element={<AiInsights/>} />
         <Route path="/admin/settings" element={<Settings />} />
 
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
@@ -150,7 +149,7 @@ function App() {
           <Route path="orders" element={<OrderHistory />} />
           <Route path="favourites" element={<FavouritesPage />} />  
           <Route path="pricelist" element={<BuyerPriceList />} />
-          <Route path="ai-insights" element={<AiInsight />} />
+          <Route path="ai-insights" element={<AiInsights />} />
           <Route path="messages" element={<BuyerMessages/>} />
           <Route path="alerts" element={<AlertsPanel/>} />
           <Route path="profile" element={<ProfileInfo />} />

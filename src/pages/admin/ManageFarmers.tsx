@@ -36,6 +36,7 @@ interface FarmerApi {
   username: string;
   phone: string;
   contact_number: string;
+  region: string;
   // role: "FARMER";
   is_verified: boolean;
   is_active: boolean;
@@ -192,30 +193,6 @@ const ManageFarmers: React.FC = () => {
         ))}
       </div>
 
-      {/* <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h2 className="text-xl lg:text-2xl font-bold">Farmers Location</h2>
-          <button
-            onClick={() => setShowMap(!showMap)}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
-          >
-            <MapPin size={18} />
-            {showMap ? "Hide Map" : "Show Map"}
-          </button>
-        </div>
-
-        {showMap && (
-          <div className="mb-6 bg-gradient-to-br from-emerald-50 to-blue-50 rounded-lg p-8 lg:p-12 border-2 border-emerald-200 mt-4">
-            <div className="flex items-center justify-center h-64 lg:h-96">
-              <div className="text-center">
-                <MapPin size={48} className="mx-auto text-emerald-600 mb-4" />
-                <p className="text-gray-600 text-lg">Interactive Map View</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div> */}
-
       <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
           <h2 className="text-xl lg:text-2xl font-bold">Farmers Details</h2>
@@ -256,9 +233,10 @@ const ManageFarmers: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[700px]">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 font-semibold text-gray-700">
+                <tr className="border-b border-gray-200 bg-gray-100 font-semibold text-gray-700">
                   <th className="text-left py-3 px-4">ID</th>
                   <th className="text-left py-3 px-4">Name</th>
+                  <th className="text-left py-3 px-4">Region</th>
                   <th className="text-left py-3 px-4">Phone</th>
                   <th className="text-left py-3 px-4">Status</th>
                   <th className="text-left py-3 px-4">Actions</th>
@@ -274,7 +252,8 @@ const ManageFarmers: React.FC = () => {
                         {getDisplayName(f)}
                         <div className="text-xs text-gray-500">{f.email}</div>
                       </td>
-                      <td className="py-3 px-4 text-gray-600">{f.contact_number || "077 9865540"}</td>
+                      <td className="py-3 px-4 text-gray-600">{f.region || "Not Added"}</td>
+                      <td className="py-3 px-4 text-gray-600">{f.contact_number || "077 xxxxxxx"}</td>
                       <td className="py-3 px-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${badge.cls}`}>
                           {badge.text}

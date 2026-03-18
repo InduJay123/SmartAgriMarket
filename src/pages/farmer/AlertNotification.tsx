@@ -20,7 +20,7 @@ const AlertNotifications: React.FC = () => {
         .get<UserAlert[]>("/user-alerts/")
         .then((res) => {
           res.data.forEach((alert) => {
-            if (Notification.permission === "granted" && !shownAlerts.has(alert.id)) {
+            if (alert.id && Notification.permission === "granted" && !shownAlerts.has(alert.id)) {
               new Notification(`${alert.category} Alert`, {
                 body: alert.message,
               });

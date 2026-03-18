@@ -7,6 +7,7 @@ import {
   ShoppingCart,
   Users,
   Eye,
+  MapPin,
 } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
@@ -44,12 +45,12 @@ interface FarmerApi {
 
 const ManageFarmers: React.FC = () => {
   const [verifiedFarmersCount, setVerifiedFarmersCount] = useState(0);
-  const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+  const [blockedFarmersCount, setBlockedFarmersCount] = useState(0);
 
   const [farmers, setFarmers] = useState<FarmerApi[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [buyers, setBuyers] = useState(0);
+  const [mostFarmersRegion, setMostFarmersRegion] = useState("None");
   const [crops, setCrops] = useState(0);
 
   const [search, setSearch] = useState("");
@@ -61,13 +62,14 @@ const ManageFarmers: React.FC = () => {
   const [viewDetails, setViewDetails] = useState<FarmerDetails | null>(null);
   const [viewLoading, setViewLoading] = useState(false);
   const [viewError, setViewError] = useState("");
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   const fetchDashboardStats = async () => {
     try {
       const res = await api.get("/auth/admin/dashboard-stats/");
       setVerifiedFarmersCount(res.data.verified_farmers);
-      setPendingApprovalsCount(res.data.pending_approvals);
-      setBuyers(res.data.buyers);
+      setBlockedFarmersCount(res.data.blocked_farmers || 0); // Using blocked_farmers dynamically
+      setMostFarmersRegion(res.data.most_farmers_region || "None");
       setCrops(res.data.crops);
     } catch (err) {
       console.error("Dashboard stats error", err);
@@ -120,6 +122,35 @@ const ManageFarmers: React.FC = () => {
     }
   };
 
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!viewDetails) return;
+    const newStatus = e.target.value;
+    const isActive = newStatus === "verified";
+    
+    setUpdatingStatus(true);
+    try {
+      await api.put(`/auth/admin/user/${viewDetails.id}/`, {
+        is_active: isActive,
+        is_verified: isActive,
+      });
+      // Update local state
+      setViewDetails({ ...viewDetails, is_active: isActive, is_verified: isActive });
+      setFarmers(farmers.map((f) => 
+        f.id === viewDetails.id ? { ...f, is_active: isActive, is_verified: isActive } : f
+      ));
+
+      // Update top card stats without fetching from the server
+      if (viewDetails.is_active !== isActive) {
+        setVerifiedFarmersCount(prev => isActive ? prev + 1 : Math.max(0, prev - 1));
+        setBlockedFarmersCount(prev => !isActive ? prev + 1 : Math.max(0, prev - 1));
+      }
+    } catch (err: any) {
+      alert("Failed to update status.");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
   const filteredFarmers = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return farmers;
@@ -152,18 +183,18 @@ const ManageFarmers: React.FC = () => {
       bgColor: "bg-green-50",
     },
     {
-      title: "Pending Approvals",
-      value: pendingApprovalsCount.toString(),
+      title: "Blocked Farmers",
+      value: blockedFarmersCount.toString(),
       subTitle: "",
       icon: AlertTriangle,
       color: "text-red-300",
       bgColor: "bg-red-50",
     },
     {
-      title: "Buyers",
-      value: buyers.toString(),
+      title: "Top Region",
+      value: mostFarmersRegion,
       subTitle: "",
-      icon: ShoppingCart,
+      icon: MapPin,
       color: "text-blue-300",
       bgColor: "bg-blue-50",
     },
@@ -307,16 +338,18 @@ const ManageFarmers: React.FC = () => {
                   <InfoRow label="Farm Name" value={viewDetails.farm_name || "—"} />
                   <InfoRow label="About" value={viewDetails.about || "—"} />
                   <InfoRow label="Address" value={viewDetails.address || "—"} />
-                  <InfoRow
-                    label="Status"
-                    value={
-                      !viewDetails.is_active
-                        ? "Blocked"
-                        : viewDetails.is_verified
-                        ? "Verified"
-                        : "Verified"
-                    }
-                  />
+                  <div className="rounded-lg border p-3">
+                    <p className="text-xs text-gray-500">Status</p>
+                    <select
+                      className="mt-1 block w-full rounded-md border-gray-300 py-1 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm font-medium text-gray-900 break-words disabled:opacity-50"
+                      value={viewDetails.is_active ? "verified" : "disabled"}
+                      onChange={handleStatusChange}
+                      disabled={updatingStatus}
+                    >
+                      <option value="verified">Verified</option>
+                      <option value="disabled">Disabled</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             ) : (

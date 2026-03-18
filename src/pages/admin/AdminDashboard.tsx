@@ -74,7 +74,7 @@ interface ActivityLogResponse {
 
 const AdminDashboard: React.FC = () => {
   const [farmers, setFarmers] = useState(0);
-  const [pendingApprovals, setPendingApprovals] = useState(0);
+  const [blockedFarmers, setBlockedFarmers] = useState(0);
   const [buyers, setBuyers] = useState(0);
   const [crops, setCrops] = useState(0);
 
@@ -97,7 +97,7 @@ const AdminDashboard: React.FC = () => {
     try {
       const res = await api.get("/auth/admin/dashboard-stats/");
       setFarmers(res.data.verified_farmers ?? 0);
-      setPendingApprovals(res.data.pending_approvals ?? 0);
+      setBlockedFarmers(res.data.blocked_farmers ?? 0);
       setBuyers(res.data.buyers ?? 0);
       setCrops(res.data.crops ?? 0);
     } catch (err) {
@@ -230,7 +230,7 @@ const AdminDashboard: React.FC = () => {
 
   const stats = [
     { title: "Verified Farmers", value: farmers.toString(), icon: Users, color: "text-green-300", bgColor: "bg-green-50" },
-    { title: "Pending Approvals", value: pendingApprovals.toString(), icon: AlertTriangle, color: "text-red-300", bgColor: "bg-red-50" },
+    { title: "Blocked Farmers", value: blockedFarmers.toString(), icon: AlertTriangle, color: "text-red-300", bgColor: "bg-red-50" },
     { title: "Buyers", value: buyers.toString(), icon: ShoppingCart, color: "text-blue-300", bgColor: "bg-blue-50" },
     { title: "Crops", value: crops.toString(), icon: Leaf, color: "text-amber-900", bgColor: "bg-amber-100" },
   ];

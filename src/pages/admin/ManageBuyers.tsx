@@ -4,7 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import api from "../../services/api";
 import TopCard from "../../components/admin/TopCard";
 
-type BuyerStatusFilter = "all" | "verified" | "pending" | "blocked";
+type BuyerStatusFilter = "all" | "verified" | "pending" | "disabled";
 
 interface BuyerApi {
   id: number;
@@ -13,8 +13,9 @@ interface BuyerApi {
   username: string;
   phone?: string;
   role?: "BUYER";
-  is_verified: boolean;
+  is_verified?: boolean;
   is_active: boolean;
+  account_status?: string;
 
   location?: string;
   city?: string;
@@ -41,8 +42,9 @@ interface BuyerDetails {
 
 const isStatusMatch = (b: BuyerApi, filter: BuyerStatusFilter) => {
   if (filter === "all") return true;
-  if (filter === "verified") return b.is_active && b.is_verified;
-  if (filter === "pending") return b.is_active && !b.is_verified;
+  if (filter === "verified") return b.is_active;
+  if (filter === "pending") return !b.is_active && b.account_status === "pending";
+  if (filter === "disabled") return !b.is_active && b.account_status !== "pending";
   return !b.is_active;
 };
 
@@ -117,8 +119,10 @@ export default function ManageBuyers() {
   const getDisplayName = (b: BuyerApi) => b.username?.trim() || b.email;
 
   const getStatusBadge = (b: BuyerApi) => {
-    if (!b.is_active) return { text: "Blocked", cls: "bg-red-100 text-red-800" };
-    if (b.is_verified) return { text: "Verified", cls: "bg-green-100 text-green-800" };
+    if (!b.is_active) {
+      if (b.account_status === "pending") return { text: "Pending", cls: "bg-yellow-100 text-yellow-800" };
+      return { text: "Disabled", cls: "bg-red-100 text-red-800" };
+    }
     return { text: "Verified", cls: "bg-green-100 text-green-800" };
   };
 
@@ -150,7 +154,7 @@ export default function ManageBuyers() {
       bgColor: "bg-green-50",
     },
     {
-      title: "Blocked Buyers",
+      title: "Disabled Buyers",
       value: blockedBuyersCount.toString(),
       subTitle: "",
       icon: AlertTriangle,
@@ -212,7 +216,7 @@ export default function ManageBuyers() {
                 <option value="all">All</option>
                 <option value="verified">Verified</option>
                 <option value="pending">Pending</option>
-                <option value="blocked">Blocked</option>
+                <option value="disabled">Disabled</option>
               </select>
             </div>
           </div>
@@ -327,7 +331,7 @@ export default function ManageBuyers() {
                           });
                           setViewDetails({ ...viewDetails, is_active: isActive, is_verified: isActive });
                           setBuyers(buyers.map((b) => 
-                            b.id === viewDetails.id ? { ...b, is_active: isActive, is_verified: isActive } : b
+                            b.id === selectedBuyer?.id ? { ...b, is_active: isActive, is_verified: isActive, account_status: isActive ? "active" : "rejected" } : b
                           ));
                           if (viewDetails.is_active !== isActive) {
                             setVerifiedBuyersCount(prev => isActive ? prev + 1 : Math.max(0, prev - 1));
@@ -339,7 +343,7 @@ export default function ManageBuyers() {
                       }}
                     >
                       <option value="verified">Verified</option>
-                      <option value="disabled">Blocked</option>
+                      <option value="disabled">Disabled</option>
                     </select>
                   </div>
                 </div>

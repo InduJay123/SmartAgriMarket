@@ -136,7 +136,7 @@ const ManageFarmers: React.FC = () => {
       // Update local state
       setViewDetails({ ...viewDetails, is_active: isActive, is_verified: isActive });
       setFarmers(farmers.map((f) => 
-        f.id === viewDetails.id ? { ...f, is_active: isActive, is_verified: isActive } : f
+        f.id === selectedFarmer?.id ? { ...f, is_active: isActive, is_verified: isActive } : f
       ));
 
       // Update top card stats without fetching from the server

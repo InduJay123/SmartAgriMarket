@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, Filter, Trash2 } from "lucide-react";
-import api from "../../services/api";
+import api from "../../api/api";
 
 type CropCategoryFilter = "all" | "General" | "Grain" | "Vegetable" | "Fruit" | "Other";
 

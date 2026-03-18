@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, Filter as FilterIcon, Eye, Users, AlertTriangle, MapPin } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import api from "../../services/api";
+import api from "../../api/api";
 import TopCard from "../../components/admin/TopCard";
 
 type BuyerStatusFilter = "all" | "verified" | "pending" | "disabled";

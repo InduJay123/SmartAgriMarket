@@ -25,9 +25,14 @@ const BuyerMessages = () => {
         const data = await getConversations();
 
         // newest first
-        const sorted = [...data].sort(
-          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-        );
+        const sorted = [...data]
+          .map((conv) => ({
+            ...conv,
+            timestamp: new Date(conv.timestamp).toISOString(),
+          }))
+          .sort(
+            (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
 
         setConversations(sorted);
       } catch (err) {

@@ -12,7 +12,6 @@ import Signup from './pages/authentication/Signup';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 
 import Admin from './pages/admin/Admin';
-import AIModel from './pages/admin/AIModel';
 import ManageBuyers from './pages/admin/ManageBuyers';
 import ManageCrops from './pages/admin/ManageCrops';
 import ManageFarmers from './pages/admin/ManageFarmers';

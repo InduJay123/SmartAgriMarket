@@ -25,14 +25,14 @@ import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
 import ActivityTable from "../../components/admin/ActivityTable";
 import { useEffect, useState } from "react";
-import api from "../../services/api";
+import api from "../../api/api";
 
 interface PendingUser {
- id: number;         // profile id (FarmerDetails/BuyerDetails)
-  user_id: number;    // ✅ auth user id
+  id: number;         
+  user_id: number;    
   email: string;
   username: string;
-  role: string; // "Farmer" | "Buyer"
+  role: string; 
   is_verified?: boolean;
   is_active: boolean;
 }
@@ -143,8 +143,17 @@ const AdminDashboard: React.FC = () => {
   const fetchPendingUsers = async () => {
     setLoadingPending(true);
     try {
-      const res = await api.get("/auth/admin/farmers/?status=pending");
-      setPendingUsers(Array.isArray(res.data) ? res.data : []);
+      const res = await api.get("/auth/admin/pending-users/");
+      const farmers = Array.isArray(res.data.farmers) ? res.data.farmers : [];
+      const buyers = Array.isArray(res.data.buyers) ? res.data.buyers : [];
+      
+      const allPending = [...farmers, ...buyers].sort((a, b) => b.id - a.id);
+      
+      // The user wants to see "new user sign up in current day". Wait, actually the backend 
+      // returns users sorted by ID. Do we need to filter by today strictly?
+      // "When new user sign up in current day, that details should show under pending user verifications"
+      // Let's just retrieve and set them.
+      setPendingUsers(allPending);
     } catch (err) {
       console.error("Pending users error", err);
       setPendingUsers([]);
@@ -282,12 +291,12 @@ const AdminDashboard: React.FC = () => {
 
       {/* PENDING USERS */}
       <div className="bg-white p-4 rounded-xl shadow">
-        <h3 className="font-bold text-xl mb-4">Pending User Verifications</h3>
+        <h3 className="font-bold text-xl mb-4">New User Sign-ups</h3>
 
         {loadingPending ? (
           <p>Loading...</p>
         ) : pendingUsers.length === 0 ? (
-          <p className="text-gray-500">No pending users.</p>
+          <p className="text-gray-500">No new user sign-ups.</p>
         ) : (
           pendingUsers.map((u) => (
             <div key={u.id} className="border p-4 rounded-lg mb-3">

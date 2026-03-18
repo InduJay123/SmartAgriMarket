@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { User, Lock, Bell, Globe, X } from "lucide-react";
-import api from "../../services/api";
+import api from "../../api/api";
 
 type Language = "English" | "Sinhala" | "Tamil";
-
-
-
 
 interface AdminSettingsDTO {
    username: string;
@@ -52,7 +49,6 @@ export default function Settings() {
     setLoading(true);
     setErrorMsg("");
     try {
-      // ✅ Backend: GET /api/admin/settings/
       const res = await api.get("/auth/admin/settings/");
       setSettings({
         ...emptySettings,
@@ -93,7 +89,7 @@ export default function Settings() {
 
       const res = await api.put("/auth/admin/settings/", payload);
       setSettings({ ...emptySettings, ...res.data });
-      setSuccessMsg("Saved successfully ✅");
+      setSuccessMsg("Saved successfully");
       setTimeout(() => setSuccessMsg(""), 2500);
     } catch (err: any) {
       console.error("Save settings failed:", err);

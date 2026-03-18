@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
-import api from "../../services/api";
+import api from "../../api/api";
 
 interface FarmerDetails {
   id: number;

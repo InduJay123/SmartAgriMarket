@@ -1,6 +1,7 @@
 import api from "../api";
 
 export interface Conversation {
+  timestamp: string | number | Date;
   user_id: number;
   username: string;
   last_message: string;

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Upload, FileText } from "lucide-react";
-import api from "../../services/api";
+import api from "../../api/api";
 
 type UploadStatus = "PROCESSING" | "PROCESSED" | "FAILED";
 

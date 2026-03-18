@@ -1,4 +1,5 @@
-import api from "../services/api";
+import api from "../api/api";
+
 
 const ML_API_BASE = "/ml";
 

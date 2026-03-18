@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import api from '../../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -99,75 +100,63 @@ export default function MLDashboard({ isOpen, onClose }: MLDashboardProps) {
   const fetchMetrics = async () => {
     setIsLoading(true);
     try {
-      // Fetch Price Model metrics
-      const priceResponse = await fetch('http://localhost:8000/api/ml/predict/price/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ crop_type: 'Tomato', season: 'northeast_monsoon', supply: 1000, demand: 1200, market_trend: 'stable' })
-      });
-      
+      // Fetch Price Model metrics using the authenticated api instance
+      const priceResponse = await api.post('/ml/predict/price/', {
+        crop_type: 'Tomato', season: 'northeast_monsoon', supply: 1000, demand: 1200, market_trend: 'stable'
+      }).catch(() => null);
+
       // Fetch Demand Model metrics
-      const demandResponse = await fetch('http://localhost:8000/api/ml/predict/demand/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ crop_type: 'Tomato', year: 2026, month: 1 })
-      });
-      
+      const demandResponse = await api.post('/ml/predict/demand/', {
+        crop_type: 'Tomato', year: 2026, month: 1
+      }).catch(() => null);
+
       // Fetch Yield Model metrics
-      const yieldResponse = await fetch('http://localhost:8000/api/ml/predict/yield/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ crop_type: 'Tomato', rainfall: 150, temperature: 28, soil_quality: 'good', fertilizer: 50, irrigation: true })
-      });
-      
+      const yieldResponse = await api.post('/ml/predict/yield/', {
+        crop_type: 'Tomato', rainfall: 150, temperature: 28, soil_quality: 'good', fertilizer: 50, irrigation: true
+      }).catch(() => null);
+
       const newMetrics: AllModelMetrics = {
         price: { test_r2: 0.78, test_mae: 46.92, test_rmse: 55.29, train_r2: 0.88, train_mae: 28.15, train_rmse: 33.17 },
         demand: { test_r2: 0.75, test_mae: 3500, test_rmse: 5000, train_r2: 0.85, train_mae: 2100, train_rmse: 3000 },
         yield: { test_r2: 0.82, test_mae: 250, test_rmse: 380, train_r2: 0.90, train_mae: 150, train_rmse: 228 },
       };
-      
-      if (priceResponse.ok) {
-        const data = await priceResponse.json();
-        if (data.model_accuracy) {
-          newMetrics.price = {
-            test_r2: data.model_accuracy.r2_score || 0.78,
-            test_mae: data.model_accuracy.mae || 46.92,
-            test_rmse: data.model_accuracy.rmse || 55.29,
-            train_r2: Math.min((data.model_accuracy.r2_score || 0.78) + 0.1, 0.99),
-            train_mae: (data.model_accuracy.mae || 46.92) * 0.6,
-            train_rmse: (data.model_accuracy.rmse || 55.29) * 0.6,
-          };
-        }
+
+      if (priceResponse?.data?.model_accuracy) {
+        const acc = priceResponse.data.model_accuracy;
+        newMetrics.price = {
+          test_r2: acc.r2_score || 0.78,
+          test_mae: acc.mae || 46.92,
+          test_rmse: acc.rmse || 55.29,
+          train_r2: Math.min((acc.r2_score || 0.78) + 0.1, 0.99),
+          train_mae: (acc.mae || 46.92) * 0.6,
+          train_rmse: (acc.rmse || 55.29) * 0.6,
+        };
       }
-      
-      if (demandResponse.ok) {
-        const data = await demandResponse.json();
-        if (data.model_accuracy) {
-          newMetrics.demand = {
-            test_r2: data.model_accuracy.r2_score || 0.75,
-            test_mae: data.model_accuracy.mae || 3500,
-            test_rmse: data.model_accuracy.rmse || 5000,
-            train_r2: Math.min((data.model_accuracy.r2_score || 0.75) + 0.1, 0.99),
-            train_mae: (data.model_accuracy.mae || 3500) * 0.6,
-            train_rmse: (data.model_accuracy.rmse || 5000) * 0.6,
-          };
-        }
+
+      if (demandResponse?.data?.model_accuracy) {
+        const acc = demandResponse.data.model_accuracy;
+        newMetrics.demand = {
+          test_r2: acc.r2_score || 0.75,
+          test_mae: acc.mae || 3500,
+          test_rmse: acc.rmse || 5000,
+          train_r2: Math.min((acc.r2_score || 0.75) + 0.1, 0.99),
+          train_mae: (acc.mae || 3500) * 0.6,
+          train_rmse: (acc.rmse || 5000) * 0.6,
+        };
       }
-      
-      if (yieldResponse.ok) {
-        const data = await yieldResponse.json();
-        if (data.model_accuracy) {
-          newMetrics.yield = {
-            test_r2: data.model_accuracy.r2_score || 0.82,
-            test_mae: data.model_accuracy.mae || 250,
-            test_rmse: data.model_accuracy.rmse || 380,
-            train_r2: Math.min((data.model_accuracy.r2_score || 0.82) + 0.08, 0.99),
-            train_mae: (data.model_accuracy.mae || 250) * 0.6,
-            train_rmse: (data.model_accuracy.rmse || 380) * 0.6,
-          };
-        }
+
+      if (yieldResponse?.data?.model_accuracy) {
+        const acc = yieldResponse.data.model_accuracy;
+        newMetrics.yield = {
+          test_r2: acc.r2_score || 0.82,
+          test_mae: acc.mae || 250,
+          test_rmse: acc.rmse || 380,
+          train_r2: Math.min((acc.r2_score || 0.82) + 0.08, 0.99),
+          train_mae: (acc.mae || 250) * 0.6,
+          train_rmse: (acc.rmse || 380) * 0.6,
+        };
       }
-      
+
       setAllMetrics(newMetrics);
     } catch (error) {
       console.log('Could not fetch metrics from backend, using defaults');

@@ -9,6 +9,8 @@ import { deleteCrop, fetchCrops } from "../../api/farmer/marketplace";
 import { predictPrice, predictDemand } from "../../lib/MLService";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { fetchUserAlerts } from "../../api/farmer/alerts";
+import { getChatList } from "../../api/farmer/chat";
 
 interface Crop {
     market_id: number;
@@ -23,20 +25,53 @@ interface Crop {
     updated_at: string;
 }
 
-
-
 const FarmerDashboard: React.FC = () => {
 
     const { t, i18n } = useTranslation();
     const isSinhala = i18n.language === "si";
 
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-    
-    // State for ML predictions
     const [marketPrice, setMarketPrice] = useState<string>("Loading...");
     const [demandForecast, setDemandForecast] = useState<string>("Loading...");
     const [isLoadingPredictions, setIsLoadingPredictions] = useState<boolean>(true);
+    const [unseenAlerts, setUnseenAlerts] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [unreadMessages, setUnreadMessages] = useState<number>(0);
 
+    const loadAlerts = async () => {
+        try {
+          const res = await fetchUserAlerts();
+          setUnseenAlerts(res.data.unseen_count ?? 0);
+          console.log("Fetched alerts:", res.data);
+        } catch (err) {
+          console.error("Failed to load alerts", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      useEffect(() => {
+        loadAlerts();
+      }, []);
+
+      useEffect(() => {
+    const loadUnreadMessages = async () => {
+        try {
+            const data = await getChatList();
+            // Sum all unread counts
+            const totalUnread = data.reduce(
+                (sum: number, chat: any) => sum + (chat.unread_count || 0),
+                0
+            );
+
+            setUnreadMessages(totalUnread);
+        } catch (error) {
+            console.error("Error fetching unread messages:", error);
+        }
+    };
+
+    loadUnreadMessages();
+}, []);
     // Fetch ML predictions
     useEffect(() => {
         const fetchPredictions = async () => {
@@ -107,7 +142,7 @@ const FarmerDashboard: React.FC = () => {
         },
         {
             title: t('Harvest Alerts'),
-            value:"3 Active",
+            value:unseenAlerts > 0 ? `${unseenAlerts} New` : "No new",
             subTitle:"Due this month",
             icon: Calendar,
             color:"text-orange-300",
@@ -115,7 +150,7 @@ const FarmerDashboard: React.FC = () => {
         },
         {
             title: t('Messages'),
-            value:"5 New",
+            value: unreadMessages > 0 ? `${unreadMessages} New` : "No new",
             subTitle:"From buyers",
             icon:MessageSquare,
             color:"text-amber-900" ,
@@ -208,8 +243,6 @@ const FarmerDashboard: React.FC = () => {
             alert(t("Failed to delete crop"));
         }
     };
-
-
 
     return(
         <div className="bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full">

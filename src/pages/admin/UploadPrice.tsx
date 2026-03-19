@@ -1,23 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { Upload, FileText } from "lucide-react";
-import api from "../../services/api";
-
-type UploadStatus = "PROCESSING" | "PROCESSED" | "FAILED";
+import api from "../../api/api";
+import { supabase } from "../../lib/supabase";
 
 interface PriceUploadApi {
   id: number;
-  file_name: string;
-  created_at: string; // ISO
-  status: UploadStatus;
-  error_message?: string | null;
+  filename: string;
+  file_url: string;
+  upload_date: string;
 }
-
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_EXT = [".csv", ".xls", ".xlsx", ".pdf"]; // allowed file extensions
 
-
-const UPLOAD_URL = "/prices/uploads/"; // POST
-const LIST_URL = "/prices/uploads/"; // GET
+const UPLOAD_URL = "/documents/price-list/upload/"; // POST
+const LIST_URL = "/documents/price-lists/"; // GET
 
 export default function UploadPrice() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -27,6 +23,7 @@ export default function UploadPrice() {
 
   const [uploading, setUploading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [customFilename, setCustomFilename] = useState<string>("");
 
   const pickFile = () => fileInputRef.current?.click();
 
@@ -38,18 +35,18 @@ export default function UploadPrice() {
     return "";
   };
 
-  const fetchRecentUploads = async () => {
-    setLoadingList(true);
-    try {
-      const res = await api.get(LIST_URL);
-      setUploads(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      console.error("Failed to load uploads:", err);
-      setUploads([]);
-    } finally {
-      setLoadingList(false);
-    }
-  };
+ const fetchRecentUploads = async () => {
+  setLoadingList(true);
+  try {
+    const res = await api.get(LIST_URL);
+    setUploads(Array.isArray(res.data) ? res.data : []);
+  } catch (err) {
+    console.error("Failed to load uploads:", err);
+    setUploads([]);
+  } finally {
+    setLoadingList(false);
+  }
+};
 
   useEffect(() => {
     fetchRecentUploads();
@@ -62,32 +59,60 @@ export default function UploadPrice() {
       return;
     }
 
+    if (!customFilename.trim()) {
+      setErrorMsg('Please enter a Document Name before uploading.');
+      return;
+    }
+
     setErrorMsg("");
     setUploading(true);
 
     try {
-      const form = new FormData();
-      // backend should read request.FILES["file"]
-      form.append("file", file);
+      // 1. Upload to Supabase bucket
+      const timestamp = new Date().getTime();
+      const ext = file.name.substring(file.name.lastIndexOf('.')); const safeCustomName = customFilename.replace(/[^a-zA-Z0-9.-]/g, '_'); const uniqueFileName = `${timestamp}_${safeCustomName}${ext}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("price_list")
+        .upload(uniqueFileName, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
 
-      await api.post(UPLOAD_URL, form, {
-        headers: { "Content-Type": "multipart/form-data" },
+      if (uploadError) {
+        throw new Error(`Supabase upload failed: ${uploadError.message}`);
+      }
+
+      // 2. Get Public URL
+      const { data: urlData } = supabase.storage
+        .from("price_list")
+        .getPublicUrl(uploadData.path);
+
+      if (!urlData.publicUrl) {
+        throw new Error("Could not generate public URL");
+      }
+
+      // 3. Send filename and file_url to Django backend
+      await api.post(UPLOAD_URL, {
+        filename: `${customFilename}${ext}`,
+        file_url: urlData.publicUrl,
       });
 
       // refresh list after upload
       await fetchRecentUploads();
-    } catch (err: any) {
-      console.error("Upload failed:", err);
-      const msg =
-        err?.response?.data?.detail ||
-        err?.response?.data?.message ||
-        "Upload failed. Check backend endpoint / permissions.";
-      setErrorMsg(msg);
-    } finally {
-      setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  };
+      } catch (err: any) {
+        console.error("Upload failed:", err);
+        const msg =
+          err?.response?.data?.detail ||
+          err?.response?.data?.error ||
+          err?.message ||
+          "Upload failed. Check backend endpoint / permissions.";
+        setErrorMsg(msg);
+      } finally {
+        setUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
+    };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -106,17 +131,6 @@ export default function UploadPrice() {
     e.stopPropagation();
   };
 
-  const badgeClass = (status: UploadStatus) => {
-    if (status === "PROCESSED") return "bg-green-100 text-green-800";
-    if (status === "FAILED") return "bg-red-100 text-red-800";
-    return "bg-blue-100 text-blue-800";
-  };
-
-  const displayStatus = (status: UploadStatus) => {
-    if (status === "PROCESSED") return "Processed";
-    if (status === "FAILED") return "Failed";
-    return "Processing";
-  };
 
   const formatDate = (iso: string) => {
     try {
@@ -130,105 +144,110 @@ export default function UploadPrice() {
     <div className="space-y-6 pr-28">
       <div className="bg-white rounded-lg shadow-lg p-2 lg:p-4">
         <h2 className="text-xl lg:text-2xl font-bold mb-6">Upload Price Data</h2>
-
-        <div className="max-w-2xl mx-auto">
-          {/* ✅ Error message */}
-          {errorMsg && (
-            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {errorMsg}
-            </div>
-          )}
-
-          {/* ✅ Hidden input */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".csv,.xls,.xlsx,.pdf"
-            className="hidden"
-            onChange={onFileChange}
-          />
-
-          {/* ✅ Drop zone */}
-          <div
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 lg:p-12 text-center hover:border-emerald-500 transition-colors"
-          >
-            <Upload size={48} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
-              Drop files here or click to upload
-            </h3>
-            <p className="text-gray-500 mb-4">
-              Supports CSV, Excel, PDF files (max 10MB)
-            </p>
-
-            <button
-              type="button"
-              onClick={pickFile}
-              disabled={uploading}
-              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-60"
-            >
-              {uploading ? "Uploading..." : "Select Files"}
-            </button>
-          </div>
-
-          {/* ✅ Recent uploads */}
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Recent Uploads</h3>
-              <button
-                onClick={fetchRecentUploads}
-                className="text-sm px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Refresh
-              </button>
-            </div>
-
-            {loadingList ? (
-              <div className="py-6 text-center text-gray-500">Loading...</div>
-            ) : uploads.length === 0 ? (
-              <div className="py-6 text-center text-gray-500">
-                No uploads found.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {uploads.map((u) => (
-                  <div
-                    key={u.id}
-                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
-                  >
-                    <div className="flex items-center gap-3">
-                      <FileText className="text-emerald-600" size={24} />
-                      <div>
-                        <p className="font-medium text-gray-800">
-                          {u.file_name}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {formatDate(u.created_at)}
-                        </p>
-                        {u.status === "FAILED" && u.error_message ? (
-                          <p className="text-xs text-red-600 mt-1">
-                            {u.error_message}
-                          </p>
-                        ) : null}
-                      </div>
-                    </div>
-
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${badgeClass(
-                        u.status
-                      )}`}
-                    >
-                      {displayStatus(u.status)}
-                    </span>
-                  </div>
-                ))}
+        
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Left Side: Upload Section */}
+          <div className="flex flex-col">
+            {errorMsg && (
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                {errorMsg}
               </div>
             )}
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Document Name (Required)
+              </label>
+              <input 
+                type="text" 
+                placeholder="e.g., Weekly Potato Prices" 
+                value={customFilename} 
+                onChange={(e) => setCustomFilename(e.target.value)} 
+                className="w-full border-gray-300 rounded-lg shadow-sm p-2 border focus:ring-emerald-500 focus:border-emerald-500" 
+              />
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv,.xls,.xlsx,.pdf"
+              className="hidden"
+              onChange={onFileChange}
+            />
+
+            <div
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              className="border-2 border-dashed border-gray-300 rounded-lg p-8 lg:p-12 text-center hover:border-emerald-500 transition-colors"
+            >
+              <Upload size={48} className="mx-auto text-gray-400 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">
+                Drop files here or click to upload
+              </h3>
+              <p className="text-gray-500 mb-4">
+                Supports CSV, Excel, PDF files (max 10MB)
+              </p>
+
+              <button
+                type="button"
+                onClick={pickFile}
+                disabled={uploading}
+                className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-60"
+              >
+                {uploading ? "Uploading..." : "Select Files"}
+              </button>
+            </div>
           </div>
+
+          {/* Right Side: Recent Uploads */}
+          <div className="flex flex-col">
+            <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 h-full">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg">Recent Uploads</h3>
+                <button
+                  onClick={fetchRecentUploads}
+                  className="text-sm px-3 py-1 border border-gray-300 rounded-lg hover:bg-white bg-white shadow-sm"
+                >
+                  Refresh
+                </button>
+              </div>
+
+              {loadingList ? (
+                <div className="py-6 text-center text-gray-500">Loading...</div>
+              ) : uploads.length === 0 ? (
+                <div className="py-6 text-center text-gray-500">
+                  No uploads found.
+                </div>
+              ) : (
+                <div className="space-y-3 overflow-y-auto max-h-[500px] pr-2">
+                  {uploads.map((u) => (
+                    <div
+                      key={u.id}
+                      className="flex items-center justify-between p-4 border border-gray-200 bg-white rounded-lg hover:border-emerald-300 transition-colors shadow-sm"
+                    >
+                      <div className="flex items-center gap-3 w-full">
+                        <FileText className="text-emerald-600 flex-shrink-0" size={24} />
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-gray-800 truncate" title={u.filename}>
+                            {u.filename}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {formatDate(u.upload_date)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
+
 

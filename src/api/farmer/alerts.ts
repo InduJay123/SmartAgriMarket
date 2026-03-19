@@ -1,7 +1,7 @@
 import api from "../api";
 
-export const fetchUserAlerts = () => {
-  return api.get("/alerts/alerts/");
+export const fetchUserAlerts = (limit: number = 100) => {
+  return api.get(`/alerts/alerts/?limit=${limit}`);
 };
 
 export const markAlertSeen = () => {

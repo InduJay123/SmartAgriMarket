@@ -1,5 +1,5 @@
 import axios from "axios";
-import api from "../services/api";
+import api from "../api/api";
 import { getPredictionHistoryByType, type PredictionHistory } from "../lib/MLService";
 
 export interface ReportFilters {

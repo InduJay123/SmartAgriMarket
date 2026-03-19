@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import api from "../../services/api";
-
+import api from "../../api/api";
 import {
 
   
@@ -32,6 +31,7 @@ import {
   Leaf,
   AlertCircle,
   Info,
+  BrainIcon,
 } from "lucide-react";
 
 import Header from "../../components/farmer/Header";
@@ -315,11 +315,11 @@ const predictYieldForecast = async (payload: {
   // -----------------------------
   return (
     <div className={`bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full ${isSinhala ? "font-sinhala" : "font-sans"}`}>
-      <Header
-        icon={Brain}
-        title={t("AI Insights & Forecasting")}
-        subTitle={t("Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model")}
-      />
+      <div className="flex flex-wrap gap-4 items-start justify-start">
+        <BrainIcon className="text-gray-500"/>
+          <h2  className="text-black font-bold text-2xl">{t("AI Insights & Forecasting")}</h2>
+        </div>
+        <p className="text-xs text-gray-400 text-start mt-2">{t("Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model")}</p>
 
       {/* Info Banner */}
       <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">

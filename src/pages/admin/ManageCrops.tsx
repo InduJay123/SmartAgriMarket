@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, Filter, Trash2 } from "lucide-react";
-import api from "../../services/api";
+import api from "../../api/api";
 
 type CropCategoryFilter = "all" | "General" | "Grain" | "Vegetable" | "Fruit" | "Other";
 
@@ -9,6 +9,9 @@ interface CropApi {
   crop_name: string;
   category?: string | null;
   description?: string | null;
+  total_quantity?: number;
+  yala_quantity?: number;
+  maha_quantity?: number;
 }
 
 export default function ManageCrops() {
@@ -119,6 +122,9 @@ export default function ManageCrops() {
                   <th className="text-left py-3 px-4">CROP NAME</th>
                   <th className="text-left py-3 px-4">CATEGORY</th>
                   <th className="text-left py-3 px-4">DESCRIPTION</th>
+                  <th className="text-left py-3 px-4">TOTAL QUANTITY</th>
+                  <th className="text-left py-3 px-4">YALA QUANTITY</th>
+                  <th className="text-left py-3 px-4">MAHA QUANTITY</th>
                   <th className="text-left py-3 px-4">ACTIONS</th>
                 </tr>
               </thead>
@@ -133,6 +139,9 @@ export default function ManageCrops() {
                     <td className="py-3 px-4 text-gray-800 font-medium">{crop.crop_name}</td>
                     <td className="py-3 px-4">{crop.category || "—"}</td>
                     <td className="py-3 px-4">{crop.description || "—"}</td>
+                    <td className="py-3 px-4 font-semibold">{crop.total_quantity || 0}</td>
+                    <td className="py-3 px-4 font-semibold text-emerald-600">{crop.yala_quantity || 0}</td>
+                    <td className="py-3 px-4 font-semibold text-blue-600">{crop.maha_quantity || 0}</td>
                     <td className="py-3 px-4">
                       <button
                         onClick={() => handleDelete(crop.crop_id)}

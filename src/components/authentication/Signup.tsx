@@ -17,7 +17,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     password: "",
     confirmPassword: "",
     role: "farmer",
-    farmLocation: "",
+    farmName: "",
+    farmRegion: "",
   });
 
   const [errors, setErrors] = useState<

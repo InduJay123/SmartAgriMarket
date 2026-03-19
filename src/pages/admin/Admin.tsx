@@ -7,9 +7,10 @@ import ManageBuyers from "./ManageBuyers";
 import ManageCrops from "./ManageCrops";
 import UploadPrice from "./UploadPrice";
 import Reports from "./Reports";
-import AIModel from "./AIModel";
 import Settings from "./Settings";
 import Sidebar from "../../components/admin/Sidebar";
+import AiInsights from "../farmer/AiInsights";
+
 
 const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -30,7 +31,7 @@ const Admin: React.FC = () => {
       case "reports":
         return <Reports />;
       case "ai":
-        return <AIModel />;
+        return <AiInsights />;
       case "settings":
         return <Settings />;
       default:

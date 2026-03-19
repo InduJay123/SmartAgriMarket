@@ -7,10 +7,11 @@ import {
   ShoppingCart,
   Users,
   Eye,
+  MapPin,
 } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
-import api from "../../services/api";
+import api from "../../api/api";
 
 interface FarmerDetails {
   id: number;
@@ -36,6 +37,7 @@ interface FarmerApi {
   username: string;
   phone: string;
   contact_number: string;
+  region: string;
   // role: "FARMER";
   is_verified: boolean;
   is_active: boolean;
@@ -43,12 +45,12 @@ interface FarmerApi {
 
 const ManageFarmers: React.FC = () => {
   const [verifiedFarmersCount, setVerifiedFarmersCount] = useState(0);
-  const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+  const [blockedFarmersCount, setBlockedFarmersCount] = useState(0);
 
   const [farmers, setFarmers] = useState<FarmerApi[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [buyers, setBuyers] = useState(0);
+  const [mostFarmersRegion, setMostFarmersRegion] = useState("None");
   const [crops, setCrops] = useState(0);
 
   const [search, setSearch] = useState("");
@@ -60,13 +62,14 @@ const ManageFarmers: React.FC = () => {
   const [viewDetails, setViewDetails] = useState<FarmerDetails | null>(null);
   const [viewLoading, setViewLoading] = useState(false);
   const [viewError, setViewError] = useState("");
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   const fetchDashboardStats = async () => {
     try {
       const res = await api.get("/auth/admin/dashboard-stats/");
       setVerifiedFarmersCount(res.data.verified_farmers);
-      setPendingApprovalsCount(res.data.pending_approvals);
-      setBuyers(res.data.buyers);
+      setBlockedFarmersCount(res.data.blocked_farmers || 0); // Using blocked_farmers dynamically
+      setMostFarmersRegion(res.data.most_farmers_region || "None");
       setCrops(res.data.crops);
     } catch (err) {
       console.error("Dashboard stats error", err);
@@ -110,12 +113,41 @@ const ManageFarmers: React.FC = () => {
     setViewOpen(true);
     setViewLoading(true);
     try {
-      const res = await api.get(`/auth/admin/user/${f.id}/`);
+      const res = await api.get(`/auth/admin/user/${f.id}/?role=farmer`);
       setViewDetails(res.data);
     } catch (err: any) {
       setViewError(err?.response?.data?.error || "Failed to load farmer details.");
     } finally {
       setViewLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!viewDetails) return;
+    const newStatus = e.target.value;
+    const isActive = newStatus === "verified";
+    
+    setUpdatingStatus(true);
+    try {
+      await api.put(`/auth/admin/user/${viewDetails.id}/`, {
+        is_active: isActive,
+        is_verified: isActive,
+      });
+      // Update local state
+      setViewDetails({ ...viewDetails, is_active: isActive, is_verified: isActive });
+      setFarmers(farmers.map((f) => 
+        f.id === selectedFarmer?.id ? { ...f, is_active: isActive, is_verified: isActive } : f
+      ));
+
+      // Update top card stats without fetching from the server
+      if (viewDetails.is_active !== isActive) {
+        setVerifiedFarmersCount(prev => isActive ? prev + 1 : Math.max(0, prev - 1));
+        setBlockedFarmersCount(prev => !isActive ? prev + 1 : Math.max(0, prev - 1));
+      }
+    } catch (err: any) {
+      alert("Failed to update status.");
+    } finally {
+      setUpdatingStatus(false);
     }
   };
 
@@ -151,18 +183,18 @@ const ManageFarmers: React.FC = () => {
       bgColor: "bg-green-50",
     },
     {
-      title: "Pending Approvals",
-      value: pendingApprovalsCount.toString(),
+      title: "Blocked Farmers",
+      value: blockedFarmersCount.toString(),
       subTitle: "",
       icon: AlertTriangle,
       color: "text-red-300",
       bgColor: "bg-red-50",
     },
     {
-      title: "Buyers",
-      value: buyers.toString(),
+      title: "Top Region",
+      value: mostFarmersRegion,
       subTitle: "",
-      icon: ShoppingCart,
+      icon: MapPin,
       color: "text-blue-300",
       bgColor: "bg-blue-50",
     },
@@ -191,30 +223,6 @@ const ManageFarmers: React.FC = () => {
           />
         ))}
       </div>
-
-      {/* <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h2 className="text-xl lg:text-2xl font-bold">Farmers Location</h2>
-          <button
-            onClick={() => setShowMap(!showMap)}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
-          >
-            <MapPin size={18} />
-            {showMap ? "Hide Map" : "Show Map"}
-          </button>
-        </div>
-
-        {showMap && (
-          <div className="mb-6 bg-gradient-to-br from-emerald-50 to-blue-50 rounded-lg p-8 lg:p-12 border-2 border-emerald-200 mt-4">
-            <div className="flex items-center justify-center h-64 lg:h-96">
-              <div className="text-center">
-                <MapPin size={48} className="mx-auto text-emerald-600 mb-4" />
-                <p className="text-gray-600 text-lg">Interactive Map View</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div> */}
 
       <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
@@ -256,9 +264,10 @@ const ManageFarmers: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[700px]">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 font-semibold text-gray-700">
+                <tr className="border-b border-gray-200 bg-gray-100 font-semibold text-gray-700">
                   <th className="text-left py-3 px-4">ID</th>
                   <th className="text-left py-3 px-4">Name</th>
+                  <th className="text-left py-3 px-4">Region</th>
                   <th className="text-left py-3 px-4">Phone</th>
                   <th className="text-left py-3 px-4">Status</th>
                   <th className="text-left py-3 px-4">Actions</th>
@@ -274,7 +283,8 @@ const ManageFarmers: React.FC = () => {
                         {getDisplayName(f)}
                         <div className="text-xs text-gray-500">{f.email}</div>
                       </td>
-                      <td className="py-3 px-4 text-gray-600">{f.contact_number || "077 9865540"}</td>
+                      <td className="py-3 px-4 text-gray-600">{f.region || "Not Added"}</td>
+                      <td className="py-3 px-4 text-gray-600">{f.contact_number || "077 xxxxxxx"}</td>
                       <td className="py-3 px-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${badge.cls}`}>
                           {badge.text}
@@ -328,16 +338,18 @@ const ManageFarmers: React.FC = () => {
                   <InfoRow label="Farm Name" value={viewDetails.farm_name || "—"} />
                   <InfoRow label="About" value={viewDetails.about || "—"} />
                   <InfoRow label="Address" value={viewDetails.address || "—"} />
-                  <InfoRow
-                    label="Status"
-                    value={
-                      !viewDetails.is_active
-                        ? "Blocked"
-                        : viewDetails.is_verified
-                        ? "Verified"
-                        : "Verified"
-                    }
-                  />
+                  <div className="rounded-lg border p-3">
+                    <p className="text-xs text-gray-500">Status</p>
+                    <select
+                      className="mt-1 block w-full rounded-md border-gray-300 py-1 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm font-medium text-gray-900 break-words disabled:opacity-50"
+                      value={viewDetails.is_active ? "verified" : "disabled"}
+                      onChange={handleStatusChange}
+                      disabled={updatingStatus}
+                    >
+                      <option value="verified">Verified</option>
+                      <option value="disabled">Disabled</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             ) : (

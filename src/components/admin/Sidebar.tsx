@@ -28,7 +28,7 @@ const Sidebar:React.FC<SidebarProps> = ({
    const navigate = useNavigate();
 
     const handleLogout = () => {
-        navigate("/login");
+        navigate("/admin");
     };
 
   return (

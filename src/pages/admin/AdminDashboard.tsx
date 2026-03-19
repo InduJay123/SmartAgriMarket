@@ -25,7 +25,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
 import ActivityTable from "../../components/admin/ActivityTable";
 import { useEffect, useState } from "react";
-import api from "../../services/api";
+/*import api from "../../services/api";*/
 
 interface PendingUser {
   id: number;
@@ -63,6 +63,8 @@ interface SupplyData {
   supply: number;
 }
 
+/* ---------------- MOCK DATA ---------------- */
+
 const mockPrice: PriceData[] = [
   { month: "Mar 17", price: 450 },
   { month: "Mar 18", price: 470 },
@@ -79,7 +81,7 @@ const mockSupply: SupplyData[] = [
   { crop: "Carrot", supply: 300 },
 ];
 
-
+/* ---------------- COMPONENT ---------------- */
 
 const AdminDashboard: React.FC = () => {
   const [farmers, setFarmers] = useState(0);

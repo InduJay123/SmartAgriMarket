@@ -17,10 +17,10 @@ const AlertNotifications: React.FC = () => {
     const shownAlerts = new Set<number>();
     const interval = setInterval(() => {
       api
-        .get<UserAlert[]>("/user-alerts/")
+        .get<UserAlert[]>("/user-alerts/?limit=100")
         .then((res) => {
           res.data.forEach((alert) => {
-            if (Notification.permission === "granted" && !shownAlerts.has(alert.id)) {
+            if (alert.id && Notification.permission === "granted" && !shownAlerts.has(alert.id)) {
               new Notification(`${alert.category} Alert`, {
                 body: alert.message,
               });

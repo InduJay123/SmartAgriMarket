@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import api from "../services/api";
+import api from "../api/api";
 
 interface AdminLoginProps {
   onClose: () => void;

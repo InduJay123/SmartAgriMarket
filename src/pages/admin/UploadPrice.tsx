@@ -60,7 +60,7 @@ export default function UploadPrice() {
     }
 
     if (!customFilename.trim()) {
-      setErrorMsg('Please enter a Document Name before uploading.');
+      setErrorMsg("Please enter a custom filename before uploading.");
       return;
     }
 
@@ -70,8 +70,10 @@ export default function UploadPrice() {
     try {
       // 1. Upload to Supabase bucket
       const timestamp = new Date().getTime();
-      const ext = file.name.substring(file.name.lastIndexOf('.')); const safeCustomName = customFilename.replace(/[^a-zA-Z0-9.-]/g, '_'); const uniqueFileName = `${timestamp}_${safeCustomName}${ext}`;
-      
+      const ext = file.name.substring(file.name.lastIndexOf("."));
+      const safeCustomName = customFilename.replace(/[^a-zA-Z0-9.\-_ ]/g, "_");
+      const uniqueFileName = `${timestamp}_${safeCustomName}${ext}`;
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("price_list")
         .upload(uniqueFileName, file, {
@@ -94,7 +96,7 @@ export default function UploadPrice() {
 
       // 3. Send filename and file_url to Django backend
       await api.post(UPLOAD_URL, {
-        filename: `${customFilename}${ext}`,
+        filename: `${safeCustomName}${ext}`,
         file_url: urlData.publicUrl,
       });
 
@@ -146,15 +148,16 @@ export default function UploadPrice() {
         <h2 className="text-xl lg:text-2xl font-bold mb-6">Upload Price Data</h2>
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* Left Side: Upload Section */}
+          {/* Left Column: Upload Section */}
           <div className="flex flex-col">
+            {/* ✅ Error message */}
             {errorMsg && (
               <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
                 {errorMsg}
               </div>
             )}
 
+            {/* Document Name Input */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Document Name (Required)
@@ -168,6 +171,7 @@ export default function UploadPrice() {
               />
             </div>
 
+            {/* ✅ Hidden input */}
             <input
               ref={fileInputRef}
               type="file"
@@ -176,6 +180,7 @@ export default function UploadPrice() {
               onChange={onFileChange}
             />
 
+            {/* ✅ Drop zone */}
             <div
               onDrop={onDrop}
               onDragOver={onDragOver}
@@ -200,8 +205,9 @@ export default function UploadPrice() {
             </div>
           </div>
 
-          {/* Right Side: Recent Uploads */}
+          {/* Right Column: Recent Uploads */}
           <div className="flex flex-col">
+            {/* ✅ Recent uploads */}
             <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 h-full">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-lg">Recent Uploads</h3>
@@ -230,24 +236,25 @@ export default function UploadPrice() {
                         <FileText className="text-emerald-600 flex-shrink-0" size={24} />
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-gray-800 truncate" title={u.filename}>
-                            {u.filename}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {formatDate(u.upload_date)}
-                          </p>
+                              {u.filename}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {formatDate(u.upload_date)}
+                            </p>
+                                                    
                         </div>
                       </div>
+
+                
                     </div>
                   ))}
                 </div>
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
 }
-
 

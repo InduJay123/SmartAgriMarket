@@ -24,7 +24,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     password: "",
     confirmPassword: "",
     role: "farmer",
-    farmLocation: "",
+    farmName: "",
+    farmRegion: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -58,8 +59,13 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
 
-    if (formData.role === "farmer" && !formData.farmLocation?.trim()) {
-      newErrors.farmLocation = "Farm location is required";
+    if (formData.role === "farmer") {
+      if (!formData.farmName?.trim()) {
+        newErrors.farmName = "Farm name is required";
+      }
+      if (!formData.farmRegion?.trim()) {
+        newErrors.farmRegion = "Farm region is required";
+      }
     }
 
     setErrors(newErrors);
@@ -81,7 +87,8 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
       };
 
       if (formData.role === "farmer") {
-        payload.farm_name = formData.farmLocation;
+        payload.farm_name = formData.farmName;
+        payload.region = formData.farmRegion;
       }
 
       const response = await signupUser(payload);
@@ -201,16 +208,27 @@ export default function Signup({ onNavigateToLogin }: SignupProps) {
                 {showConfirm ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
             </div>
-            {/* FARM LOCATION – only for farmers */}
+            {/* FARM DETAILS – only for farmers */}
             {formData.role === "farmer" && (
-              <InputField
-                label={t("Farm Location")}
-                icon={MapPin}
-                placeholder={t("City, District")}
-                value={formData.farmLocation}
-                onChange={(v: any) => setFormData({ ...formData, farmLocation: v })}
-                error={errors.farmLocation}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField
+                  label={t("Farm Name")}
+                  icon={MapPin}
+                  placeholder={t("Enter your farm name")}
+                  value={formData.farmName}
+                  onChange={(v: any) => setFormData({ ...formData, farmName: v })}
+                  error={errors.farmName}
+                />
+                
+                <InputField
+                  label={t("Farm Region")}
+                  icon={MapPin}
+                  placeholder={t("City, District")}
+                  value={formData.farmRegion}
+                  onChange={(v: any) => setFormData({ ...formData, farmRegion: v })}
+                  error={errors.farmRegion}
+                />
+              </div>
             )}
 
             <button 

@@ -25,14 +25,14 @@ import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
 import ActivityTable from "../../components/admin/ActivityTable";
 import { useEffect, useState } from "react";
-import api from "../../services/api";
+import api from "../../api/api";
 
 interface PendingUser {
- id: number;         // profile id (FarmerDetails/BuyerDetails)
-  user_id: number;    // ✅ auth user id
+  id: number;         
+  user_id: number;    
   email: string;
   username: string;
-  role: string; // "Farmer" | "Buyer"
+  role: string; 
   is_verified?: boolean;
   is_active: boolean;
 }
@@ -74,7 +74,7 @@ interface ActivityLogResponse {
 
 const AdminDashboard: React.FC = () => {
   const [farmers, setFarmers] = useState(0);
-  const [pendingApprovals, setPendingApprovals] = useState(0);
+  const [blockedFarmers, setBlockedFarmers] = useState(0);
   const [buyers, setBuyers] = useState(0);
   const [crops, setCrops] = useState(0);
 
@@ -97,7 +97,7 @@ const AdminDashboard: React.FC = () => {
     try {
       const res = await api.get("/auth/admin/dashboard-stats/");
       setFarmers(res.data.verified_farmers ?? 0);
-      setPendingApprovals(res.data.pending_approvals ?? 0);
+      setBlockedFarmers(res.data.blocked_farmers ?? 0);
       setBuyers(res.data.buyers ?? 0);
       setCrops(res.data.crops ?? 0);
     } catch (err) {
@@ -143,8 +143,17 @@ const AdminDashboard: React.FC = () => {
   const fetchPendingUsers = async () => {
     setLoadingPending(true);
     try {
-      const res = await api.get("/auth/admin/farmers/?status=pending");
-      setPendingUsers(Array.isArray(res.data) ? res.data : []);
+      const res = await api.get("/auth/admin/pending-users/");
+      const farmers = Array.isArray(res.data.farmers) ? res.data.farmers : [];
+      const buyers = Array.isArray(res.data.buyers) ? res.data.buyers : [];
+      
+      const allPending = [...farmers, ...buyers].sort((a, b) => b.id - a.id);
+      
+      // The user wants to see "new user sign up in current day". Wait, actually the backend 
+      // returns users sorted by ID. Do we need to filter by today strictly?
+      // "When new user sign up in current day, that details should show under pending user verifications"
+      // Let's just retrieve and set them.
+      setPendingUsers(allPending);
     } catch (err) {
       console.error("Pending users error", err);
       setPendingUsers([]);
@@ -185,12 +194,11 @@ const AdminDashboard: React.FC = () => {
 
     setDetailsLoading(true);
     try {
-      
-      const res = await api.get(`/auth/admin/user/${u.id}/`);
+      const roleParam = u.role.toLowerCase() === "buyer" ? "buyer" : "farmer";
+      const res = await api.get(`/auth/admin/user/${u.id}/?role=${roleParam}`);
       setDetails(res.data);
     } catch (err: any) {
-      console.error("Load user details failed", err);
-      setDetailsError(err?.response?.data?.error || "Failed to load user details.");
+      setDetailsError(err?.response?.data?.error || "Failed to load user details");
     } finally {
       setDetailsLoading(false);
     }
@@ -230,7 +238,7 @@ const AdminDashboard: React.FC = () => {
 
   const stats = [
     { title: "Verified Farmers", value: farmers.toString(), icon: Users, color: "text-green-300", bgColor: "bg-green-50" },
-    { title: "Pending Approvals", value: pendingApprovals.toString(), icon: AlertTriangle, color: "text-red-300", bgColor: "bg-red-50" },
+    { title: "Blocked Farmers", value: blockedFarmers.toString(), icon: AlertTriangle, color: "text-red-300", bgColor: "bg-red-50" },
     { title: "Buyers", value: buyers.toString(), icon: ShoppingCart, color: "text-blue-300", bgColor: "bg-blue-50" },
     { title: "Crops", value: crops.toString(), icon: Leaf, color: "text-amber-900", bgColor: "bg-amber-100" },
   ];
@@ -282,12 +290,12 @@ const AdminDashboard: React.FC = () => {
 
       {/* PENDING USERS */}
       <div className="bg-white p-4 rounded-xl shadow">
-        <h3 className="font-bold text-xl mb-4">Pending User Verifications</h3>
+        <h3 className="font-bold text-xl mb-4">New User Sign-ups</h3>
 
         {loadingPending ? (
           <p>Loading...</p>
         ) : pendingUsers.length === 0 ? (
-          <p className="text-gray-500">No pending users.</p>
+          <p className="text-gray-500">No new user sign-ups.</p>
         ) : (
           pendingUsers.map((u) => (
             <div key={u.id} className="border p-4 rounded-lg mb-3">
@@ -437,5 +445,5 @@ function Info({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
+  
 export default AdminDashboard;

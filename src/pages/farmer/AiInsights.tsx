@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import api from "../../services/api";
-
+import api from "../../api/api";
 import {
 
   

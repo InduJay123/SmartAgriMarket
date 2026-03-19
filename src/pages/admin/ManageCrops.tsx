@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Filter, Trash2 } from "lucide-react";
+import { Search, Filter, Eye } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
 import api from "../../api/api";
 
 type CropCategoryFilter = "all" | "General" | "Grain" | "Vegetable" | "Fruit" | "Other";
@@ -14,12 +15,66 @@ interface CropApi {
   maha_quantity?: number;
 }
 
+interface CropMarketplaceListing {
+  market_id?: number;
+  farmer_id?: number;
+  crop_id?: number;
+  crop?: { crop_id?: number } | number | null;
+  price?: number | string | null;
+  unit?: string | null;
+  quantity?: number | string | null;
+  predicted_date?: string | null;
+  status?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  farming_method?: string | null;
+  farming_season?: string | null;
+  additional_details?: string | null;
+  region?: string | null;
+  district?: string | null;
+  image?: string | null;
+}
+
+function cleanText(value?: string | null) {
+  if (!value) return "—";
+  const normalized = value.trim();
+  if (!normalized) return "—";
+  const lower = normalized.toLowerCase();
+  return lower === "null" || lower === "undefined" ? "—" : normalized;
+}
+
+function formatDate(value?: string | null) {
+  if (!value) return "—";
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? cleanText(value) : d.toLocaleDateString();
+}
+
+function formatDateTime(value?: string | null) {
+  if (!value) return "—";
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? cleanText(value) : d.toLocaleString();
+}
+
+function extractCropId(listing: CropMarketplaceListing) {
+  if (typeof listing.crop_id === "number") return listing.crop_id;
+  if (typeof listing.crop === "number") return listing.crop;
+  if (listing.crop && typeof listing.crop === "object" && typeof listing.crop.crop_id === "number") {
+    return listing.crop.crop_id;
+  }
+  return null;
+}
+
 export default function ManageCrops() {
   const [crops, setCrops] = useState<CropApi[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<CropCategoryFilter>("all");
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedCrop, setSelectedCrop] = useState<CropApi | null>(null);
+  const [relatedListings, setRelatedListings] = useState<CropMarketplaceListing[]>([]);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewError, setViewError] = useState("");
 
   const fetchCrops = async () => {
     setLoading(true);
@@ -59,17 +114,23 @@ export default function ManageCrops() {
     });
   }, [crops, search, categoryFilter]);
 
-  const handleDelete = async (cropId: number) => {
-    const ok = window.confirm("Delete this crop?");
-    if (!ok) return;
-
+  const openViewModal = async (crop: CropApi) => {
+    setSelectedCrop(crop);
+    setRelatedListings([]);
+    setViewError("");
+    setViewOpen(true);
+    setViewLoading(true);
     try {
+      const res = await api.get("/marketplace/marketplace/");
+      const data = Array.isArray(res.data) ? res.data : res.data?.results ?? [];
+      const listings = (Array.isArray(data) ? data : []) as CropMarketplaceListing[];
 
-      await api.delete(`/crops/${cropId}/`);
-      setCrops((prev) => prev.filter((c) => c.crop_id !== cropId));
+      setRelatedListings(listings.filter((listing) => extractCropId(listing) === crop.crop_id));
     } catch (err) {
-      console.error("Delete failed:", err);
-      alert("Delete failed. Check permissions / token.");
+      console.error("Failed to load crop listings:", err);
+      setViewError("Failed to load related crop listings.");
+    } finally {
+      setViewLoading(false);
     }
   };
 
@@ -144,11 +205,11 @@ export default function ManageCrops() {
                     <td className="py-3 px-4 font-semibold text-blue-600">{crop.maha_quantity || 0}</td>
                     <td className="py-3 px-4">
                       <button
-                        onClick={() => handleDelete(crop.crop_id)}
-                        className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded"
-                        title="Delete"
+                        onClick={() => openViewModal(crop)}
+                        className="text-emerald-600 hover:bg-emerald-200 p-2 hover:text-emerald-800 rounded"
+                        title="View details"
                       >
-                        <Trash2 size={16} />
+                        <Eye size={16} />
                       </button>
                     </td>
                   </tr>
@@ -167,6 +228,100 @@ export default function ManageCrops() {
           </div>
         )}
       </div>
+
+      <Dialog.Root open={viewOpen} onOpenChange={setViewOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[96vw] max-w-6xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between mb-4 gap-3">
+              <div>
+                <Dialog.Title className="text-xl font-bold">Crop Listings View</Dialog.Title>
+                <Dialog.Description className="text-sm text-gray-500">
+                  {selectedCrop
+                    ? `${selectedCrop.crop_name} (ID: ${selectedCrop.crop_id})`
+                    : "Related crop listing details"}
+                </Dialog.Description>
+              </div>
+              <Dialog.Close className="p-2 rounded-lg hover:bg-gray-100">✕</Dialog.Close>
+            </div>
+
+            {viewLoading ? (
+              <p className="text-gray-500">Loading related listings...</p>
+            ) : viewError ? (
+              <p className="text-red-600">{viewError}</p>
+            ) : relatedListings.length === 0 ? (
+              <p className="text-gray-500">No related listings found for this crop.</p>
+            ) : (
+              <div className="overflow-x-auto border rounded-lg">
+                <table className="w-full min-w-[1400px] text-sm">
+                  <thead>
+                    <tr className="border-b bg-gray-50 text-gray-700">
+                      <th className="text-left py-3 px-3">Market ID</th>
+                      <th className="text-left py-3 px-3">Farmer ID</th>
+                      <th className="text-left py-3 px-3">Crop ID</th>
+                      <th className="text-left py-3 px-3">Price</th>
+                      <th className="text-left py-3 px-3">Unit</th>
+                      <th className="text-left py-3 px-3">Quantity</th>
+                      <th className="text-left py-3 px-3">Predicted Date</th>
+                      <th className="text-left py-3 px-3">Status</th>
+                      <th className="text-left py-3 px-3">Method</th>
+                      <th className="text-left py-3 px-3">Season</th>
+                      <th className="text-left py-3 px-3">Region</th>
+                      <th className="text-left py-3 px-3">District</th>
+                      <th className="text-left py-3 px-3">Details</th>
+                      <th className="text-left py-3 px-3">Created At</th>
+                      <th className="text-left py-3 px-3">Updated At</th>
+                      <th className="text-left py-3 px-3">Image</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {relatedListings.map((listing, index) => (
+                      <tr
+                        key={`${listing.market_id ?? "row"}-${index}`}
+                        className="border-b border-gray-100 text-gray-700 align-top"
+                      >
+                        <td className="py-3 px-3">{listing.market_id ?? "—"}</td>
+                        <td className="py-3 px-3">{listing.farmer_id ?? "—"}</td>
+                        <td className="py-3 px-3">{extractCropId(listing) ?? "—"}</td>
+                        <td className="py-3 px-3">{listing.price ?? "—"}</td>
+                        <td className="py-3 px-3">{cleanText(listing.unit)}</td>
+                        <td className="py-3 px-3">{listing.quantity ?? "—"}</td>
+                        <td className="py-3 px-3">{formatDate(listing.predicted_date)}</td>
+                        <td className="py-3 px-3">{cleanText(listing.status)}</td>
+                        <td className="py-3 px-3">{cleanText(listing.farming_method)}</td>
+                        <td className="py-3 px-3">{cleanText(listing.farming_season)}</td>
+                        <td className="py-3 px-3">{cleanText(listing.region)}</td>
+                        <td className="py-3 px-3">{cleanText(listing.district)}</td>
+                        <td className="py-3 px-3 max-w-[240px] break-words">{cleanText(listing.additional_details)}</td>
+                        <td className="py-3 px-3">{formatDateTime(listing.created_at)}</td>
+                        <td className="py-3 px-3">{formatDateTime(listing.updated_at)}</td>
+                        <td className="py-3 px-3">
+                          {cleanText(listing.image) === "—" ? (
+                            "—"
+                          ) : (
+                            <a
+                              href={listing.image || "#"}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-emerald-700 hover:text-emerald-900 underline"
+                            >
+                              Open
+                            </a>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div className="mt-5 flex justify-end">
+              <Dialog.Close className="px-4 py-2 rounded-lg border hover:bg-gray-50">Close</Dialog.Close>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }

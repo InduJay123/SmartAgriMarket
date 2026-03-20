@@ -3,6 +3,7 @@ import { Camera, Trash2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import avatar from '../../assets/avatar.svg?url'
 import { deleteBuyerProfileImage, updateBuyerProfile } from '../../api/profile';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileImageUploadProps {
   image?: string; // current image URL
@@ -10,6 +11,8 @@ interface ProfileImageUploadProps {
 }
 
 const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange }) => {
+  const { t } = useTranslation();
+
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [preview, setPreview] = useState(image || ''); // local preview
@@ -48,7 +51,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
       
     } catch (err: any) {
       console.error('Image upload failed:', err);
-      setError('Image upload failed. Please try again.');
+      setError(t('Image upload failed. Please try again.'));
     } finally {
       setUploading(false);
     }
@@ -69,7 +72,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
 
     } catch (err) {
       console.error('Failed to remove profile image:', err);
-      setError('Failed to remove image');
+      setError(t('Failed to remove image'));
     }
     setPreview('');
     onChange('');
@@ -86,7 +89,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange
       {/* Edit overlay on hover */}
       <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition">
         <label className="cursor-pointer text-white">
-            {uploading ? 'Uploading...' : <Camera size={20} />}
+            {uploading ? t('Uploading...') : <Camera size={20} />}
             <input
               type="file"
               accept="image/*"

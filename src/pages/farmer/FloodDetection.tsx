@@ -13,7 +13,6 @@ import {
   XCircle,
   Loader2,
 } from "lucide-react";
-import Header from "../../components/farmer/Header";
 import type {
   FloodPredictionInput,
   FloodPredictionResult,
@@ -25,6 +24,7 @@ import {
   getCurrentWeatherData,
   getFloodModelInfo,
 } from "../../api/farmer/floodDetection";
+import { useTranslation } from "react-i18next";
 
 const districts = [
   "Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya",
@@ -35,6 +35,9 @@ const districts = [
 ];
 
 const FloodDetection: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const isSinhala = i18n.language === "si";
+
   // Form state
   const [formData, setFormData] = useState<FloodPredictionInput>({
     district: "",
@@ -86,7 +89,7 @@ const FloodDetection: React.FC = () => {
 
   const fetchWeatherData = async () => {
     if (!formData.district) {
-      setError("Please select a district first");
+      setError(t("Please select a district first"));
       return;
     }
 
@@ -103,7 +106,7 @@ const FloodDetection: React.FC = () => {
         soil_moisture_percent: weather.soil_moisture_percent || 0,
       }));
     } catch (err) {
-      setError("Failed to fetch weather data. Please enter values manually.");
+      setError(t("Failed to fetch weather data. Please enter values manually."));
     } finally {
       setFetchingWeather(false);
     }
@@ -126,7 +129,7 @@ const FloodDetection: React.FC = () => {
 
   const handlePredict = async () => {
     if (!formData.district) {
-      setError("Please select a district");
+      setError(t("Please select a district"));
       return;
     }
 
@@ -136,9 +139,24 @@ const FloodDetection: React.FC = () => {
       const result = await predictFloodRisk(formData);
       setPredictionResult(result);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to predict flood risk. Please try again.");
+      setError(err.response?.data?.message || t("Failed to predict flood risk. Please try again."));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getRiskLabel = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case "critical":
+        return t("Critical");
+      case "high":
+        return t("High");
+      case "moderate":
+        return t("Moderate");
+      case "low":
+        return t("Low");
+      default:
+        return t("Unknown");
     }
   };
 
@@ -188,21 +206,21 @@ const FloodDetection: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen bg-gray-50 ${isSinhala ? "font-sinhala text-2xl" : "font-sans"}`}>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-2 py-8">
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-blue-100 rounded-lg">
-              <Waves className="text-blue-600" size={28} />
+              <Waves className=" text-green-700" size={28} />
             </div>
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-              Flood Detection & Anomaly Alert System
+              {t("Flood Detection & Anomaly Alert System")}
             </h1>
           </div>
           <p className="text-gray-600 ml-14">
-            AI-powered flood risk prediction to protect your crops and farm
+            {t("AI-powered flood risk prediction to protect your crops and farm")}
           </p>
         </div>
 
@@ -211,7 +229,7 @@ const FloodDetection: React.FC = () => {
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
             <div className="flex items-center gap-2 mb-3">
               <Bell className="text-red-600" size={20} />
-              <h3 className="font-semibold text-red-800">Active Flood Alerts</h3>
+              <h3 className="font-semibold text-red-800">{t("Active Flood Alerts")}</h3>
             </div>
             <div className="space-y-2">
               {activeAlerts.slice(0, 3).map((alert) => (
@@ -223,11 +241,11 @@ const FloodDetection: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <AlertTriangle className={getRiskTextColor(alert.risk_level)} size={18} />
                       <span className={`font-medium ${getRiskTextColor(alert.risk_level)}`}>
-                        {alert.district} - {alert.risk_level.toUpperCase()} Risk
+                        {t(alert.district)} - {getRiskLabel(alert.risk_level)} {t("Risk")}
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
-                      {new Date(alert.created_at).toLocaleDateString()}
+                      {new Date(alert.created_at).toLocaleDateString(i18n.language === "si" ? "si-LK" : "en-US")}
                     </span>
                   </div>
                   <p className="text-sm text-gray-700 mt-1">{alert.warning_message}</p>
@@ -242,8 +260,8 @@ const FloodDetection: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <div className="flex items-center gap-2 mb-6">
-                <Shield className="text-blue-600" size={24} />
-                <h2 className="text-xl font-semibold">Flood Risk Assessment</h2>
+                <Shield className=" text-green-700" size={24} />
+                <h2 className="text-xl font-semibold">{t("Flood Risk Assessment")}</h2>
               </div>
 
               {error && (
@@ -258,7 +276,7 @@ const FloodDetection: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <MapPin className="inline mr-1" size={16} />
-                    District
+                    {t("District")}
                   </label>
                   <select
                     name="district"
@@ -266,10 +284,10 @@ const FloodDetection: React.FC = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="">Select District</option>
+                    <option value="">{t("Select District")}</option>
                     {districts.map((d) => (
                       <option key={d} value={d}>
-                        {d}
+                        {t(d)}
                       </option>
                     ))}
                   </select>
@@ -280,14 +298,14 @@ const FloodDetection: React.FC = () => {
                   <button
                     onClick={fetchWeatherData}
                     disabled={fetchingWeather || !formData.district}
-                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-600 transition-colors   flex items-center justify-center gap-2"
                   >
                     {fetchingWeather ? (
                       <Loader2 className="animate-spin" size={18} />
                     ) : (
                       <RefreshCw size={18} />
                     )}
-                    Fetch Current Weather
+                    {t("Fetch Current Weather")}
                   </button>
                 </div>
 
@@ -295,15 +313,15 @@ const FloodDetection: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <CloudRain className="inline mr-1" size={16} />
-                    Rainfall (mm)
+                    {t("Rainfall (mm)")}
                   </label>
                   <input
                     type="number"
                     name="rainfall_mm"
                     value={formData.rainfall_mm}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., 150"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
+                    placeholder={t("e.g., 150")}
                     min="0"
                   />
                 </div>
@@ -312,15 +330,15 @@ const FloodDetection: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Waves className="inline mr-1" size={16} />
-                    River Level (m)
+                    {t("River Level (m)")}
                   </label>
                   <input
                     type="number"
                     name="river_level_m"
                     value={formData.river_level_m}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., 3.5"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
+                    placeholder={t("e.g., 3.5")}
                     min="0"
                     step="0.1"
                   />
@@ -330,15 +348,15 @@ const FloodDetection: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Droplets className="inline mr-1" size={16} />
-                    Soil Moisture (%)
+                    {t("Soil Moisture (%)")}
                   </label>
                   <input
                     type="number"
                     name="soil_moisture_percent"
                     value={formData.soil_moisture_percent}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., 80"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
+                    placeholder={t("e.g., 80")}
                     min="0"
                     max="100"
                   />
@@ -348,15 +366,15 @@ const FloodDetection: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Thermometer className="inline mr-1" size={16} />
-                    Temperature (°C)
+                    {t("Temperature (°C)")}
                   </label>
                   <input
                     type="number"
                     name="temperature_celsius"
                     value={formData.temperature_celsius}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., 28"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
+                    placeholder={t("e.g., 28")}
                     min="-10"
                     max="50"
                   />
@@ -366,15 +384,15 @@ const FloodDetection: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Wind className="inline mr-1" size={16} />
-                    Humidity (%)
+                    {t("Humidity (%)")}
                   </label>
                   <input
                     type="number"
                     name="humidity_percent"
                     value={formData.humidity_percent}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., 85"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
+                    placeholder={t("e.g., 85")}
                     min="0"
                     max="100"
                   />
@@ -384,15 +402,15 @@ const FloodDetection: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <TrendingUp className="inline mr-1" size={16} />
-                    Elevation (m)
+                    {t("Elevation (m)")}
                   </label>
                   <input
                     type="number"
                     name="elevation_m"
                     value={formData.elevation_m}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., 50"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
+                    placeholder={t("e.g., 50")}
                     min="0"
                   />
                 </div>
@@ -400,17 +418,17 @@ const FloodDetection: React.FC = () => {
                 {/* Drainage Quality */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Drainage Quality
+                    {t("Drainage Quality")}
                   </label>
                   <select
                     name="drainage_quality"
                     value={formData.drainage_quality}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
                   >
-                    <option value="poor">Poor</option>
-                    <option value="moderate">Moderate</option>
-                    <option value="good">Good</option>
+                    <option value="poor">{t("Poor")}</option>
+                    <option value="moderate">{t("Moderate")}</option>
+                    <option value="good">{t("Good")}</option>
                   </select>
                 </div>
 
@@ -422,10 +440,10 @@ const FloodDetection: React.FC = () => {
                       name="previous_flood_history"
                       checked={formData.previous_flood_history}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                     />
                     <span className="text-sm font-medium text-gray-700">
-                      This area has experienced flooding in the past
+                      {t("This area has experienced flooding in the past")}
                     </span>
                   </label>
                 </div>
@@ -435,17 +453,17 @@ const FloodDetection: React.FC = () => {
               <button
                 onClick={handlePredict}
                 disabled={loading || !formData.district}
-                className="mt-6 w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold"
+                className="mt-6 w-full px-6 py-3 bg-gradient-to-r from-green-800 to-green-900 text-white rounded-lg hover:from-green-700 hover:to-green-600 transition-all   flex items-center justify-center gap-2 font-semibold"
               >
                 {loading ? (
                   <>
                     <Loader2 className="animate-spin" size={20} />
-                    Analyzing Risk...
+                    {t("Analyzing Risk...")}
                   </>
                 ) : (
                   <>
                     <Shield size={20} />
-                    Predict Flood Risk
+                    {t("Predict Flood Risk")}
                   </>
                 )}
               </button>
@@ -455,35 +473,35 @@ const FloodDetection: React.FC = () => {
             {predictionResult && (
               <div className={`mt-6 bg-white rounded-xl shadow-lg p-6 border-l-4 ${getRiskColor(predictionResult.risk_level)}`}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-semibold">Prediction Results</h3>
+                  <h3 className="text-xl font-semibold">{t("Prediction Results")}</h3>
                   <span
                     className={`px-4 py-1 rounded-full text-white font-semibold ${getRiskColor(predictionResult.risk_level)}`}
                   >
-                    {predictionResult.risk_level.toUpperCase()} RISK
+                    {getRiskLabel(predictionResult.risk_level)} {t("RISK")}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Risk Score</p>
+                    <p className="text-sm text-gray-600">{t("Risk Score")}</p>
                     <p className="text-3xl font-bold text-gray-900">
                       {predictionResult.risk_score.toFixed(1)}
                     </p>
-                    <p className="text-xs text-gray-500">out of 100</p>
+                    <p className="text-xs text-gray-500">{t("out of 100")}</p>
                   </div>
                   <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Probability</p>
+                    <p className="text-sm text-gray-600">{t("Probability")}</p>
                     <p className="text-3xl font-bold text-gray-900">
                       {(predictionResult.probability * 100).toFixed(1)}%
                     </p>
-                    <p className="text-xs text-gray-500">likelihood</p>
+                    <p className="text-xs text-gray-500">{t("likelihood")}</p>
                   </div>
                   <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Predicted Date</p>
+                    <p className="text-sm text-gray-600">{t("Predicted Date")}</p>
                     <p className="text-lg font-bold text-gray-900">
-                      {predictionResult.predicted_date || "N/A"}
+                      {predictionResult.predicted_date || t("N/A")}
                     </p>
-                    <p className="text-xs text-gray-500">if conditions persist</p>
+                    <p className="text-xs text-gray-500">{t("if conditions persist")}</p>
                   </div>
                 </div>
 
@@ -501,7 +519,7 @@ const FloodDetection: React.FC = () => {
                 <div className="mb-4">
                   <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
                     <CheckCircle className="text-green-600" size={18} />
-                    Recommendations
+                    {t("Recommendations")}
                   </h4>
                   <ul className="space-y-2">
                     {predictionResult.recommendations.map((rec, idx) => (
@@ -518,7 +536,7 @@ const FloodDetection: React.FC = () => {
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
                       <Info className="text-orange-600" size={18} />
-                      Potentially Affected Crops
+                      {t("Potentially Affected Crops")}
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {predictionResult.affected_crops.map((crop, idx) => (
@@ -542,88 +560,88 @@ const FloodDetection: React.FC = () => {
             <div className="bg-white rounded-xl shadow-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Info className="text-blue-600" size={20} />
-                <h3 className="font-semibold">AI Model Info</h3>
+                <h3 className="font-semibold">{t("AI Model Info")}</h3>
               </div>
               {modelInfo ? (
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Model Type:</span>
-                    <span className="font-medium">{modelInfo.model_type || "Random Forest"}</span>
+                    <span className="text-gray-600">{t("Model Type:")}</span>
+                    <span className="font-medium">{modelInfo.model_type || t("Random Forest")}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Accuracy:</span>
+                    <span className="text-gray-600">{t("Accuracy:")}</span>
                     <span className="font-medium text-green-600">
                       {modelInfo.accuracy || "94.2%"}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Last Updated:</span>
+                    <span className="text-gray-600">{t("Last Updated:")}</span>
                     <span className="font-medium">{modelInfo.last_updated || "2026-01-15"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Data Points:</span>
+                    <span className="text-gray-600">{t("Data Points:")}</span>
                     <span className="font-medium">{modelInfo.data_points || "50,000+"}</span>
                   </div>
                 </div>
               ) : (
-                <div className="text-sm text-gray-500">Loading model info...</div>
+                <div className="text-sm text-gray-500">{t("Loading model info...")}</div>
               )}
             </div>
 
             {/* Risk Level Guide */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="font-semibold mb-4">Risk Level Guide</h3>
+              <h3 className="font-semibold mb-4">{t("Risk Level Guide")}</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 rounded-full bg-green-500"></div>
                   <div>
-                    <p className="font-medium text-sm">Low Risk (0-25)</p>
-                    <p className="text-xs text-gray-500">Normal conditions</p>
+                    <p className="font-medium text-sm">{t("Low Risk (0-25)")}</p>
+                    <p className="text-xs text-gray-500">{t("Normal conditions")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
                   <div>
-                    <p className="font-medium text-sm">Moderate Risk (26-50)</p>
-                    <p className="text-xs text-gray-500">Monitor conditions</p>
+                    <p className="font-medium text-sm">{t("Moderate Risk (26-50)")}</p>
+                    <p className="text-xs text-gray-500">{t("Monitor conditions")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 rounded-full bg-orange-500"></div>
                   <div>
-                    <p className="font-medium text-sm">High Risk (51-75)</p>
-                    <p className="text-xs text-gray-500">Take precautions</p>
+                    <p className="font-medium text-sm">{t("High Risk (51-75)")}</p>
+                    <p className="text-xs text-gray-500">{t("Take precautions")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 rounded-full bg-red-600"></div>
                   <div>
-                    <p className="font-medium text-sm">Critical Risk (76-100)</p>
-                    <p className="text-xs text-gray-500">Immediate action required</p>
+                    <p className="font-medium text-sm">{t("Critical Risk (76-100)")}</p>
+                    <p className="text-xs text-gray-500">{t("Immediate action required")}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Quick Tips */}
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
-              <h3 className="font-semibold text-blue-800 mb-3">Quick Tips</h3>
-              <ul className="space-y-2 text-sm text-blue-700">
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+              <h3 className="font-semibold  text-green-700 mb-3">{t("Quick Tips")}</h3>
+              <ul className="space-y-2 text-sm text-green-700">
                 <li className="flex items-start gap-2">
                   <span>💡</span>
-                  <span>Check predictions regularly during monsoon season</span>
+                  <span>{t("Check predictions regularly during monsoon season")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span>📱</span>
-                  <span>Enable alerts for your district</span>
+                  <span>{t("Enable alerts for your district")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span>🌾</span>
-                  <span>Plan harvesting based on flood forecasts</span>
+                  <span>{t("Plan harvesting based on flood forecasts")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span>🚜</span>
-                  <span>Prepare drainage systems before rainy season</span>
+                  <span>{t("Prepare drainage systems before rainy season")}</span>
                 </li>
               </ul>
             </div>
@@ -639,7 +657,7 @@ const FloodDetection: React.FC = () => {
               ) : (
                 <RefreshCw size={18} />
               )}
-              Refresh Alerts
+              {t("Refresh Alerts")}
             </button>
           </div>
         </div>

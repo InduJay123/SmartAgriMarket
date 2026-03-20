@@ -220,7 +220,7 @@ const AiInsights: React.FC = () => {
       setForecastData(forecasts);
     } catch (e) {
       console.error(e);
-      setError("Failed to generate forecast. Using simulated data.");
+      setError(t("Failed to generate forecast. Using simulated data."));
       generateSimulatedForecast();
     } finally {
       setIsLoading(false);
@@ -278,7 +278,7 @@ const predictYieldForecast = async (payload: {
       setYieldChart(chart);
     } catch (e) {
       console.error(e);
-      setError("Failed to predict yield. Please check your connection.");
+      setError(t("Failed to predict yield. Please check your connection."));
       // keep preview so UI still looks good
       buildYieldPreview(yieldMonths, selectedCrop);
     } finally {
@@ -510,7 +510,7 @@ const predictYieldForecast = async (payload: {
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  Processing...
+                  {t("Processing...")}
                 </>
               ) : (
                 <>
@@ -533,7 +533,7 @@ const predictYieldForecast = async (payload: {
                   <div>
                     <p className="text-sm text-gray-500">{t("Predicted Price")}</p>
                     <p className="text-2xl font-bold text-green-600">Rs. {priceResult.predicted_price?.toFixed(2) || "N/A"}</p>
-                    <p className="text-xs text-gray-400">per kg</p>
+                    <p className="text-xs text-gray-400">{t("per kg")}</p>
                   </div>
                   <div className="bg-green-100 p-3 rounded-full">
                     <DollarSign className="text-green-600" size={24} />
@@ -590,9 +590,9 @@ const predictYieldForecast = async (payload: {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                  <p className="text-sm text-gray-500">Trend</p>
+                  <p className="text-sm text-gray-500">{t("Trend")}</p>
                   <p className="text-2xl font-bold text-gray-800">{yieldSummary?.trend ?? "—"}</p>
-                  <p className="text-xs text-gray-400">Across {yieldMonths} months</p>
+                  <p className="text-xs text-gray-400">{t("Across {{count}} months", { count: yieldMonths })}</p>
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">

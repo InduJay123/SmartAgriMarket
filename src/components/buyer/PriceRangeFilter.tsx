@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { DollarSign } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PriceRangeFilterProps {
   priceRange: [number, number];
@@ -8,6 +9,8 @@ interface PriceRangeFilterProps {
 }
 
 function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFilterProps) {
+  const { t } = useTranslation();
+
   const [localMin, setLocalMin] = useState(priceRange[0]);
   const [localMax, setLocalMax] = useState(priceRange[1]);
 
@@ -35,7 +38,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <DollarSign size={16} className="text-gray-700" />
-        <label className="text-sm font-medium text-gray-700">Price Range</label>
+        <label className="text-sm font-medium text-gray-700">{t("Price Range")}</label>
       </div>
 
       <div className="relative pt-6 pb-2">
@@ -127,7 +130,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
 
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1">
-          <label className="block text-xs font-medium text-gray-600 mb-1">Min Price</label>
+          <label className="block text-xs font-medium text-gray-600 mb-1">{t("Min Price")}</label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">Rs.</span>
             <input
@@ -145,7 +148,7 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
         <div className="pt-5 text-gray-400">-</div>
 
         <div className="flex-1">
-          <label className="block text-xs font-medium text-gray-600 mb-1">Max Price</label>
+          <label className="block text-xs font-medium text-gray-600 mb-1">{t("Max Price")}</label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">Rs. </span>
             <input
@@ -163,9 +166,9 @@ function PriceRangeFilter({ priceRange, setPriceRange, maxPrice }: PriceRangeFil
 
       <div className="bg-green-50 rounded-lg p-3 border border-green-100">
         <p className="text-sm text-gray-700">
-          Showing products between{' '}
+          {t("Showing products between")}{' '}
           <span className="font-bold text-green-700">Rs.{localMin.toFixed(2)}</span>
-          {' '} and{' '}
+          {' '}{t("and")}{' '}
           <span className="font-bold text-green-700">Rs.{localMax.toFixed(2)}</span>
         </p>
       </div>

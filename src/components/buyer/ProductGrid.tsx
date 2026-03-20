@@ -6,12 +6,15 @@ import ProductPopup from './ProductPopup';
 import { fetchFavourites, toggleFavourite } from '../../api/favourites';
 import { getReviewSummary } from '../../api/reviews';
 import avatar from '../../assets/avatar.svg?url'
+import { useTranslation } from 'react-i18next';
 
 interface ProductGridProps {
   products: Product[];
 }
 
 function ProductGrid({ products }: ProductGridProps) {
+  const { t } = useTranslation();
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orderProduct, setOrderProduct] = useState<Product | null>(null);
   const [favourites, setFavourites] = useState<number[]>([]);
@@ -77,8 +80,8 @@ function ProductGrid({ products }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">No Products Found</h3>
-        <p className="text-gray-600">Try adjusting your filters or search query</p>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">{t("No Products Found")}</h3>
+        <p className="text-gray-600">{t("Try adjusting your filters or search query")}</p>
       </div>
     );
   }
@@ -127,13 +130,13 @@ function ProductGrid({ products }: ProductGridProps) {
             <p className="text-sm">
               ⭐ {productRatings[product.market_id]?.avg ?? 0}
               <span className="text-gray-500 ml-1">
-                ({productRatings[product.market_id]?.total ?? 0} reviews)
+                ({productRatings[product.market_id]?.total ?? 0} {t("reviews")})
               </span>
             </p>
 
             {product.quantity < 20 && (
               <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                Low Stock
+                {t("Low Stock")}
               </div>
             )}
           </div>
@@ -160,7 +163,7 @@ function ProductGrid({ products }: ProductGridProps) {
             </div>
             <div className="flex flex-wrap items-center justify-between mb-3">
               <span className="text-md font-bold text-gray-600">
-                Available:{' '}
+                {t("Available")}: {' '}
                 <span className="font-bold text-xl text-green-900">
                   {product.quantity}/{product.unit}
                 </span>
@@ -180,7 +183,7 @@ function ProductGrid({ products }: ProductGridProps) {
                 }`}
               >
                 <Eye size={18} />
-                {product.quantity === 0 ? 'Out of Stock' : 'View'}    
+                {product.quantity === 0 ? t('Out of Stock') : t('View')}
               </button>
               {/*<button               
                 disabled={product.quantity === 0}

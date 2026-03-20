@@ -48,7 +48,7 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
 
     if (error) {
       console.error("Supabase upload error:", error.message);
-      alert("Failed to upload image: " + error.message);
+      alert(`${t("Failed to upload image:")} ${error.message}`);
       setUploading(false);
       return;
     }
@@ -74,8 +74,8 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
               onChange={(e) => setFormData({ ...formData, region: e.target.value, district: "" })}
               className="w-full border px-4 py-1 rounded-xl"
             >
-              <option value="" disabled>Select province...</option>
-              {regions.map(region => <option key={region.value} value={region.value}>{region.label}</option>)}
+              <option value="" disabled>{t("Select province...")}</option>
+              {regions.map(region => <option key={region.value} value={region.value}>{t(region.label)}</option>)}
             </select>
           </div>
 
@@ -87,8 +87,8 @@ const AddLocation: React.FC<LocationProps> = ({ formData, setFormData }) => {
               className="w-full border px-4 py-1 rounded-xl"
               disabled={!formData.region}
             >
-              <option value="" disabled>Select district...</option>
-              {selectedRegion?.districts.map(d => <option key={d} value={d.toLowerCase()}>{d}</option>)}
+              <option value="" disabled>{t("Select district...")}</option>
+              {selectedRegion?.districts.map(d => <option key={d} value={d.toLowerCase()}>{t(d)}</option>)}
             </select>
           </div>
         </div>

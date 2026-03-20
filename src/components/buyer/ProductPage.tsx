@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import ProductGrid from "./ProductGrid";
 import PriceRangeFilter from "./PriceRangeFilter";
 import type { Product } from "../../@types/Product";
+import { useTranslation } from "react-i18next";
 
 interface ProductPageProps {
   products: Product[];
@@ -10,6 +11,8 @@ interface ProductPageProps {
 }
 
 function ProductPage({ products, addToCart, loading }: ProductPageProps) {
+  const { t } = useTranslation();
+
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
 
   const maxPrice = useMemo(() => {
@@ -31,7 +34,7 @@ function ProductPage({ products, addToCart, loading }: ProductPageProps) {
     return (
       <div className="flex items-center justify-center min-h-[50vh] flex-col">
         <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-gray-600">Loading products...</p>
+        <p className="mt-4 text-gray-600">{t("Loading products...")}</p>
       </div>
     );
   }

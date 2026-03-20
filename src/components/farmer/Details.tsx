@@ -18,9 +18,9 @@ const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
         const month = date.getMonth() + 1; 
 
         if (month >= 5 && month <= 8) {
-            return "Yala";
+            return t("Yala");
         } else {
-            return "Maha";
+            return t("Maha");
         }
     };
 
@@ -47,9 +47,9 @@ const Details: React.FC<DetailsProps> = ({ formData, setFormData }) => {
                                 value={ formData.unit ?? "kg" }
                                 onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                                 className="text-gray-700 bg-gray-50 border rounded-xl px-4 py-1">
-                                <option value="kg"> kg </option>
-                                <option value="tons"> tons </option>
-                                <option value="units"> units </option>               
+                                <option value="kg"> {t("kg")} </option>
+                                <option value="tons"> {t("tons")} </option>
+                                <option value="units"> {t("units")} </option>               
                             </select>
                         </div>                        
                     </div>

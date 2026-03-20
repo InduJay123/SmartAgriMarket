@@ -8,8 +8,7 @@ import { useTranslation } from "react-i18next";
 
 const CommunityChat = () => {
 
-  const { t, i18n } = useTranslation();
-  const isSinhala = i18n.language === "si";
+  const { t } = useTranslation();
 
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [text, setText] = useState("");
@@ -98,14 +97,14 @@ const CommunityChat = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          placeholder={isSinhala ? "කෘෂකරු සමාජයට ලියන්න..." : "Write something to the farmers community..."}
+          placeholder={t("Write something to the farmers community...")}
           onKeyDown={(e) => e.key === "Enter" && onSend()}
         />
         <button
           onClick={onSend}
           className="bg-green-600 hover:bg-green-700 text-white px-5 rounded-full"
         >
-          Send
+          {t("Send")}
         </button>
       </div>
     </div>

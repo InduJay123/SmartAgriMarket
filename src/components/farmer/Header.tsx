@@ -37,7 +37,7 @@ const Header:React.FC <HeaderProps>= ({
                 <div className="flex flex-wrap items-center gap-6">
                     <User/>
                     <div className="flex flex-col items-start justify-start gap-2">
-                        <h1 className="font-extrabold text-3xl"> {t("Welcome back, {name}", { name: farmer?.first_name })} </h1>                         
+                        <h1 className="font-extrabold text-3xl"> {t("Welcome back, {{name}}", { name: farmer?.first_name || "Farmer" })} </h1>
                         <p className="text-xs text-gray-400"> {t("Here's what's happening with your farm today")} </p>
                     </div>
                 </div>                    

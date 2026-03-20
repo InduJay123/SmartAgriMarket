@@ -3,6 +3,7 @@ import { Camera, Trash2 } from "lucide-react";
 import placeholder from "../../assets/avatar.avif";
 import { supabase } from "../../lib/supabase";
 import { updateCrop } from "../../api/farmer/marketplace";
+import { useTranslation } from "react-i18next";
 
 const BUCKET = "marketplace";
 
@@ -17,6 +18,8 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
   image,
   onChange,
 }) => {
+  const { t } = useTranslation();
+
   const [preview, setPreview] = useState(image || "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -55,7 +58,7 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
       });
     } catch (err) {
       console.error(err);
-      setError("Image upload failed");
+      setError(t("Image upload failed"));
     } finally {
       setUploading(false);
     }
@@ -76,7 +79,7 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
       onChange(null);
     } catch (err) {
       console.error(err);
-      setError("Failed to remove image");
+      setError(t("Failed to remove image"));
     }
   };
 
@@ -90,7 +93,7 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
 
       <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition">
         <label className="cursor-pointer text-white">
-          {uploading ? "Uploading..." : <Camera size={20} />}
+          {uploading ? t("Uploading...") : <Camera size={20} />}
           <input
             type="file"
             accept="image/*"

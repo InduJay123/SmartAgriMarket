@@ -65,22 +65,22 @@ const Pricing: React.FC<PricingProps> = ({
           <p className="text-gray-600 text-sm">{t("Market Average")}</p>
 
           <p className="text-lg font-semibold text-green-800">
-            {loading ? "Loading..." : averagePrice !== null ? `Rs. ${averagePrice}` : "Rs. --"}
+            {loading ? t("Loading...") : averagePrice !== null ? `Rs. ${averagePrice}` : t("Rs. --")}
           </p>
         </div>
 
         <div className="border rounded-xl p-3 hover:border-green-700">
           <p className="text-gray-600 text-sm">{t("Your Price")}</p>
           <p className="text-lg font-semibold text-green-800">
-            {formData.pricePerKg ? `Rs. ${formData.pricePerKg}` : "Rs. --"}
+            {formData.pricePerKg ? `Rs. ${formData.pricePerKg}` : t("Rs. --")}
           </p>
         </div>
 
         <div className="border rounded-xl p-3 hover:border-green-700">
-          <p className="text-gray-600 text-sm">Premium Price</p>
+          <p className="text-gray-600 text-sm">{t("Premium Price")}</p>
 
           <p className="text-lg font-semibold text-green-800">
-            {loading ? "Loading..." : premiumPrice !== null ? `Rs. ${premiumPrice}` : "Rs. --"}
+            {loading ? t("Loading...") : premiumPrice !== null ? `Rs. ${premiumPrice}` : t("Rs. --")}
           </p>
         </div>
       </div>

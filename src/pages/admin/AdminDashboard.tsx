@@ -22,6 +22,7 @@ import TopCard from "../../components/admin/TopCard";
 import { useEffect, useState } from "react";
 import api from "../../api/api"; 
 
+
 interface PriceData {
   crop: string;
   price: number;
@@ -32,17 +33,22 @@ interface SupplyData {
   supply: number;
 }
 
+const mockSupply: SupplyData[] = [
+  { crop: "Potato", supply: 640 },
+  { crop: "Tomato", supply: 420 },
+  { crop: "Carrot", supply: 300 },
+];
+
 const AdminDashboard: React.FC = () => {
   const [farmers, setFarmers] = useState(0);
   const [pendingApprovals, setPendingApprovals] = useState(0);
   const [buyers, setBuyers] = useState(0);
   const [crops, setCrops] = useState(0);
 
-  // ✅ REAL DATA STATES (NO MOCK)
   const [priceData, setPriceData] = useState<PriceData[]>([]);
-  const [supplyData, setSupplyData] = useState<SupplyData[]>([]);
+  const [supplyData, setSupplyData] = useState<SupplyData[]>(mockSupply); 
 
-  // ---------------- STATS ----------------
+
   const fetchDashboardStats = async () => {
     try {
       const res = await api.get("/dashboard/admin/dashboard-stats/");
@@ -70,17 +76,38 @@ const AdminDashboard: React.FC = () => {
       }));
 
       setPriceData(mapped);
-
     } catch (err) {
       console.error("Price chart error", err);
       setPriceData([]);
     }
   };
 
-  // ---------------- LOAD ----------------
+  // ---------------- SUPPLY CHART ----------------
+  const fetchSupplyChart = async () => {
+    try {
+      const res = await api.get("/dashboard/admin/supply-chart/");
+
+      const labels = res.data?.labels || [];
+      const values = res.data?.values || [];
+
+      const mapped = labels.map((label: string, i: number) => ({
+        crop: label,
+        supply: Number(values[i] ?? 0),
+      }));
+
+      if (mapped.length > 0) {
+        setSupplyData(mapped);
+      }
+    } catch (err) {
+      console.error("Supply chart error", err);
+      setSupplyData(mockSupply); // fallback
+    }
+  };
+
   useEffect(() => {
     fetchDashboardStats();
     fetchPriceChart();
+    fetchSupplyChart(); 
   }, []);
 
   const stats = [
@@ -116,7 +143,6 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 pr-28">
-
       {/* TOP CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((s, i) => (
@@ -133,16 +159,13 @@ const AdminDashboard: React.FC = () => {
 
       {/* CHARTS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-        {/* 🔥 PRICE CHART (REAL DATA) */}
+        {/* PRICE CHART */}
         <div className="bg-white p-4 rounded-xl shadow">
           <h3 className="mb-4 text-lg font-semibold">
             Crop Price Overview
           </h3>
-
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={priceData}>
-
               <defs>
                 <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#16a34a" stopOpacity={0.8} />
@@ -150,16 +173,11 @@ const AdminDashboard: React.FC = () => {
                   <stop offset="100%" stopColor="#ffffff" stopOpacity={0.05} />
                 </linearGradient>
               </defs>
-
               <CartesianGrid strokeDasharray="3 3" />
-
-              {/* 🔥 CHANGED FROM month → crop */}
               <XAxis dataKey="crop" />
-
               <YAxis />
               <Tooltip />
               <Legend />
-
               <Area
                 type="monotone"
                 dataKey="price"
@@ -172,12 +190,9 @@ const AdminDashboard: React.FC = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* SUPPLY CHART (OPTIONAL STATIC) */}
+        {/* SUPPLY CHART */}
         <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="mb-4 text-lg font-semibold">
-            Supply by Crop
-          </h3>
-
+          <h3 className="mb-4 text-lg font-semibold">Supply by Crop</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={supplyData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -189,7 +204,6 @@ const AdminDashboard: React.FC = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
-
       </div>
     </div>
   );

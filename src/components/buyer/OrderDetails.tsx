@@ -1,15 +1,16 @@
 import { X, Calendar, User, Phone, MapPin, Package, Dot } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   order: any;
   onClose: () => void;
 };
 
-const formatDateTime = (dateString: string) => {
+const formatDateTime = (dateString: string, locale: string) => {
   const date = new Date(dateString);
 
   const day = date.getDate();
-  const month = date.toLocaleString('en-US', { month: 'long' });
+  const month = date.toLocaleString(locale === "si" ? "si-LK" : "en-US", { month: 'long' });
   const year = date.getFullYear();
 
   let hours = date.getHours();
@@ -23,13 +24,15 @@ const formatDateTime = (dateString: string) => {
 
 
 export default function OrderDetails({ order, onClose }: Props) {
+  const { t, i18n } = useTranslation();
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
       <div className="bg-white w-full max-w-3xl rounded-xl shadow-lg overflow-y-auto max-h-[90vh]">
 
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-lg font-semibold">Order Details</h2>
+          <h2 className="text-lg font-semibold">{t("Order Details")}</h2>
           <button onClick={onClose}>
             <X className="text-gray-500 hover:text-black" />
           </button>
@@ -39,9 +42,9 @@ export default function OrderDetails({ order, onClose }: Props) {
         <div className="px-6 py-2 text-xs text-gray-500 flex gap-2">
           <div className="flex items-center gap-2">
             <Calendar size={16} />
-             Order ID: ORD-{order.order_id}
+             {t("Order ID")}: ORD-{order.order_id}
             <Dot/>
-            {formatDateTime(order.created_at)}
+            {formatDateTime(order.created_at, i18n.language)}
           </div>
           <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
             {order.status}
@@ -51,7 +54,7 @@ export default function OrderDetails({ order, onClose }: Props) {
         {/* Product Details */}
         <div className="px-6 py-2 bg-blue-50/40 m-4 rounded-md">
           <h3 className="font-semibold flex items-center gap-2">
-            <Package size={18} className="text-green-600"/> Product Details
+            <Package size={18} className="text-green-600"/> {t("Product Details")}
           </h3>
 
           <div className="flex gap-4 bg-gray-50 p-4 rounded-lg">
@@ -62,11 +65,11 @@ export default function OrderDetails({ order, onClose }: Props) {
             />
 
             <div className="space-y-1">
-              <p className="font-bold text-lg">Product: {order.product_name}</p>
+              <p className="font-bold text-lg">{t("Product")}: {order.product_name}</p>
               <p className="text-sm text-gray-600">
-                Sold by: <span className="font-semibold">{order.farmer_name}</span>
+                {t("Sold by")}: <span className="font-semibold">{order.farmer_name}</span>
               </p>
-              <p className="text-sm">Quantity: {order.quantity} </p>
+              <p className="text-sm">{t("Quantity")}: {order.quantity} </p>
               <p className="text-green-600 font-bold">
                 Rs. {order.price_at_order}
               </p>
@@ -77,7 +80,7 @@ export default function OrderDetails({ order, onClose }: Props) {
         {/* Delivery Details */}
         <div className="px-6 py-4">
           <h3 className="font-semibold mb-3 flex items-center gap-2">
-            <MapPin size={18} /> Delivery Details
+            <MapPin size={18} /> {t("Delivery Details")}
           </h3>
 
           <div className="space-y-3 bg-gray-50 p-4 rounded-lg text-sm">

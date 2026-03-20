@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Star } from "lucide-react";
 import { getReviews, getReviewSummary } from "../../api/reviews";
+import { useTranslation } from "react-i18next";
 
 interface Review {
   id: number;
@@ -17,6 +18,8 @@ interface ReviewPopupProps {
 }
 
 const ReviewPopup = ({ productId, onClose }: ReviewPopupProps) => {
+  const { t, i18n } = useTranslation();
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [avg, setAvg] = useState(0);
   const [total, setTotal] = useState(0);
@@ -45,7 +48,7 @@ const ReviewPopup = ({ productId, onClose }: ReviewPopupProps) => {
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-xl">Loading reviews...</div>
+        <div className="bg-white p-6 rounded-xl">{t("Loading reviews...")}</div>
       </div>
     );
   }
@@ -60,15 +63,15 @@ const ReviewPopup = ({ productId, onClose }: ReviewPopupProps) => {
         </button>
 
         {/* Header */}
-        <h2 className="text-xl font-bold mb-1">Product Reviews</h2>
+        <h2 className="text-xl font-bold mb-1">{t("Product Reviews")}</h2>
         <p className="text-sm text-gray-600 mb-4">
-          ⭐ {avg} average · {total} reviews
+          ⭐ {avg} {t("average")} · {total} {t("reviews")}
         </p>
 
         {/* Reviews */}
         <div className="space-y-4 max-h-[400px] overflow-y-auto">
           {reviews.length === 0 && (
-            <p className="text-gray-500 text-sm">No reviews yet</p>
+            <p className="text-gray-500 text-sm">{t("No reviews yet")}</p>
           )}
 
           {reviews.map((review) => (
@@ -99,7 +102,7 @@ const ReviewPopup = ({ productId, onClose }: ReviewPopupProps) => {
 
               <p className="text-sm text-gray-700">{review.comment}</p>
               <p className="text-xs text-gray-400 mt-1">
-                {new Date(review.created_at).toLocaleDateString()}
+                {new Date(review.created_at).toLocaleDateString(i18n.language === "si" ? "si-LK" : "en-US")}
               </p>
             </div>
           ))}

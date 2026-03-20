@@ -3,6 +3,7 @@ import { Camera, Trash2 } from 'lucide-react';
 import avatar from '../../assets/avatar.avif';
 import { deleteFarmerProfileImage, updateFarmerProfile } from '../../api/farmer/farmerProfile';
 import { supabase } from '../../lib/supabase';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileImageUploadProps {
   image?: string; 
@@ -10,6 +11,8 @@ interface ProfileImageUploadProps {
 }
 
 const FarmerProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, onChange }) => {
+  const { t } = useTranslation();
+
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [preview, setPreview] = useState(image || '');
@@ -49,7 +52,7 @@ const FarmerProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, on
       await updateFarmerProfile( { profile_image: publicUrl });
     } catch (err: any) {
         console.error('Image upload failed:', err);
-        setError('Image upload failed. Please try again.');
+        setError(t('Image upload failed. Please try again.'));
     } finally {
       setUploading(false);
     }
@@ -70,7 +73,7 @@ const FarmerProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, on
 
     } catch (err) {
       console.error('Failed to remove profile image:', err);
-      setError('Failed to remove image');
+      setError(t('Failed to remove image'));
     }
   };
 
@@ -86,7 +89,7 @@ const FarmerProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ image, on
       {/* Edit overlay on hover */}
       <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition">
         <label className="cursor-pointer text-white">
-          {uploading ? 'Uploading...' : <Camera size={20} />}
+          {uploading ? t('Uploading...') : <Camera size={20} />}
           <input
             type="file"
             accept="image/*"

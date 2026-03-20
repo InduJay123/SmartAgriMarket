@@ -90,14 +90,14 @@ const FarmerProfileInfo:React.FC = () => {
                 harvest_rem: formData.harvest_rem,
                 market_update: formData.market_update,
             });
-            alert("Profile updated successfully");
+            alert(t("Profile updated successfully"));
         } catch (error) {
             console.error("Update failed", error);
         }
     };
 
     if (loading) {
-        return <p className="text-center">Loading profile...</p>;
+        return <p className="text-center">{t("Loading profile...")}</p>;
     }
 
 

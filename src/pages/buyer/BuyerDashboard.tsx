@@ -22,7 +22,6 @@ function BuyerDashboard() {
   const [showCart, setShowCart] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
     const getProducts = async () => {
@@ -36,7 +35,7 @@ function BuyerDashboard() {
         setProducts(normalizedData);
       } catch (err) {
         console.error(err);
-        setError("Failed to load products. Please try again later.");
+        setError(t("Failed to load products. Please try again later."));
       } finally {
         setLoading(false);
       }
@@ -119,7 +118,7 @@ function BuyerDashboard() {
         <div className="relative h-full flex flex-col justify-center p-8 text-white">
           <h2 className="text-3xl font-bold mb-2">{t("Fresh From Farm")}</h2>
           <p className="text-gray-100 mb-4">{t("Get the freshest vegetables delivered to your doorstep")}</p>
-          <button className="bg-transparent border border-white text-white w-auto hover:text-green-600 hover:bg-white px-4 py-2 rounded-lg font-semibold w-fit">
+          <button className="bg-transparent border border-white text-white hover:text-green-600 hover:bg-white px-4 py-2 rounded-lg font-semibold w-fit">
            {t("Shop Now")}
           </button>
         </div>

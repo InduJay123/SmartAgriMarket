@@ -1,0 +1,21 @@
+import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://ubuntu-backend-1:8000/api";
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    console.log("Interceptor attaching token:", token ? "Token exists" : "No token found");
+    if (token && !config.url?.includes("/login/") && !config.url?.includes("/signup/")) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+export default api;

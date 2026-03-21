@@ -1,0 +1,378 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  Search,
+  Filter as FilterIcon,
+  AlertTriangle,
+  Leaf,
+  ShoppingCart,
+  Users,
+  Eye,
+  MapPin,
+} from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
+import TopCard from "../../components/admin/TopCard";
+import api from "../../api/api";
+
+interface FarmerDetails {
+  id: number;
+  role: string;
+  email?: string;
+  username?: string;
+  fullname?: string;
+  contact_number?: string;
+  region?: string;
+  farm_name?: string;
+  about?: string;
+  address?: string;
+  is_active?: boolean;
+  is_verified?: boolean;
+}
+
+type FarmerStatusFilter = "all" | "verified" | "verified" | "blocked";
+
+interface FarmerApi {
+  id: number;
+  user_id?: number;
+  email: string;
+  username: string;
+  phone: string;
+  contact_number: string;
+  region: string;
+  // role: "FARMER";
+  is_verified: boolean;
+  is_active: boolean;
+}
+
+const ManageFarmers: React.FC = () => {
+  const [verifiedFarmersCount, setVerifiedFarmersCount] = useState(0);
+  const [blockedFarmersCount, setBlockedFarmersCount] = useState(0);
+
+  const [farmers, setFarmers] = useState<FarmerApi[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [mostFarmersRegion, setMostFarmersRegion] = useState("None");
+  const [crops, setCrops] = useState(0);
+
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<FarmerStatusFilter>("all");
+
+  // View modal state
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedFarmer, setSelectedFarmer] = useState<FarmerApi | null>(null);
+  const [viewDetails, setViewDetails] = useState<FarmerDetails | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewError, setViewError] = useState("");
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+
+  const fetchDashboardStats = async () => {
+    try {
+      const res = await api.get("/auth/admin/dashboard-stats/");
+      setVerifiedFarmersCount(res.data.verified_farmers);
+      setBlockedFarmersCount(res.data.blocked_farmers || 0); // Using blocked_farmers dynamically
+      setMostFarmersRegion(res.data.most_farmers_region || "None");
+      setCrops(res.data.crops);
+    } catch (err) {
+      console.error("Dashboard stats error", err);
+    }
+  };
+
+  const fetchFarmers = async (filter: FarmerStatusFilter) => {
+    setLoading(true);
+    try {
+      const url =
+        filter === "all"
+          ? "/auth/admin/farmers/"
+          : `/auth/admin/farmers/?status=${filter}`;
+
+      const res = await api.get(url);
+
+      console.log("farmers response:", res.data);
+
+      setFarmers(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Failed to load farmers:", err);
+      setFarmers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardStats();
+    fetchFarmers("all");
+  }, []);
+
+  useEffect(() => {
+    fetchFarmers(statusFilter);
+  }, [statusFilter]);
+
+  const openViewModal = async (f: FarmerApi) => {
+    setSelectedFarmer(f);
+    setViewDetails(null);
+    setViewError("");
+    setViewOpen(true);
+    setViewLoading(true);
+    try {
+      const res = await api.get(`/auth/admin/user/${f.id}/?role=farmer`);
+      setViewDetails(res.data);
+    } catch (err: any) {
+      setViewError(err?.response?.data?.error || "Failed to load farmer details.");
+    } finally {
+      setViewLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!viewDetails) return;
+    const newStatus = e.target.value;
+    const isActive = newStatus === "verified";
+    
+    setUpdatingStatus(true);
+    try {
+      await api.put(`/auth/admin/user/${viewDetails.id}/`, {
+        is_active: isActive,
+        is_verified: isActive,
+      });
+      // Update local state
+      setViewDetails({ ...viewDetails, is_active: isActive, is_verified: isActive });
+      setFarmers(farmers.map((f) => 
+        f.id === selectedFarmer?.id ? { ...f, is_active: isActive, is_verified: isActive } : f
+      ));
+
+      // Update top card stats without fetching from the server
+      if (viewDetails.is_active !== isActive) {
+        setVerifiedFarmersCount(prev => isActive ? prev + 1 : Math.max(0, prev - 1));
+        setBlockedFarmersCount(prev => !isActive ? prev + 1 : Math.max(0, prev - 1));
+      }
+    } catch (err: any) {
+      alert("Failed to update status.");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
+  const filteredFarmers = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return farmers;
+    return farmers.filter((f) => {
+      const name = (f.username || f.email || "").toLowerCase();
+      const email = (f.email || "").toLowerCase();
+      return name.includes(q) || email.includes(q);
+    });
+  }, [farmers, search]);
+
+  const getDisplayName = (f: FarmerApi) => f.username?.trim() || f.email;
+
+  const getStatusBadge = (f: FarmerApi) => {
+    if (!f.is_active) {
+      return { text: "Blocked", cls: "bg-red-100 text-red-800" };
+    }
+    if (f.is_verified) {
+      return { text: "Verified", cls: "bg-green-100 text-green-800" };
+    }
+    return { text: "Verified", cls: "bg-green-100 text-green-800" };
+  };
+
+  const stats = [
+    {
+      title: "Verified Farmers",
+      value: verifiedFarmersCount.toString(),
+      subTitle: "",
+      icon: Users,
+      color: "text-green-300",
+      bgColor: "bg-green-50",
+    },
+    {
+      title: "Blocked Farmers",
+      value: blockedFarmersCount.toString(),
+      subTitle: "",
+      icon: AlertTriangle,
+      color: "text-red-300",
+      bgColor: "bg-red-50",
+    },
+    {
+      title: "Top Region",
+      value: mostFarmersRegion,
+      subTitle: "",
+      icon: MapPin,
+      color: "text-blue-300",
+      bgColor: "bg-blue-50",
+    },
+    {
+      title: "Crops",
+      value: crops.toString(),
+      subTitle: "",
+      icon: Leaf,
+      color: "text-amber-900",
+      bgColor: "bg-amber-100",
+    },
+  ];
+
+  return (
+    <div className="space-y-6 pr-28">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-1">
+        {stats.map((stat, index) => (
+          <TopCard
+            key={index}
+            title={stat.title}
+            description={stat.value}
+            bottomText={stat.subTitle}
+            icon={stat.icon}
+            iconBgColor={stat.bgColor}
+            iconColor={stat.color}
+          />
+        ))}
+      </div>
+
+      <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
+          <h2 className="text-xl lg:text-2xl font-bold">Farmers Details</h2>
+
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="relative flex-1 sm:flex-initial">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search farmers..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <FilterIcon size={18} className="text-gray-500" />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as FarmerStatusFilter)}
+                className="px-4 py-2 border border-gray-300 rounded-lg bg-white"
+              >
+                <option value="all">All</option>
+                <option value="verified">Verified</option>
+                <option value="pending">Pending</option>
+                <option value="blocked">Blocked</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="py-10 text-center text-gray-500">Loading farmers...</div>
+        ) : filteredFarmers.length === 0 ? (
+          <div className="py-10 text-center text-gray-500">No farmers found.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[700px]">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-100 font-semibold text-gray-700">
+                  <th className="text-left py-3 px-4">ID</th>
+                  <th className="text-left py-3 px-4">Name</th>
+                  <th className="text-left py-3 px-4">Region</th>
+                  <th className="text-left py-3 px-4">Phone</th>
+                  <th className="text-left py-3 px-4">Status</th>
+                  <th className="text-left py-3 px-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredFarmers.map((f) => {
+                  const badge = getStatusBadge(f);
+                  return (
+                    <tr key={f.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-4 text-gray-600">#{f.id}</td>
+                      <td className="py-3 px-4 text-gray-800 font-medium">
+                        {getDisplayName(f)}
+                        <div className="text-xs text-gray-500">{f.email}</div>
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">{f.region || "Not Added"}</td>
+                      <td className="py-3 px-4 text-gray-600">{f.contact_number || "077 xxxxxxx"}</td>
+                      <td className="py-3 px-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${badge.cls}`}>
+                          {badge.text}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => openViewModal(f)}
+                          className="text-emerald-600 hover:text-emerald-800 p-2 hover:bg-emerald-200 rounded"
+                          title="View details"
+                        >
+                          <Eye size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Farmer View Modal */}
+      <Dialog.Root open={viewOpen} onOpenChange={setViewOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <Dialog.Title className="text-xl font-bold">Farmer Details</Dialog.Title>
+                <Dialog.Description className="text-sm text-gray-500">
+                  {selectedFarmer ? `${getDisplayName(selectedFarmer)} — ${selectedFarmer.email}` : ""}
+                </Dialog.Description>
+              </div>
+              <Dialog.Close className="p-2 rounded-lg hover:bg-gray-100">✕</Dialog.Close>
+            </div>
+
+            {viewLoading ? (
+              <p className="text-gray-500">Loading details...</p>
+            ) : viewError ? (
+              <p className="text-red-600">{viewError}</p>
+            ) : viewDetails ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <InfoRow label="Username" value={viewDetails.username || "—"} />
+                  <InfoRow label="Email" value={viewDetails.email || "—"} />
+                  <InfoRow label="Full Name" value={viewDetails.fullname || "—"} />
+                  <InfoRow label="Phone" value={viewDetails.contact_number || "—"} />
+                  <InfoRow label="Region" value={viewDetails.region || "—"} />
+                  <InfoRow label="Farm Name" value={viewDetails.farm_name || "—"} />
+                  <InfoRow label="About" value={viewDetails.about || "—"} />
+                  <InfoRow label="Address" value={viewDetails.address || "—"} />
+                  <div className="rounded-lg border p-3">
+                    <p className="text-xs text-gray-500">Status</p>
+                    <select
+                      className="mt-1 block w-full rounded-md border-gray-300 py-1 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm font-medium text-gray-900 break-words disabled:opacity-50"
+                      value={viewDetails.is_active ? "verified" : "disabled"}
+                      onChange={handleStatusChange}
+                      disabled={updatingStatus}
+                    >
+                      <option value="verified">Verified</option>
+                      <option value="disabled">Disabled</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500">No details available.</p>
+            )}
+
+            <div className="mt-6 flex justify-end">
+              <Dialog.Close className="px-4 py-2 rounded-lg border hover:bg-gray-50">Close</Dialog.Close>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </div>
+  );
+};
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border p-3">
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="font-medium text-gray-900 break-words">{value}</p>
+    </div>
+  );
+}
+
+export default ManageFarmers;

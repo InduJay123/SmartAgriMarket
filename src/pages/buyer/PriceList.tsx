@@ -1,0 +1,97 @@
+import { useEffect, useState } from "react";
+import { GetPriceListPDF } from "../../api/pricelist";
+import { Download, ExternalLink, Timer, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+interface PriceListItem {
+    id: number;
+    filename: string;
+    file_url: string;
+    upload_date: string;
+    uploaded_by: string | number;
+}
+
+const PriceList:React.FC = () => {
+
+    const { t, i18n } = useTranslation();
+    const isSinhala = i18n.language === "si";
+
+    const [priceLists, setPriceLists] = useState<PriceListItem[]>([]);
+
+     const formatDate = (dateString?: string) => {
+        if (!dateString) return "";
+
+        return new Date(dateString).toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        });
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const docs = await GetPriceListPDF(); // docs is now always an array
+            setPriceLists(docs);
+        };
+        fetchData();
+    }, []);
+    const handleDownload = (url: string, filename: string) => {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    return(
+        <div className={`px-8 pt-2 pb-8 ${isSinhala ? "font-sinhala" : "font-sans"}`}>
+            <h1 className="text-4xl text-black font-bold px-4 py-2">🏷️{t("Daily Price Lists")}</h1>
+            <p className="text-md text-gray-500 mb-6 px-4">{t("Access and download the latest pricing documents for your reference")}</p>
+            {priceLists.length > 0 ? (
+                <ul className="lg:h-[80vh] overflow-y-auto">
+                    {priceLists.map((doc) => (
+                        <li key={doc.id} >
+                            <div className ="border bg-white px-6 py-4 rounded-lg shadow-sm flex flex-wrap items-center justify-between mb-4">
+                                <div>
+                                    <strong className="font-semibold text-lg">{doc.filename}</strong>
+                                    <div className="flex gap-2 text-gray-500 mt-2 text-sm">
+                                        <User size={18}/>
+                                        <p>Uploaded by: {doc.uploaded_by || "Admin"}  </p>
+                                        <p className="text-sm text-gray-600">
+                                            <Timer className="inline mr-1" size={14} />
+                                            {formatDate(doc.upload_date)}
+                                        </p>
+                                    </div>
+                                </div>
+                            
+                                <div className=" flex flex-wrap gap-6">
+                                    <a href={doc.file_url} target="_blank" rel="noopener noreferrer"
+                                        className="bg-black/90 text-white/90 px-8 sm:px-4 py-2 rounded-xl hover:bg-white hover:text-black hover:border hover:border-black"
+                                    >
+                                        <div className="flex flex-wrap items-center gap-2 font-semibold">
+                                            <ExternalLink size={16}/> 
+                                           {t("View")}
+                                        </div>
+                                    </a>
+                                    <button
+                                        onClick={() => handleDownload(doc.file_url, doc.filename)}
+                                        className="bg-gray-100 px-2 py-1 border hover:bg-gray-300 rounded-xl"
+                                        title="Download"
+                                        >
+                                        <Download />
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>{t("No documents found")}</p>
+            )}
+
+        </div>
+    )
+}
+
+export default PriceList;

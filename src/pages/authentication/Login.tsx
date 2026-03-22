@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { User, Lock } from "lucide-react";
+import { User, Lock, Eye, EyeOff } from "lucide-react";
 import type { LoginFormData, UserRole } from "../../types/auth";
 import RoleSelector from "../../components/authentication/RoleSelector";
 import marketImg from "../../assets/legumes-frais-1140x510.png" 
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/auth";
 import ForgotPasswordModal from "./ForgotPassword";
-import { getFcmToken } from "../../lib/firebase-messaging";
+// import { getFcmToken } from "../../lib/firebase-messaging";
 import api from "../../api/api";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-
-
 
 interface LoginProps {
   onNavigateToSignup: () => void;
@@ -25,25 +23,27 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
   const { t, i18n } = useTranslation();
   const isSinhala = i18n.language === "si";
 
+
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
     role: "farmer",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
-    const saveFcmToken = async () => {
-      try {
-        const token = await getFcmToken();
-        if (!token) return;
+    // const saveFcmToken = async () => {
+    //   try {
+    //     const token = await getFcmToken();
+    //     if (!token) return;
 
-        await api.post("/notifications/save-token/", {
-          token,
-        });
-        console.log("FCM token saved");
-      } catch (err) {
-        console.error("Failed to save FCM token", err);
-      }
-    };
+    //     await api.post("/notifications/save-token/", {
+    //       token,
+    //     });
+    //     console.log("FCM token saved");
+    //   } catch (err) {
+    //     console.error("Failed to save FCM token", err);
+    //   }
+    // };
   
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,7 +70,7 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
     localStorage.setItem("refreshToken", response.data.refresh);
     localStorage.setItem("userRole", response.data.user.role);
     localStorage.setItem("user_id", String(response.data.user.id));
-    await saveFcmToken();
+    //await saveFcmToken();
 
     switch (response.data.user.role) {
       case "Farmer":
@@ -150,14 +150,23 @@ export default function Login({ onNavigateToSignup }: LoginProps) {
               <div className="relative">
                 <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                   placeholder="Enter your password"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none text-xs ${isSinhala ? "font-sans" : "font-sans"}`}
+                  className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-green-600 outline-none text-xs ${isSinhala ? "font-sans" : "font-sans"}`}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  tabIndex={-1}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
               {errors.password && (
                 <p className="text-red-500 text-xs mt-1">

@@ -3,11 +3,14 @@ import {
   AlertTriangle,
   ShoppingCart,
   Leaf,
+  Eye,
+  XCircle,
+  CheckCircle,
 } from "lucide-react";
 
 import {
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   BarChart,
   Bar,
   XAxis,
@@ -16,12 +19,60 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Area,
+  AreaChart,
 } from "recharts";
 
+import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
+import ActivityTable from "../../components/admin/ActivityTable";
 import { useEffect, useState } from "react";
-import api from "../../api/api"; 
+import api from "../../api/api";
 
+interface PendingUser {
+  id: number;         
+  user_id: number;    
+  email: string;
+  username: string;
+  role: string; 
+  is_verified?: boolean;
+  is_active: boolean;
+}
+
+interface UserDetails {
+  id: number;
+  role: "Farmer" | "Buyer";
+  email?: string;
+  username?: string;
+  fullname?: string;
+  contact_number?: string;
+  region?: string;
+
+  // farmer
+  farm_name?: string;
+  about?: string;
+
+  // buyer
+  company_name?: string;
+  company_email?: string;
+  company_phone?: string;
+  address?: string;
+  city?: string;
+
+  is_active?: boolean;
+}
+
+interface ActivityLogItem {
+  id: number;
+  date: string;
+  message: string;
+  user: string;
+}
+
+interface ActivityLogResponse {
+  results?: ActivityLogItem[];
+  count?: number;
+}
 
 interface PriceData {
   crop: string;
@@ -39,22 +90,34 @@ const mockSupply: SupplyData[] = [
   { crop: "Carrot", supply: 300 },
 ];
 
+  
 const AdminDashboard: React.FC = () => {
   const [farmers, setFarmers] = useState(0);
-  const [pendingApprovals, setPendingApprovals] = useState(0);
+  const [blockedFarmers, setBlockedFarmers] = useState(0);
   const [buyers, setBuyers] = useState(0);
   const [crops, setCrops] = useState(0);
 
-  const [priceData, setPriceData] = useState<PriceData[]>([]);
-  const [supplyData, setSupplyData] = useState<SupplyData[]>(mockSupply); 
+  const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
+  const [loadingPending, setLoadingPending] = useState(true);
 
+  // Modal state
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<PendingUser | null>(null);
+  const [details, setDetails] = useState<UserDetails | null>(null);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [detailsError, setDetailsError] = useState("");
+  const [priceData, setPriceData] = useState<Array<{ month: string; price: number }>>([]);
+  const [supplyData, setSupplyData] = useState<Array<{ crop: string; supply: number }>>([]);
+  const [activities, setActivities] = useState<Array<{ id: number; date: string; activity: string; user: string }>>([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
+  const [activitiesError, setActivitiesError] = useState("");
 
   const fetchDashboardStats = async () => {
     try {
       const res = await api.get("/dashboard/admin/dashboard-stats/");
 
       setFarmers(res.data.verified_farmers ?? 0);
-      setPendingApprovals(res.data.pending_approvals ?? 0);
+      //setPendingApprovals(res.data.pending_approvals ?? 0);
       setBuyers(res.data.buyers ?? 0);
       setCrops(res.data.crops ?? 0);
     } catch (err) {
@@ -62,7 +125,63 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  // ---------------- PRICE CHART ----------------
+  const fetchDashboardCharts = async () => {
+    try {
+      const res = await api.get("/auth/admin/dashboard-charts/");
+
+      const priceTrendLabels = Array.isArray(res.data?.price_trend?.labels)
+        ? res.data.price_trend.labels
+        : [];
+      const priceTrendValues = Array.isArray(res.data?.price_trend?.values)
+        ? res.data.price_trend.values
+        : [];
+      const mappedPriceData = priceTrendLabels.map((label: string, index: number) => ({
+        month: label,
+        price: Number(priceTrendValues[index] ?? 0),
+      }));
+
+      const supplyByCropLabels = Array.isArray(res.data?.supply_by_crop?.labels)
+        ? res.data.supply_by_crop.labels
+        : [];
+      const supplyByCropValues = Array.isArray(res.data?.supply_by_crop?.values)
+        ? res.data.supply_by_crop.values
+        : [];
+      const mappedSupplyData = supplyByCropLabels.map((label: string, index: number) => ({
+        crop: label,
+        supply: Number(supplyByCropValues[index] ?? 0),
+      }));
+
+      setPriceData(mappedPriceData);
+      setSupplyData(mappedSupplyData);
+    } catch (err) {
+      console.error("Dashboard charts error", err);
+      setPriceData([]);
+      setSupplyData([]);
+    }
+  };
+
+  const fetchPendingUsers = async () => {
+    setLoadingPending(true);
+    try {
+      const res = await api.get("/auth/admin/pending-users/");
+      const farmers = Array.isArray(res.data.farmers) ? res.data.farmers : [];
+      const buyers = Array.isArray(res.data.buyers) ? res.data.buyers : [];
+      
+      const allPending = [...farmers, ...buyers].sort((a, b) => b.id - a.id);
+      
+      // The user wants to see "new user sign up in current day". Wait, actually the backend 
+      // returns users sorted by ID. Do we need to filter by today strictly?
+      // "When new user sign up in current day, that details should show under pending user verifications"
+      // Let's just retrieve and set them.
+      setPendingUsers(allPending);
+    } catch (err) {
+      console.error("Pending users error", err);
+      setPendingUsers([]);
+    } finally {
+      setLoadingPending(false);
+    }
+  };
+
   const fetchPriceChart = async () => {
     try {
       const res = await api.get("/dashboard/admin/price-chart/");
@@ -82,7 +201,6 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  // ---------------- SUPPLY CHART ----------------
   const fetchSupplyChart = async () => {
     try {
       const res = await api.get("/dashboard/admin/supply-chart/");
@@ -109,36 +227,85 @@ const AdminDashboard: React.FC = () => {
     fetchPriceChart();
     fetchSupplyChart(); 
   }, []);
+  const fetchActivityLogs = async () => {
+    setActivitiesLoading(true);
+    setActivitiesError("");
+    try {
+      const res = await api.get<ActivityLogResponse>("/auth/admin/activity-logs/?limit=10");
+      const results = Array.isArray(res.data?.results) ? res.data.results : [];
+
+      const mappedActivities = results.map((item) => ({
+        id: item.id,
+        date: item.date,
+        activity: item.message,
+        user: item.user,
+      }));
+
+      setActivities(mappedActivities);
+    } catch (err: any) {
+      console.error("Activity logs error", err);
+      setActivities([]);
+      setActivitiesError(err?.response?.data?.error || "Failed to load activity logs.");
+    } finally {
+      setActivitiesLoading(false);
+    }
+  };
+
+  const openUserModal = async (u: PendingUser) => {
+    setSelectedUser(u);
+    setDetails(null);
+    setDetailsError("");
+    setOpen(true);
+
+    setDetailsLoading(true);
+    try {
+      const roleParam = u.role.toLowerCase() === "buyer" ? "buyer" : "farmer";
+      const res = await api.get(`/auth/admin/user/${u.id}/?role=${roleParam}`);
+      setDetails(res.data);
+    } catch (err: any) {
+      setDetailsError(err?.response?.data?.error || "Failed to load user details");
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
+
+  const handleApprove = async (u: PendingUser) => {
+    const payload = { role: u.role, user_id: u.user_id, is_active: true, is_verified: true };
+    try {
+      await api.patch("/auth/admin/verify/", payload);
+      setOpen(false);
+      fetchPendingUsers();
+      fetchDashboardStats();
+    } catch (err) {
+      console.error("Approve failed", err);
+    }
+  };
+
+  const handleReject = async (u: PendingUser) => {
+    const payload = { role: u.role, user_id: u.user_id, is_active: false, is_verified: false };
+    try {
+      await api.patch("/auth/admin/verify/", payload);
+      setOpen(false);
+      fetchPendingUsers();
+      fetchDashboardStats();
+    } catch (err) {
+      console.error("Reject failed", err);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchDashboardStats();
+    fetchDashboardCharts();
+    fetchPendingUsers();
+    fetchActivityLogs();
+  }, []);
 
   const stats = [
-    {
-      title: "Verified Farmers",
-      value: farmers.toString(),
-      icon: Users,
-      bgColor: "bg-green-50",
-      color: "text-green-600",
-    },
-    {
-      title: "Pending Approvals",
-      value: pendingApprovals.toString(),
-      icon: AlertTriangle,
-      bgColor: "bg-red-50",
-      color: "text-red-600",
-    },
-    {
-      title: "Buyers",
-      value: buyers.toString(),
-      icon: ShoppingCart,
-      bgColor: "bg-blue-50",
-      color: "text-blue-600",
-    },
-    {
-      title: "Crops",
-      value: crops.toString(),
-      icon: Leaf,
-      bgColor: "bg-amber-100",
-      color: "text-amber-700",
-    },
+    { title: "Verified Farmers", value: farmers.toString(), icon: Users, color: "text-green-300", bgColor: "bg-green-50" },
+    { title: "Blocked Farmers", value: blockedFarmers.toString(), icon: AlertTriangle, color: "text-red-300", bgColor: "bg-red-50" },
+    { title: "Buyers", value: buyers.toString(), icon: ShoppingCart, color: "text-blue-300", bgColor: "bg-blue-50" },
+    { title: "Crops", value: crops.toString(), icon: Leaf, color: "text-amber-900", bgColor: "bg-amber-100" },
   ];
 
   return (
@@ -158,6 +325,8 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* CHARTS */}
+      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* PRICE CHART */}
         <div className="bg-white p-4 rounded-xl shadow">
@@ -205,8 +374,163 @@ const AdminDashboard: React.FC = () => {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* PENDING USERS */}
+      <div className="bg-white p-4 rounded-xl shadow">
+        <h3 className="font-bold text-xl mb-4">New User Sign-ups</h3>
+
+        {loadingPending ? (
+          <p>Loading...</p>
+        ) : pendingUsers.length === 0 ? (
+          <p className="text-gray-500">No new user sign-ups.</p>
+        ) : (
+          pendingUsers.map((u) => (
+            <div key={u.id} className="border p-4 rounded-lg mb-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold">{u.email}</p>
+                  <p className="text-sm text-gray-500">{u.role}</p>
+                </div>
+
+                <button
+                  onClick={() => openUserModal(u)}
+                  className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-gray-50"
+                  title="View details"
+                >
+                  <Eye size={16} />
+                  View
+                </button>
+              </div>
+
+              <div className="flex gap-3 mt-3">
+                <button
+                  onClick={() => handleApprove(u)}
+                  className="inline-flex items-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg"
+                >
+                  <CheckCircle size={16} />
+                  Active
+                </button>
+                <button
+                  onClick={() => handleReject(u)}
+                  className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg"
+                >
+                  <XCircle size={16} />
+                  Disable
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* MODAL */}
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+
+          <Dialog.Content className="fixed left-1/2 top-1/2 w-[95vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between">
+              <div>
+                <Dialog.Title className="text-xl font-bold">User Details</Dialog.Title>
+                <Dialog.Description className="text-sm text-gray-500">
+                  Review the profile and approve/reject.
+                </Dialog.Description>
+              </div>
+
+              <Dialog.Close className="p-2 rounded-lg hover:bg-gray-100">
+                ✕
+              </Dialog.Close>
+            </div>
+
+            <div className="mt-4">
+              {detailsLoading ? (
+                <p className="text-gray-500">Loading details...</p>
+              ) : detailsError ? (
+                <p className="text-red-600">{detailsError}</p>
+              ) : details ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Info label="Role" value={details.role} />
+                    <Info label="Username" value={details.username || "—"} />
+                    <Info label="Email" value={details.email || "—"} />
+                    <Info label="Full Name" value={details.fullname || "—"} />
+                    <Info label="Phone" value={details.contact_number || "—"} />
+                    <Info label="Region/City" value={details.region || details.city || "—"} />
+                  </div>
+
+                  {details.role === "Farmer" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Info label="Farm Name" value={details.farm_name || "—"} />
+                      <Info label="About" value={details.about || "—"} />
+                      <Info label="Address" value={details.address || "—"} />
+                    </div>
+                  )}
+
+                  {details.role === "Buyer" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Info label="Company Name" value={details.company_name || "—"} />
+                      <Info label="Company Email" value={details.company_email || "—"} />
+                      <Info label="Company Phone" value={details.company_phone || "—"} />
+                      <Info label="Address" value={details.address || "—"} />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-500">No details.</p>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              {selectedUser && (
+                <>
+                  <button
+                    onClick={() => handleReject(selectedUser)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-red-200 text-red-700 hover:bg-red-50"
+                  >
+                    <XCircle size={16} />
+                    Reject
+                  </button>
+
+                  <button
+                    onClick={() => handleApprove(selectedUser)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 text-white hover:bg-green-800"
+                  >
+                    <CheckCircle size={16} />
+                    Approve
+                  </button>
+                </>
+              )}
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      {activitiesLoading ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-gray-500">Loading activity logs...</p>
+        </div>
+      ) : activitiesError ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-red-600">{activitiesError}</p>
+        </div>
+      ) : activities.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-gray-500">No system activity logs available.</p>
+        </div>
+      ) : (
+        <ActivityTable activities={activities} />
+      )}
     </div>
   );
 };
 
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border p-3">
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="font-medium text-gray-900 break-words">{value}</p>
+    </div>
+  );
+}
+  
 export default AdminDashboard;

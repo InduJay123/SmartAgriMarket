@@ -46,6 +46,7 @@ import {
   type DemandPredictionResponse,
 } from "../../lib/MLService";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface ForecastData {
   date: string;
@@ -69,7 +70,7 @@ interface YieldForecastResponse {
 type Tab = "price" | "demand" | "yield";
 
 const AiInsights: React.FC = () => {
-
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isSinhala = i18n.language === "si";
 
@@ -331,6 +332,17 @@ const predictYieldForecast = async (payload: {
           </p>
         </div>
       </div>
+
+      <button onClick={() => navigate("/farmer/flood-detection")}
+        className="bg-gradient-to-r from-black to-gray-800
+             text-white font-semibold 
+             px-6 py-3 rounded-xl 
+             mt-2
+             shadow-md 
+             hover:scale-105 hover:shadow-lg 
+             transition-all duration-300">
+        Go to Flood Detection
+      </button>
 
       {/* Tabs */}
       <div className="mt-6 flex flex-wrap gap-2">

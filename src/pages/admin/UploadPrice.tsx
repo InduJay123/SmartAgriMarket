@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Upload, FileText } from "lucide-react";
+import { Upload, FileText, Trash2 } from "lucide-react";
 import api from "../../api/api";
 import { supabase } from "../../lib/supabase";
 
@@ -14,6 +14,7 @@ const ACCEPTED_EXT = [".csv", ".xls", ".xlsx", ".pdf"]; // allowed file extensio
 
 const UPLOAD_URL = "/documents/price-list/upload/"; // POST
 const LIST_URL = "/documents/price-lists/"; // GET
+const DELETE_URL = "/documents/admin/price-list"; // DELETE /admin/price-list/:id/
 
 export default function UploadPrice() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -22,6 +23,7 @@ export default function UploadPrice() {
   const [loadingList, setLoadingList] = useState(true);
 
   const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [customFilename, setCustomFilename] = useState<string>("");
 
@@ -131,6 +133,28 @@ export default function UploadPrice() {
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
+  };
+
+  const deleteUpload = async (priceListId: number) => {
+    const confirmed = window.confirm("Delete this price list document?");
+    if (!confirmed) return;
+
+    setErrorMsg("");
+    setDeletingId(priceListId);
+    try {
+      await api.delete(`${DELETE_URL}/${priceListId}/`);
+      setUploads((prev) => prev.filter((item) => item.id !== priceListId));
+    } catch (err: any) {
+      console.error("Delete failed:", err);
+      const msg =
+        err?.response?.data?.detail ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Delete failed. Please try again.";
+      setErrorMsg(msg);
+    } finally {
+      setDeletingId(null);
+    }
   };
 
 
@@ -245,7 +269,16 @@ export default function UploadPrice() {
                         </div>
                       </div>
 
-                
+                      <button
+                        type="button"
+                        onClick={() => deleteUpload(u.id)}
+                        disabled={deletingId === u.id}
+                        className="ml-3 inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={`Delete ${u.filename}`}
+                      >
+                        <Trash2 size={16} />
+                        {deletingId === u.id ? "Deleting..." : "Delete"}
+                      </button>
                     </div>
                   ))}
                 </div>

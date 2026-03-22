@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, User } from "lucide-react";
+import api from "../../api/api";
 
 import AdminDashboard from "./AdminDashboard";
 import ManageFarmers from "./ManageFarmers";
@@ -15,6 +16,22 @@ import AiInsights from "../farmer/AiInsights";
 const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [adminDisplayName, setAdminDisplayName] = useState("Admin");
+
+  const fetchAdminSettings = async () => {
+    try {
+      const res = await api.get("/auth/admin/settings/");
+      const username = res?.data?.username?.trim();
+      setAdminDisplayName(username || "Admin");
+    } catch (err) {
+      console.error("Failed to load admin settings for header:", err);
+      setAdminDisplayName("Admin");
+    }
+  };
+
+  useEffect(() => {
+    fetchAdminSettings();
+  }, []);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -70,7 +87,7 @@ const Admin: React.FC = () => {
             {/* Account Button */}
             <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
               <User size={20} />
-              <span className="text-sm font-medium">Admin</span>
+              <span className="text-sm font-medium">{adminDisplayName}</span>
             </button>
           </div>
         </div>

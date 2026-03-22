@@ -44,10 +44,15 @@ function BuyerDashboard() {
     getProducts();
   }, []);
 
-  const seasons = [t("all"), t("Yala"), t("Maha")];
+  // Use raw values for logic, translated for display
+  const seasonOptions = [
+    { value: "all", label: t("all") },
+    { value: "Yala", label: t("Yala") },
+    { value: "Maha", label: t("Maha") },
+  ];
   const [selectedSeason, setSelectedSeason] = useState("all");
 
-  const filteredProducts = products.filter(p => 
+  const filteredProducts = products.filter(p =>
     selectedSeason === "all" || p.farming_season === selectedSeason
   );
 
@@ -133,19 +138,19 @@ function BuyerDashboard() {
 
         <label className="block text-sm font-medium mb-3">{t("Seasons")}</label>
         <div className="flex flex-wrap gap-2 mb-4">
-          {seasons.map((season, index) => (
-          <button
-            key={`${season}-${index}`}
-            onClick={() => setSelectedSeason(season)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium ${
-              selectedSeason === season
-                ? "bg-green-600 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            {season}
-          </button>
-        ))}
+          {seasonOptions.map((option, index) => (
+            <button
+              key={`${option.value}-${index}`}
+              onClick={() => setSelectedSeason(option.value)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                selectedSeason === option.value
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
         {/* Product List */}
         <ProductPage

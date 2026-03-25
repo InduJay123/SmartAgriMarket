@@ -3,9 +3,12 @@ import { Package, Clock, CheckCircle, XCircle, Calendar, Eye } from 'lucide-reac
 import axios from 'axios';
 import type { Order } from '../../@types/Order';
 import OrderDetails from '../../components/buyer/OrderDetails';
+import { useTranslation } from 'react-i18next';
 
 
 function OrderHistory() {
+  const { t, i18n } = useTranslation();
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -71,11 +74,21 @@ function OrderHistory() {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    const normalized = status.toLowerCase();
+    if (normalized === 'pending') return t('Pending');
+    if (normalized === 'accepted') return t('Accepted');
+    if (normalized === 'shipped') return t('Shipped');
+    if (normalized === 'delivered') return t('Delivered');
+    if (normalized === 'cancelled') return t('Cancelled');
+    return status;
+  };
+
   if (loading) {
     return (
       <div className="bg-white rounded-xl shadow-sm p-12 text-center">
         <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-gray-600">Loading orders...</p>
+        <p className="mt-4 text-gray-600">{t('Loading orders...')}</p>
       </div>
     );
   }
@@ -84,8 +97,8 @@ function OrderHistory() {
     return (
       <div className="bg-white rounded-xl shadow-sm p-12 text-center">
         <Package size={64} className="text-gray-300 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">No Orders Yet</h3>
-        <p className="text-gray-600 mb-6">Start shopping to see your orders here</p>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('No Orders Yet')}</h3>
+        <p className="text-gray-600 mb-6">{t('Start shopping to see your orders here')}</p>
       </div>
     );
   }
@@ -93,7 +106,7 @@ function OrderHistory() {
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">My Orders</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('My Orders')}</h2>
     </div>
 
       {orders.map((order) => {
@@ -117,19 +130,19 @@ function OrderHistory() {
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-bold text-gray-900">{order.product_name}</h3>
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        {getStatusLabel(order.status)}
                       </span>
                     </div>
                     
                     <div className='flex flex-wrap gap-4 text-sm text-gray-500'>
-                      <p>Quantity: {order.quantity}</p>
-                      <p>Sold by: {order.farmer_name}</p>
+                      <p>{t('Quantity')}: {order.quantity}</p>
+                      <p>{t('Sold by')}: {order.farmer_name}</p>
                     </div>
 
                     <div className='flex flex-wrap gap-4'>
                       <div className="flex gap-2 text-sm text-gray-500 items-center">
                         <Calendar size={16}/>
-                        {new Date(order.created_at).toLocaleDateString('en-US', {
+                        {new Date(order.created_at).toLocaleDateString(i18n.language === 'si' ? 'si-LK' : 'en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -145,14 +158,14 @@ function OrderHistory() {
 
                 <div className=" gap-4">
                   <div className="flex-1 gap-4 text-right">
-                    <p className="text-sm text-gray-600 mb-1">Total Amount</p>
+                    <p className="text-sm text-gray-600 mb-1">{t('Total Amount')}</p>
                     <p className="text-2xl font-bold text-green-600/">Rs.{order.total_amount}</p>
                   </div>
                   <button 
                     onClick={() => setSelectedOrder(order)}
                     className='flex items-center gap-2 py-1 px-2 mt-2 font-semibold bg-green-700/90 text-white'>
                       <Eye size={18}/>
-                      View Details
+                      {t('View Details')}
                   </button>
                 </div>               
               </div>

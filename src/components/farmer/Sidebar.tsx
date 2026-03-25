@@ -1,5 +1,5 @@
 // Sidebar.tsx
-import { Bell, FileSpreadsheet, Home, LogOut, MessageSquare, MessagesSquare, PlusCircle, Settings, TrendingUp, User, Brain } from "lucide-react";
+import { Bell, FileSpreadsheet, Home, LogOut, MessageSquare, MessagesSquare, PlusCircle, Settings, TrendingUp, User, Brain, Waves } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -81,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     onClick={() => { onClose(); handleLogout(); }}
                     className="flex w-full gap-2 px-2 py-2 rounded-lg items-center justify-start transition-colors duration-200 text-gray-700 hover:bg-red-800 hover:text-white"
                 >
-                    <LogOut size={20} /> Log Out
+                    <LogOut size={20} /> {t("Log Out")}
                 </button>
             </div>
         </>

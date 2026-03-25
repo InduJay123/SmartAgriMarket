@@ -1,6 +1,7 @@
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import type { CartItem } from "./BuyerDashboard";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface CartProps {
   cartItems: CartItem[];
@@ -23,18 +24,20 @@ function Cart({
   buyerId,
   onOrderComplete,
 }: CartProps) {
+  const { t } = useTranslation();
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cash");
 
   const handleCheckout = () => {
     if (!deliveryAddress.trim()) {
-      alert("Please enter a delivery address");
+      alert(t("Please enter a delivery address"));
       return;
     }
 
     if (cartItems.length === 0) {
-      alert("Your cart is empty");
+      alert(t("Your cart is empty"));
       return;
     }
 
@@ -58,7 +61,7 @@ function Cart({
 
       localStorage.removeItem(`cart_${buyerId}`);
 
-      alert("Order placed successfully!");
+      alert(t("Order placed successfully!"));
       setDeliveryAddress("");
       setShowCart(false);
       onOrderComplete();
@@ -78,7 +81,7 @@ function Cart({
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center gap-3">
             <ShoppingBag size={24} className="text-green-600" />
-            <h2 className="text-2xl font-bold text-gray-900">Shopping Cart</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{t("Shopping Cart")}</h2>
           </div>
           <button
             onClick={() => setShowCart(false)}
@@ -92,13 +95,13 @@ function Cart({
           {cartItems.length === 0 ? (
             <div className="text-center py-12">
               <ShoppingBag size={64} className="text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h3>
-              <p className="text-gray-600 mb-6">Add some products to get started</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("Your cart is empty")}</h3>
+              <p className="text-gray-600 mb-6">{t("Add some products to get started")}</p>
               <button
                 onClick={() => setShowCart(false)}
                 className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
               >
-                Start Shopping
+                {t("Start Shopping")}
               </button>
             </div>
           ) : (
@@ -113,11 +116,11 @@ function Cart({
                          item.product.image ||
                          item.product.crop?.image ||
                          item.carbageImg}
-                    alt={item.product.crop?.crop_name || "Product"}
+                    alt={item.product.crop?.crop_name || t("Product")}
                     className="w-24 h-24 object-cover rounded-lg"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-gray-900 mb-1">{item.product.crop?.crop_name || "Unknown"}</h4>
+                    <h4 className="font-bold text-gray-900 mb-1">{item.product.crop?.crop_name || t("Unknown")}</h4>
                     <p className="text-sm text-gray-600 mb-2">
                       Rs.{Number(item.product.price || 0).toFixed(2)} / {item.product.unit || "unit"}
                     </p>
@@ -160,12 +163,12 @@ function Cart({
           <div className="border-t bg-white px-6 py-2 space-y-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Delivery Address
+                {t("Delivery Address")}
               </label>
               <textarea
                 value={deliveryAddress}
                 onChange={(e) => setDeliveryAddress(e.target.value)}
-                placeholder="Enter your delivery address..."
+                placeholder={t("Enter your delivery address...")}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
                 rows={3}
               />
@@ -173,22 +176,22 @@ function Cart({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Payment Method
+                {t("Payment Method")}
               </label>
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <option value="cash">Cash on Delivery</option>
-                <option value="card">Credit/Debit Card</option>
-                <option value="upi">UPI</option>
-                <option value="netbanking">Net Banking</option>
+                <option value="cash">{t("Cash on Delivery")}</option>
+                <option value="card">{t("Credit/Debit Card")}</option>
+                <option value="upi">{t("UPI")}</option>
+                <option value="netbanking">{t("Net Banking")}</option>
               </select>
             </div>
 
             <div className="flex items-center justify-between py-2 border-t">
-              <span className="text-lg font-semibold text-gray-900">Total Amount:</span>
+              <span className="text-lg font-semibold text-gray-900">{t("Total Amount:")}</span>
               <span className="text-2xl font-bold text-green-600">Rs.{cartTotal.toFixed(2)}</span>
             </div>
 
@@ -197,7 +200,7 @@ function Cart({
               disabled={isProcessing}
               className="w-full bg-green-800 text-white py-2 rounded-xl font-bold text-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all active:scale-95"
             >
-              {isProcessing ? "Processing..." : "Place Order"}
+              {isProcessing ? t("Processing...") : t("Place Order")}
             </button>
           </div>
         )}

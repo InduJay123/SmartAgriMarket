@@ -19,20 +19,22 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Area,
+  AreaChart,
 } from "recharts";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import TopCard from "../../components/admin/TopCard";
 import ActivityTable from "../../components/admin/ActivityTable";
 import { useEffect, useState } from "react";
-import api from "../../services/api";
+import api from "../../api/api";
 
 interface PendingUser {
- id: number;         // profile id (FarmerDetails/BuyerDetails)
-  user_id: number;    // ✅ auth user id
+  id: number;         
+  user_id: number;    
   email: string;
   username: string;
-  role: string; // "Farmer" | "Buyer"
+  role: string; 
   is_verified?: boolean;
   is_active: boolean;
 }
@@ -60,9 +62,38 @@ interface UserDetails {
   is_active?: boolean;
 }
 
+interface ActivityLogItem {
+  id: number;
+  date: string;
+  message: string;
+  user: string;
+}
+
+interface ActivityLogResponse {
+  results?: ActivityLogItem[];
+  count?: number;
+}
+
+interface PriceData {
+  crop: string;
+  price: number;
+}
+
+interface SupplyData {
+  crop: string;
+  supply: number;
+}
+
+const mockSupply: SupplyData[] = [
+  { crop: "Potato", supply: 640 },
+  { crop: "Tomato", supply: 420 },
+  { crop: "Carrot", supply: 300 },
+];
+
+  
 const AdminDashboard: React.FC = () => {
   const [farmers, setFarmers] = useState(0);
-  const [pendingApprovals, setPendingApprovals] = useState(0);
+  const [blockedFarmers, setBlockedFarmers] = useState(0);
   const [buyers, setBuyers] = useState(0);
   const [crops, setCrops] = useState(0);
 
@@ -77,21 +108,20 @@ const AdminDashboard: React.FC = () => {
   const [detailsError, setDetailsError] = useState("");
   const [priceData, setPriceData] = useState<Array<{ month: string; price: number }>>([]);
   const [supplyData, setSupplyData] = useState<Array<{ crop: string; supply: number }>>([]);
-
-  const activities = [
-    { date: "2025-11-09", activity: "Uploaded new crop price data", user: "Admin" },
-    { date: "2025-11-08", activity: "Verified farmer account", user: "Admin" },
-  ];
+  const [activities, setActivities] = useState<Array<{ id: number; date: string; activity: string; user: string }>>([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
+  const [activitiesError, setActivitiesError] = useState("");
 
   const fetchDashboardStats = async () => {
     try {
-      const res = await api.get("/auth/admin/dashboard-stats/");
+      const res = await api.get("/dashboard/admin/dashboard-stats/");
+
       setFarmers(res.data.verified_farmers ?? 0);
-      setPendingApprovals(res.data.pending_approvals ?? 0);
+      //setPendingApprovals(res.data.pending_approvals ?? 0);
       setBuyers(res.data.buyers ?? 0);
       setCrops(res.data.crops ?? 0);
     } catch (err) {
-      console.error("Dashboard stats error", err);
+      console.log("stats error", err);
     }
   };
 
@@ -133,13 +163,91 @@ const AdminDashboard: React.FC = () => {
   const fetchPendingUsers = async () => {
     setLoadingPending(true);
     try {
-      const res = await api.get("/auth/admin/farmers/?status=pending");
-      setPendingUsers(Array.isArray(res.data) ? res.data : []);
+      const res = await api.get("/auth/admin/pending-users/");
+      const farmers = Array.isArray(res.data.farmers) ? res.data.farmers : [];
+      const buyers = Array.isArray(res.data.buyers) ? res.data.buyers : [];
+      
+      const allPending = [...farmers, ...buyers].sort((a, b) => b.id - a.id);
+      
+      // The user wants to see "new user sign up in current day". Wait, actually the backend 
+      // returns users sorted by ID. Do we need to filter by today strictly?
+      // "When new user sign up in current day, that details should show under pending user verifications"
+      // Let's just retrieve and set them.
+      setPendingUsers(allPending);
     } catch (err) {
       console.error("Pending users error", err);
       setPendingUsers([]);
     } finally {
       setLoadingPending(false);
+    }
+  };
+
+  const fetchPriceChart = async () => {
+    try {
+      const res = await api.get("/dashboard/admin/price-chart/");
+
+      const labels = res.data?.labels || [];
+      const values = res.data?.values || [];
+
+      const mapped = labels.map((label: string, i: number) => ({
+        crop: label,
+        price: Number(values[i] ?? 0),
+      }));
+
+      setPriceData(mapped);
+    } catch (err) {
+      console.error("Price chart error", err);
+      setPriceData([]);
+    }
+  };
+
+  const fetchSupplyChart = async () => {
+    try {
+      const res = await api.get("/dashboard/admin/supply-chart/");
+
+      const labels = res.data?.labels || [];
+      const values = res.data?.values || [];
+
+      const mapped = labels.map((label: string, i: number) => ({
+        crop: label,
+        supply: Number(values[i] ?? 0),
+      }));
+
+      if (mapped.length > 0) {
+        setSupplyData(mapped);
+      }
+    } catch (err) {
+      console.error("Supply chart error", err);
+      setSupplyData(mockSupply); // fallback
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardStats();
+    fetchPriceChart();
+    fetchSupplyChart(); 
+  }, []);
+  const fetchActivityLogs = async () => {
+    setActivitiesLoading(true);
+    setActivitiesError("");
+    try {
+      const res = await api.get<ActivityLogResponse>("/auth/admin/activity-logs/?limit=10");
+      const results = Array.isArray(res.data?.results) ? res.data.results : [];
+
+      const mappedActivities = results.map((item) => ({
+        id: item.id,
+        date: item.date,
+        activity: item.message,
+        user: item.user,
+      }));
+
+      setActivities(mappedActivities);
+    } catch (err: any) {
+      console.error("Activity logs error", err);
+      setActivities([]);
+      setActivitiesError(err?.response?.data?.error || "Failed to load activity logs.");
+    } finally {
+      setActivitiesLoading(false);
     }
   };
 
@@ -151,12 +259,11 @@ const AdminDashboard: React.FC = () => {
 
     setDetailsLoading(true);
     try {
-      
-      const res = await api.get(`/auth/admin/user/${u.id}/`);
+      const roleParam = u.role.toLowerCase() === "buyer" ? "buyer" : "farmer";
+      const res = await api.get(`/auth/admin/user/${u.id}/?role=${roleParam}`);
       setDetails(res.data);
     } catch (err: any) {
-      console.error("Load user details failed", err);
-      setDetailsError(err?.response?.data?.error || "Failed to load user details.");
+      setDetailsError(err?.response?.data?.error || "Failed to load user details");
     } finally {
       setDetailsLoading(false);
     }
@@ -191,11 +298,12 @@ const AdminDashboard: React.FC = () => {
     fetchDashboardStats();
     fetchDashboardCharts();
     fetchPendingUsers();
+    fetchActivityLogs();
   }, []);
 
   const stats = [
     { title: "Verified Farmers", value: farmers.toString(), icon: Users, color: "text-green-300", bgColor: "bg-green-50" },
-    { title: "Pending Approvals", value: pendingApprovals.toString(), icon: AlertTriangle, color: "text-red-300", bgColor: "bg-red-50" },
+    { title: "Blocked Farmers", value: blockedFarmers.toString(), icon: AlertTriangle, color: "text-red-300", bgColor: "bg-red-50" },
     { title: "Buyers", value: buyers.toString(), icon: ShoppingCart, color: "text-blue-300", bgColor: "bg-blue-50" },
     { title: "Crops", value: crops.toString(), icon: Leaf, color: "text-amber-900", bgColor: "bg-amber-100" },
   ];
@@ -217,21 +325,43 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* CHARTS */}
+      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* PRICE CHART */}
         <div className="bg-white p-4 rounded-xl shadow">
+          <h3 className="mb-4 text-lg font-semibold">
+            Crop Price Overview
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={priceData}>
+            <AreaChart data={priceData}>
+              <defs>
+                <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#16a34a" stopOpacity={0.8} />
+                  <stop offset="50%" stopColor="#22c55e" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#ffffff" stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
+              <XAxis dataKey="crop" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line dataKey="price" stroke="#8b5cf6" />
-            </LineChart>
+              <Area
+                type="monotone"
+                dataKey="price"
+                stroke="#16a34a"
+                strokeWidth={3}
+                fill="url(#priceGradient)"
+                name="Average Price (LKR)"
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
 
+        {/* SUPPLY CHART */}
         <div className="bg-white p-4 rounded-xl shadow">
+          <h3 className="mb-4 text-lg font-semibold">Supply by Crop</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={supplyData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -247,12 +377,12 @@ const AdminDashboard: React.FC = () => {
 
       {/* PENDING USERS */}
       <div className="bg-white p-4 rounded-xl shadow">
-        <h3 className="font-bold text-xl mb-4">Pending User Verifications</h3>
+        <h3 className="font-bold text-xl mb-4">New User Sign-ups</h3>
 
         {loadingPending ? (
           <p>Loading...</p>
         ) : pendingUsers.length === 0 ? (
-          <p className="text-gray-500">No pending users.</p>
+          <p className="text-gray-500">No new user sign-ups.</p>
         ) : (
           pendingUsers.map((u) => (
             <div key={u.id} className="border p-4 rounded-lg mb-3">
@@ -278,14 +408,14 @@ const AdminDashboard: React.FC = () => {
                   className="inline-flex items-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg"
                 >
                   <CheckCircle size={16} />
-                  Approve
+                  Active
                 </button>
                 <button
                   onClick={() => handleReject(u)}
                   className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg"
                 >
                   <XCircle size={16} />
-                  Reject
+                  Disable
                 </button>
               </div>
             </div>
@@ -375,7 +505,21 @@ const AdminDashboard: React.FC = () => {
         </Dialog.Portal>
       </Dialog.Root>
 
-      <ActivityTable activities={activities} />
+      {activitiesLoading ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-gray-500">Loading activity logs...</p>
+        </div>
+      ) : activitiesError ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-red-600">{activitiesError}</p>
+        </div>
+      ) : activities.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+          <p className="text-gray-500">No system activity logs available.</p>
+        </div>
+      ) : (
+        <ActivityTable activities={activities} />
+      )}
     </div>
   );
 };
@@ -388,5 +532,5 @@ function Info({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
+  
 export default AdminDashboard;

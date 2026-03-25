@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-
-
+import api from "../../api/api";
 import {
 
   
@@ -32,6 +31,7 @@ import {
   Leaf,
   AlertCircle,
   Info,
+  BrainIcon,
 } from "lucide-react";
 
 import Header from "../../components/farmer/Header";
@@ -46,6 +46,7 @@ import {
   type DemandPredictionResponse,
 } from "../../lib/MLService";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface ForecastData {
   date: string;
@@ -69,7 +70,7 @@ interface YieldForecastResponse {
 type Tab = "price" | "demand" | "yield";
 
 const AiInsights: React.FC = () => {
-
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isSinhala = i18n.language === "si";
 
@@ -220,7 +221,7 @@ const AiInsights: React.FC = () => {
       setForecastData(forecasts);
     } catch (e) {
       console.error(e);
-      setError("Failed to generate forecast. Using simulated data.");
+      setError(t("Failed to generate forecast. Using simulated data."));
       generateSimulatedForecast();
     } finally {
       setIsLoading(false);
@@ -245,19 +246,16 @@ const AiInsights: React.FC = () => {
     setYieldChart(data);
   };
 
-  const predictYieldForecast = async (payload: { crop_type: string; months: number; horizon_months?: number }) => {
-    const res = await fetch("http://localhost:8000/api/ml/yield/forecast/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+const predictYieldForecast = async (payload: {
+  crop_type: string;
+  months: number;
+  horizon_months?: number;
+}) => {
+  const res = await api.post("/ml/yield/forecast/", payload);
+  return res.data as YieldForecastResponse;
+};
 
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(txt || "Yield forecast failed");
-    }
-    return (await res.json()) as YieldForecastResponse;
-  };
+
 
   const handleYieldPrediction = async () => {
     setIsLoading(true);
@@ -281,7 +279,7 @@ const AiInsights: React.FC = () => {
       setYieldChart(chart);
     } catch (e) {
       console.error(e);
-      setError("Failed to predict yield. Please check your connection.");
+      setError(t("Failed to predict yield. Please check your connection."));
       // keep preview so UI still looks good
       buildYieldPreview(yieldMonths, selectedCrop);
     } finally {
@@ -318,11 +316,11 @@ const AiInsights: React.FC = () => {
   // -----------------------------
   return (
     <div className={`bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full ${isSinhala ? "font-sinhala" : "font-sans"}`}>
-      <Header
-        icon={Brain}
-        title={t("AI Insights & Forecasting")}
-        subTitle={t("Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model")}
-      />
+      <div className="flex flex-wrap gap-4 items-start justify-start">
+        <BrainIcon className="text-gray-500"/>
+          <h2  className="text-black font-bold text-2xl">{t("AI Insights & Forecasting")}</h2>
+        </div>
+        <p className="text-xs text-gray-400 text-start mt-2">{t("Get AI-powered predictions for crop prices, demand, and yields using Random Forest ML model")}</p>
 
       {/* Info Banner */}
       <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
@@ -334,6 +332,17 @@ const AiInsights: React.FC = () => {
           </p>
         </div>
       </div>
+
+      <button onClick={() => navigate("/farmer/flood-detection")}
+        className="bg-gradient-to-r from-black to-gray-800
+             text-white font-semibold 
+             px-6 py-3 rounded-xl 
+             mt-2
+             shadow-md 
+             hover:scale-105 hover:shadow-lg 
+             transition-all duration-300">
+        Go to Flood Detection
+      </button>
 
       {/* Tabs */}
       <div className="mt-6 flex flex-wrap gap-2">
@@ -513,7 +522,7 @@ const AiInsights: React.FC = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  Processing...
+                  {t("Processing...")}
                 </>
               ) : (
                 <>
@@ -536,7 +545,7 @@ const AiInsights: React.FC = () => {
                   <div>
                     <p className="text-sm text-gray-500">{t("Predicted Price")}</p>
                     <p className="text-2xl font-bold text-green-600">Rs. {priceResult.predicted_price?.toFixed(2) || "N/A"}</p>
-                    <p className="text-xs text-gray-400">per kg</p>
+                    <p className="text-xs text-gray-400">{t("per kg")}</p>
                   </div>
                   <div className="bg-green-100 p-3 rounded-full">
                     <DollarSign className="text-green-600" size={24} />
@@ -593,9 +602,9 @@ const AiInsights: React.FC = () => {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                  <p className="text-sm text-gray-500">Trend</p>
+                  <p className="text-sm text-gray-500">{t("Trend")}</p>
                   <p className="text-2xl font-bold text-gray-800">{yieldSummary?.trend ?? "—"}</p>
-                  <p className="text-xs text-gray-400">Across {yieldMonths} months</p>
+                  <p className="text-xs text-gray-400">{t("Across {{count}} months", { count: yieldMonths })}</p>
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">

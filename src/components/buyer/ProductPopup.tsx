@@ -8,6 +8,7 @@ import avatar from '../../assets/avatar.svg?url'
 import { getBuyerProfile } from "../../api/profile";
 import FarmerRating from "./FarmerRating";
 import ChatModal from "./ChatModel";
+import { useTranslation } from "react-i18next";
 
 interface ProductPopupProps {
   product: any; 
@@ -24,6 +25,8 @@ interface Review {
 }
 
 const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOrder }) => {
+  const { t } = useTranslation();
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -52,7 +55,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
   }, [product]);
 
   const handleAddReview = async () => {
-    if (!comment) return alert("Please enter a comment");
+    if (!comment) return alert(t("Please enter a comment"));
 
     const newReview = await addReview(
       product.market_id,
@@ -66,7 +69,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
       const updateReviews = await getReviews(product.market_id);
       setReviews(updateReviews || []);
     } else {
-      alert("Failed to add review");
+      alert(t("Failed to add review"));
     }
   };
 
@@ -101,7 +104,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
         </button>
 
         {/* Title */}
-        <h2 className="text-xl font-bold mb-2">Product Details</h2>
+        <h2 className="text-xl font-bold mb-2">{t("Product Details")}</h2>
 
         {/* Product Section */}
         <div className="flex gap-4 p-2 rounded-xl bg-gray-50">
@@ -114,12 +117,12 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
           />
 
           <div>
-            <h3 className="text-xl font-semibold">{product.crop?.crop_name ?? "Unknown Crop"}</h3>
-            <p className="text-sm text-gray-600">{product.additional_details ?? "No description available"}</p>
+            <h3 className="text-xl font-semibold">{product.crop?.crop_name ?? t("Unknown Crop")}</h3>
+            <p className="text-sm text-gray-600">{product.additional_details ?? t("No description available")}</p>
 
             <div className="flex-col items-center gap-6">
               <p className="text-black font-bold mt-2 text-xl">
-                Available: <span className="font-bold text-green-700">{product.quantity} kg</span>
+                {t("Available")}: <span className="font-bold text-green-700">{product.quantity} kg</span>
               </p>
               <p className="text-black font-bold mt-2 text-lg">
                 Rs. {product.price}/{product.unit}
@@ -130,7 +133,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
 
         {/* Farmer Section */}
         <h3 className="text-md font-semibold mt-1 mb-2 flex items-center gap-2">
-          <span className="text-green-600 text-lg">🧑‍🌾</span> About the Farmer
+          <span className="text-green-600 text-lg">🧑‍🌾</span> {t("About the Farmer")}
         </h3>
 
         <div className="p-4 border rounded-xl bg-gray-50">
@@ -154,7 +157,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
                  <button
                     onClick={() => setOpenChat(true)}
                     className="p-2 rounded-full bg-red-800 hover:bg-green-200"
-                    title="Message Farmer"
+                    title={t("Message Farmer")}
                   >
                     <MessageCircleMore size={18} className="text-white" />
                   </button>
@@ -163,9 +166,9 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
               {/* Farmer info icons */}
               <div className="grid grid-cols-2 mt-4 gap-2 text-sm text-gray-700">
                 <span className="flex items-center gap-2"><MapPin size={16} /> {product.farmer?.region} </span>
-                <span className="flex items-center gap-2"><Calendar size={16} /> Member since {product.farmer?.date_joined ? new Date(product.farmer.date_joined).getFullYear() : "-"}</span>
+                <span className="flex items-center gap-2"><Calendar size={16} /> {t("Member since")} {product.farmer?.date_joined ? new Date(product.farmer.date_joined).getFullYear() : "-"}</span>
                 <span className="flex items-center gap-2"><Phone size={16} /> {product.farmer?.contact_number} </span>
-                <span className="flex items-center gap-2"><ShoppingBag size={16} /> 200 sales</span>
+                <span className="flex items-center gap-2"><ShoppingBag size={16} /> {t("200 sales")}</span>
               </div>
             </div>
           </div>
@@ -187,7 +190,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
         <div className="flex flex-wrap items-center justify-between mt-6">
           <div className="flex items-center gap-2">
             <Star size={18} className="text-yellow-500"/>
-            <h3 className="text-md font-semibold mt-4 mb-3">Customer Reviews</h3>
+            <h3 className="text-md font-semibold mt-4 mb-3">{t("Customer Reviews")}</h3>
           </div>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-between mb-4">
@@ -197,7 +200,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
                 <div>
                   <TotalRatings rating={Number(averageRating)} />
                   <p className="text-gray-600 text-sm">
-                    {totalReviews} review{totalReviews !== 1 && "s"}
+                    {totalReviews} {t("reviews")}
                   </p>
                 </div>
               </div>
@@ -208,7 +211,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
       <div>
       <div className="max-h-64 overflow-y-auto">
         {reviews.length === 0 && (
-          <p className="text-sm text-gray-500">No reviews yet</p>
+          <p className="text-sm text-gray-500">{t("No reviews yet")}</p>
         )}
 
         {reviews.map((review) => (
@@ -246,7 +249,7 @@ const ProductPopup:React.FC<ProductPopupProps>  = ({ product, onClose, onPlaceOr
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder={currentUser?.fullname|| "Write your review..."}
+            placeholder={currentUser?.fullname|| t("Write your review...")}
             className="flex-1 border px-2 rounded-xl"
           />
         </div>

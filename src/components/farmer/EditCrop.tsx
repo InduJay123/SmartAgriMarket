@@ -21,20 +21,20 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
     price: crop.price || "",
     unit: crop.unit || "kg",
     predicted_date: crop.predicted_date || "",
-    farming_season: crop.farming_season || "Unknown",
+    farming_season: crop.farming_season || t("Unknown"),
     status: crop.status || "Available",
     additional_details: crop.additional_details || ""
   });
 
   const getSeason = (dateStr: string) => {
-    if (!dateStr) return "Unknown";
+    if (!dateStr) return t("Unknown");
     const date = new Date(dateStr);
     const month = date.getMonth() + 1; // JS months are 0-indexed
 
     if (month >= 5 && month <= 8) {
-        return "Yala";
+      return t("Yala");
     } else {
-        return "Maha";
+      return t("Maha");
     }
   };
 
@@ -65,10 +65,10 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
       
       await updateCrop(crop.market_id, payload);
 
-      alert("Crop updated successfully!");
+      alert(t("Crop updated successfully!"));
       onClose();
     } catch (error) {
-      alert("Error updating crop. Check console for details.");
+      alert(t("Error updating crop. Check console for details."));
     }
   };
 
@@ -80,7 +80,7 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
             <h2 className="text-xl font-bold mb-1">{t("Edit Crop Details")}</h2>
             <h2 className="text-sm text-gray-400 mb-6">{t("Update your crop information and pricing")}</h2>
           </div>
-          <button onClick={onClose} className="text-black border-none"> X </button>
+          <button onClick={onClose} className="text-black border-none"> {t("Close")} </button>
         </div>
 
         <div className="mb-4 flex justify-center">
@@ -104,11 +104,11 @@ const EditCrop: React.FC<EditCropProps> = ({ crop, onClose }) => {
           </div>
 
           <div className="mb-2">
-            <label className="block mb-1 font-semibold text-gray-800">Unit</label>
+            <label className="block mb-1 font-semibold text-gray-800">{t("Unit")}</label>
             <select name="unit" value={formData.unit} onChange={handleChange} className="w-full border p-2 rounded-xl text-sm">
-              <option value="kg">kg</option>
-              <option value="tons">tons</option>
-              <option value="units">units</option>
+              <option value="kg">{t("kg")}</option>
+              <option value="tons">{t("tons")}</option>
+              <option value="units">{t("units")}</option>
             </select>
           </div>
         </div>

@@ -12,7 +12,6 @@ import Signup from './pages/authentication/Signup';
 import BuyerSideBarLayout from './layout/BuyerSidebarLayout';
 
 import Admin from './pages/admin/Admin';
-import AIModel from './pages/admin/AIModel';
 import ManageBuyers from './pages/admin/ManageBuyers';
 import ManageCrops from './pages/admin/ManageCrops';
 import ManageFarmers from './pages/admin/ManageFarmers';
@@ -22,6 +21,7 @@ import UploadPrice from './pages/admin/UploadPrice';
 import AddCrops from './pages/farmer/AddCrops';
 import AiInsights from './pages/farmer/AiInsights';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import FloodDetection from './pages/farmer/FloodDetection';
 
 import FarmerProfileInfo from './pages/farmer/FarmerProfileInfo';
 import Settings from './pages/admin/Settings';
@@ -34,8 +34,8 @@ import FavouritesPage from './pages/buyer/FavouritesPage';
 import OrderHistory from './pages/buyer/OrderHistory';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import ProfileInfo from './pages/buyer/ProfileInfo';
-import AiInsight from './pages/buyer/AiInsight';
-import PriceList from './pages/buyer/PriceList';
+import BuyerPriceList from './pages/buyer/PriceList';
+import FarmerPriceList from './pages/farmer/PriceList';
 import SidebarLayout from './layout/SidebarLayout';
 import ResetPassword from './pages/authentication/ResetPassword';
 import ScrollToTop from './scenes/navbar/ScrollTop';
@@ -87,7 +87,7 @@ function App() {
     getFcmToken().then(async (token) => {
       if (token) {
         try {
-          await axios.post("http://localhost:8000/api/save-token/", { token }, {
+          await axios.post("http://localhost:8000/api/notifications/save-token/", { token }, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
@@ -115,8 +115,9 @@ function App() {
         <Route path='/farmer' element = {<SidebarLayout/>} >
           <Route path="dashboard" element={<FarmerDashboard/>}/>
           <Route path='ai-insights' element={<AiInsights/>} />
+          <Route path='flood-detection' element={<FloodDetection/>} />
           <Route path='addcrops' element={<AddCrops/>}/>
-          <Route path='pricelist' element={<PriceList />}/>
+          <Route path='pricelist' element={<FarmerPriceList />}/>
           <Route path='messages' element={<FarmerMessages/>}/>
           <Route path='alerts' element={<AlertsPanel/>}/>
           <Route path='profile' element={<FarmerProfileInfo/>}/>
@@ -139,15 +140,15 @@ function App() {
         <Route path="/admin/crops" element={<ManageCrops />} />
         <Route path="/admin/upload" element={<UploadPrice />} />
         <Route path="/admin/reports" element={<Reports />} />
-        <Route path="/admin/ai" element={<AIModel />} />
+        <Route path="/admin/ai" element={<AiInsights/>} />
         <Route path="/admin/settings" element={<Settings />} />
 
         <Route path="/buyer" element={<BuyerSideBarLayout/>}>
           <Route path="shop" element={<BuyerDashboard />} />
           <Route path="orders" element={<OrderHistory />} />
           <Route path="favourites" element={<FavouritesPage />} />  
-          <Route path="pricelist" element={<PriceList />} />
-          <Route path="ai-insights" element={<AiInsight />} />
+          <Route path="pricelist" element={<BuyerPriceList />} />
+          <Route path="ai-insights" element={<AiInsights />} />
           <Route path="messages" element={<BuyerMessages/>} />
           <Route path="alerts" element={<AlertsPanel/>} />
           <Route path="profile" element={<ProfileInfo />} />

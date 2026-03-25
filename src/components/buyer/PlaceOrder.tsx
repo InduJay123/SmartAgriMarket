@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { Product } from "../../@types/Product";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 interface PlaceOrderProps {
   product: Product | null;
@@ -10,6 +11,8 @@ interface PlaceOrderProps {
 }
 
 export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
+  const { t, i18n } = useTranslation();
+
   const [quantity, setQuantity] = useState(1)
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -35,7 +38,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
 
   const handlePlaceOrder = async () => {
     if (!fullName || !phone || !address || !city) {
-      alert("Please fill all required delivery details");
+      alert(t("Please fill all required delivery details"));
       return;
     }
 
@@ -56,23 +59,23 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
       );
       console.log("Order placed:", response.data);
 
-      alert("Order placed successfully!");
+      alert(t("Order placed successfully!"));
       onClose();
       navigate("/buyer/orders");
     }catch (error: any) {
       console.error("Order error:", error);
-      alert("Failed to place order");
+      alert(t("Failed to place order"));
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 ${i18n.language === "si" ? "font-sinhala" : "font-sans"}`}>
       
        <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <button onClick={() => navigate(-1)} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Back
+            {t("Back")}
           </button>
         </div>
       </header>
@@ -88,7 +91,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
 
         {/* Title */}
         <h1 className="text-xl font-display font-bold text-foreground mb-8 animate-fade-in">
-          Complete Your Order
+          {t("Complete Your Order")}
         </h1>
         
 
@@ -98,7 +101,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
 
             {/* Product Summary */}
             <div className="bg-white shadow-sm rounded-lg p-4">
-              <h3 className="font-semibold text-lg mb-3">Product Details</h3>
+              <h3 className="font-semibold text-lg mb-3">{t("Product Details")}</h3>
              
               <div className="flex gap-4">
                 <img
@@ -108,7 +111,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
 
                 <div className="flex-1">
                   <h4 className="font-bold text-lg">{product.crop?.crop_name}</h4>
-                  <p className="text-sm text-gray-600">Sold by: {product.farmer?.name} </p>
+                  <p className="text-sm text-gray-600">{t("Sold by")}: {product.farmer?.name} </p>
                   <p className="text-lg font-bold text-green-700">
                     Rs.{product.price.toFixed(2)}/{product.unit}
                   </p>
@@ -117,7 +120,7 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
 
               {/* Quantity Selector */}
               <div className="mt-4 flex items-center justify-between bg-white border px-2 py-1 rounded-lg">
-                <span className="font-medium">Quantity</span>
+                <span className="font-medium">{t("Quantity")}</span>
 
                 <div className="flex items-center gap-3">
                   <button
@@ -143,21 +146,21 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
               </div>         
 
               <p className="text-xs text-right text-gray-500 mt-2">
-                Max available: {maxQuantity} {product.unit}
+                {t("Max available")}: {maxQuantity} {product.unit}
               </p>
             </div>
 
             {/* Full Name + Phone */}
             <div className="bg-white shadow-sm p-4">
                 <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-                <Truck className="text-green-800"/> Delivery Details
+                <Truck className="text-green-800"/> {t("Delivery Details")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
               <div>
-                <label className="font-medium text-sm flex items-center gap-2"><User size={16}/> Full Name *</label>
+                <label className="font-medium text-sm flex items-center gap-2"><User size={16}/> {t("Full Name")} *</label>
                 <input
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder={t("Enter your full name")}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"         
@@ -165,10 +168,10 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
               </div>
 
               <div>
-                <label className="font-medium text-sm flex items-center gap-2"><Phone size={16}/> Phone *</label>
+                <label className="font-medium text-sm flex items-center gap-2"><Phone size={16}/> {t("Phone")} *</label>
                 <input
                   type="text"
-                  placeholder="+94 71 234 5678"
+                  placeholder={t("+94 71 2345678")}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"                 
@@ -178,23 +181,23 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
 
             {/* Email */}
             <div className="mb-2">
-              <label className="font-medium text-sm">✉️ Email Address</label>
+              <label className="font-medium text-sm">✉️ {t("Email Address")}</label>
               <input
                 type="email"
                 
                 className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
-                placeholder="your@email.com"
+                placeholder={t("your@email.com")}
               />
             </div>
 
             {/* Address */}
             <div className="mb-2">
-              <label className="font-medium text-sm">📍 Delivery Address *</label>
+              <label className="font-medium text-sm">📍 {t("Delivery Address")} *</label>
               <textarea
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
-                placeholder="House number, street, landmark..."
+                placeholder={t("House number, street, landmark...")}
                 rows={3}
               ></textarea>
             </div>
@@ -202,9 +205,9 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
             {/* City + State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
               <div>
-                <label className="font-medium text-sm">City *</label>
+                <label className="font-medium text-sm">{t("City")} *</label>
                 <input
-                  placeholder="Enter city"
+                  placeholder={t("Enter city")}
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"                  
@@ -212,29 +215,29 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
               </div>
 
               <div>
-                <label className="font-medium text-sm">State</label>
+                <label className="font-medium text-sm">{t("State")}</label>
                 <input
                   className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
-                  placeholder="Enter state"
+                  placeholder={t("Enter state")}
                 />
               </div>
             </div>
 
             {/* Pincode */}
             <div className="mb-2">
-              <label className="font-medium text-sm">PIN Code </label>
+              <label className="font-medium text-sm">{t("PIN Code")}</label>
               <input
                 className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
-                placeholder="Enter PIN code"
+                placeholder={t("Enter PIN code")}
               />
             </div>
 
             {/* Notes */}
             <div>
-              <label className="font-medium text-sm">Delivery Notes (Optional)</label>
+              <label className="font-medium text-sm">{t("Delivery Notes (Optional)")}</label>
               <textarea
                 className="w-full mt-1 px-4 py-1 rounded-lg border bg-gray-50 placeholder:text-sm"
-                placeholder="Any instructions for the rider..."
+                placeholder={t("Any instructions for the rider...")}
                 rows={3}
               ></textarea>
             </div>
@@ -244,30 +247,30 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
           {/* RIGHT SIDE — SUMMARY */}
           <div className="bg-white shadow-sm rounded-xl p-6 h-max sticky top-6 self-start">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              📄 Order Summary
+              📄 {t("Order Summary")}
             </h3>
 
             <div className="space-y-2 text-gray-700">
               <div className="flex justify-between">
-                <span>Subtotal ({quantity} {product.unit})</span>
+                <span>{t("Subtotal")} ({quantity} {product.unit})</span>
                 <span className="font-semibold">Rs.{subtotal.toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between">
-                <span>Delivery Fee</span>
+                <span>{t("Delivery Fee")}</span>
                 <span className="font-semibold">
-                  {deliveryFee === 0 ? "FREE" : `Rs.${deliveryFee.toFixed(2)}`}
+                  {deliveryFee === 0 ? t("FREE") : `Rs.${deliveryFee.toFixed(2)}`}
                 </span>
               </div>
 
               {deliveryFee > 0 && (
-                <p className="text-xs text-green-800/90">Free delivery above Rs.500</p>
+                <p className="text-xs text-green-800/90">{t("Free delivery above Rs.500")}</p>
               )}
 
               <hr className="my-3" />
 
               <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
+                <span>{t("Total")}</span>
                 <span className="text-green-800/90">Rs.{total.toFixed(2)}</span>
               </div>
             </div>
@@ -277,11 +280,11 @@ export default function PlaceOrder({ product, onClose }: PlaceOrderProps) {
               className="w-full bg-green-800/90 text-white font-semibold py-2 rounded-lg mt-6 flex items-center justify-center gap-2 hover:bg-green-700"
             >
               <CreditCard size={18} />
-              Place Order
+              {t("Place Order")}
             </button>
 
             <p className="text-center text-xs text-gray-500 mt-3">
-              By placing this order, you agree to our terms and conditions
+              {t("By placing this order, you agree to our terms and conditions")}
             </p>
           </div>
         </div>

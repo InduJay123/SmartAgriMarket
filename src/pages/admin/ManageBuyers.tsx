@@ -1,21 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Filter as FilterIcon, Eye, Trash2 } from "lucide-react";
+import { Search, Filter as FilterIcon, Eye, Users, AlertTriangle, MapPin } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import api from "../../services/api";
+import api from "../../api/api";
+import TopCard from "../../components/admin/TopCard";
 
-type BuyerStatusFilter = "all" | "verified" | "pending" | "blocked";
+type BuyerStatusFilter = "all" | "verified" | "pending" | "disabled";
 
 interface BuyerApi {
   id: number;
+  user_id?: number;
   email: string;
   username: string;
   phone?: string;
   role?: "BUYER";
-  is_verified: boolean;
+  is_verified?: boolean;
   is_active: boolean;
+  account_status?: string;
 
   location?: string;
-  type?: string; // Retailer/Wholesaler (optional)
+  city?: string;
+  type?: string;// Retailer/Wholesaler (optional)
+  contact_number?: string; 
 }
 
 interface BuyerDetails {
@@ -37,14 +42,19 @@ interface BuyerDetails {
 
 const isStatusMatch = (b: BuyerApi, filter: BuyerStatusFilter) => {
   if (filter === "all") return true;
-  if (filter === "verified") return b.is_active && b.is_verified;
-  if (filter === "pending") return b.is_active && !b.is_verified;
+  if (filter === "verified") return b.is_active;
+  if (filter === "pending") return !b.is_active && b.account_status === "pending";
+  if (filter === "disabled") return !b.is_active && b.account_status !== "pending";
   return !b.is_active;
 };
 
 export default function ManageBuyers() {
   const [buyers, setBuyers] = useState<BuyerApi[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [verifiedBuyersCount, setVerifiedBuyersCount] = useState(0);
+  const [blockedBuyersCount, setBlockedBuyersCount] = useState(0);
+  const [mostBuyersCity, setMostBuyersCity] = useState("None");
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<BuyerStatusFilter>("all");
@@ -54,6 +64,17 @@ export default function ManageBuyers() {
   const [viewDetails, setViewDetails] = useState<BuyerDetails | null>(null);
   const [viewLoading, setViewLoading] = useState(false);
   const [viewError, setViewError] = useState("");
+
+  const fetchDashboardStats = async () => {
+    try {
+      const res = await api.get("/auth/admin/dashboard-stats/");
+      setVerifiedBuyersCount(res.data.verified_buyers || 0);
+      setBlockedBuyersCount(res.data.blocked_buyers || 0);
+      setMostBuyersCity(res.data.most_buyers_city || "None");
+    } catch (err) {
+      console.error("Dashboard stats error", err);
+    }
+  };
 
   const fetchBuyers = async () => {
     setLoading(true);
@@ -69,6 +90,7 @@ export default function ManageBuyers() {
   };
 
   useEffect(() => {
+    fetchDashboardStats();
     fetchBuyers();
   }, []);
 
@@ -97,13 +119,14 @@ export default function ManageBuyers() {
   const getDisplayName = (b: BuyerApi) => b.username?.trim() || b.email;
 
   const getStatusBadge = (b: BuyerApi) => {
-    if (!b.is_active) return { text: "Blocked", cls: "bg-red-100 text-red-800" };
-    if (b.is_verified) return { text: "Verified", cls: "bg-green-100 text-green-800" };
-    return { text: "Pending", cls: "bg-yellow-100 text-yellow-800" };
+    if (!b.is_active) {
+      if (b.account_status === "pending") return { text: "Pending", cls: "bg-yellow-100 text-yellow-800" };
+      return { text: "Disabled", cls: "bg-red-100 text-red-800" };
+    }
+    return { text: "Verified", cls: "bg-green-100 text-green-800" };
   };
 
-  const getBuyerType = (b: BuyerApi) => b.type || "—";
-  const getBuyerLocation = (b: BuyerApi) => b.location || "—";
+  const getBuyerLocation = (b: BuyerApi) => b.city || "—";
 
   const openViewModal = async (b: BuyerApi) => {
     setSelectedBuyer(b);
@@ -112,7 +135,7 @@ export default function ManageBuyers() {
     setViewOpen(true);
     setViewLoading(true);
     try {
-      const res = await api.get(`/auth/admin/user/${b.id}/`);
+      const res = await api.get(`/auth/admin/user/${b.id}/?role=buyer`);
       setViewDetails(res.data);
     } catch (err: any) {
       setViewError(err?.response?.data?.error || "Failed to load buyer details.");
@@ -121,21 +144,49 @@ export default function ManageBuyers() {
     }
   };
 
-  const handleDelete = async (b: BuyerApi) => {
-    if (!window.confirm(`Delete buyer "${getDisplayName(b)}"? This cannot be undone.`)) return;
-    try {
-      await api.delete(`/auth/admin/user/${b.id}/`);
-      if (selectedBuyer?.id === b.id) {
-        setViewOpen(false);
-      }
-      fetchBuyers();
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
-  };
+  const stats = [
+    {
+      title: "Verified Buyers",
+      value: verifiedBuyersCount.toString(),
+      subTitle: "",
+      icon: Users,
+      color: "text-green-300",
+      bgColor: "bg-green-50",
+    },
+    {
+      title: "Disabled Buyers",
+      value: blockedBuyersCount.toString(),
+      subTitle: "",
+      icon: AlertTriangle,
+      color: "text-red-300",
+      bgColor: "bg-red-50",
+    },
+    {
+      title: "Top Region",
+      value: mostBuyersCity,
+      subTitle: "",
+      icon: MapPin,
+      color: "text-blue-300",
+      bgColor: "bg-blue-50",
+    },
+  ];
 
   return (
     <div className="space-y-6 pr-28">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-1">
+        {stats.map((stat, index) => (
+          <TopCard
+            key={index}
+            title={stat.title}
+            description={stat.value}
+            bottomText={stat.subTitle}
+            icon={stat.icon}
+            iconBgColor={stat.bgColor}
+            iconColor={stat.color}
+          />
+        ))}
+      </div>
+
       <div className="bg-white rounded-lg shadow-lg p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
           <h2 className="text-xl lg:text-2xl font-bold">Buyers Management</h2>
@@ -165,7 +216,7 @@ export default function ManageBuyers() {
                 <option value="all">All</option>
                 <option value="verified">Verified</option>
                 <option value="pending">Pending</option>
-                <option value="blocked">Blocked</option>
+                <option value="disabled">Disabled</option>
               </select>
             </div>
           </div>
@@ -182,7 +233,7 @@ export default function ManageBuyers() {
                 <tr className="border-b border-gray-200 bg-gray-50 font-semibold text-gray-700">
                   <th className="text-left py-3 px-4">ID</th>
                   <th className="text-left py-3 px-4">Name</th>
-                  <th className="text-left py-3 px-4">Type</th>
+                  <th className="text-left py-3 px-4">Contact Number</th>
                   <th className="text-left py-3 px-4">Location</th>
                   <th className="text-left py-3 px-4">Status</th>
                   <th className="text-left py-3 px-4">Actions</th>
@@ -202,12 +253,12 @@ export default function ManageBuyers() {
                       <td className="py-3 px-4 text-gray-800 font-medium">
                         {getDisplayName(b)}
                         <div className="text-xs text-gray-500">{b.email}</div>
-                        {b.phone ? (
-                          <div className="text-xs text-gray-500">{b.phone}</div>
-                        ) : null}
+                        {/* {b.contact_number ? (
+                          <div className="text-xs text-gray-500">{b.contact_number}</div>
+                        ) : null} */}
                       </td>
 
-                      <td className="py-3 px-4">{getBuyerType(b)}</td>
+                      <td className="py-3 px-4">{b.contact_number || "077 9865540"}</td>
                       <td className="py-3 px-4">{getBuyerLocation(b)}</td>
 
                       <td className="py-3 px-4">
@@ -225,13 +276,6 @@ export default function ManageBuyers() {
                           title="View details"
                         >
                           <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(b)}
-                          className="text-red-600 hover:bg-red-200 p-2 hover:text-red-800 rounded"
-                          title="Delete buyer"
-                        >
-                          <Trash2 size={16} />
                         </button>
                       </td>
                     </tr>
@@ -273,16 +317,35 @@ export default function ManageBuyers() {
                   <InfoRow label="Company Email" value={viewDetails.company_email || "—"} />
                   <InfoRow label="Company Phone" value={viewDetails.company_phone || "—"} />
                   <InfoRow label="Address" value={viewDetails.address || "—"} />
-                  <InfoRow
-                    label="Status"
-                    value={
-                      !viewDetails.is_active
-                        ? "Blocked"
-                        : viewDetails.is_verified
-                        ? "Verified"
-                        : "Pending"
-                    }
-                  />
+                  <div className="rounded-lg border p-3">
+                    <p className="text-xs text-gray-500">Status</p>
+                    <select
+                      className="mt-1 block w-full rounded-md border-gray-300 py-1 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm font-medium text-gray-900 break-words disabled:opacity-50"
+                      value={viewDetails.is_active ? "verified" : "disabled"}
+                      onChange={async (e) => {
+                        const isActive = e.target.value === "verified";
+                        try {
+                          await api.put(`/auth/admin/user/${viewDetails.id}/`, {
+                            is_active: isActive,
+                            is_verified: isActive,
+                          });
+                          setViewDetails({ ...viewDetails, is_active: isActive, is_verified: isActive });
+                          setBuyers(buyers.map((b) => 
+                            b.id === selectedBuyer?.id ? { ...b, is_active: isActive, is_verified: isActive, account_status: isActive ? "active" : "rejected" } : b
+                          ));
+                          if (viewDetails.is_active !== isActive) {
+                            setVerifiedBuyersCount(prev => isActive ? prev + 1 : Math.max(0, prev - 1));
+                            setBlockedBuyersCount(prev => !isActive ? prev + 1 : Math.max(0, prev - 1));
+                          }
+                        } catch (err) {
+                          alert("Failed to update status.");
+                        }
+                      }}
+                    >
+                      <option value="verified">Verified</option>
+                      <option value="disabled">Disabled</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             ) : (

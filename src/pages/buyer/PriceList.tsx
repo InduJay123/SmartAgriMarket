@@ -57,7 +57,7 @@ const PriceList:React.FC = () => {
                                     <strong className="font-semibold text-lg">{doc.filename}</strong>
                                     <div className="flex gap-2 text-gray-500 mt-2 text-sm">
                                         <User size={18}/>
-                                        <p>Uploaded by: {doc.uploaded_by || "Admin"}  </p>
+                                        <p>{t("Uploaded by")}: {doc.uploaded_by || t("Admin")}  </p>
                                         <p className="text-sm text-gray-600">
                                             <Timer className="inline mr-1" size={14} />
                                             {formatDate(doc.upload_date)}
@@ -77,7 +77,7 @@ const PriceList:React.FC = () => {
                                     <button
                                         onClick={() => handleDownload(doc.file_url, doc.filename)}
                                         className="bg-gray-100 px-2 py-1 border hover:bg-gray-300 rounded-xl"
-                                        title="Download"
+                                        title={t("Download")}
                                         >
                                         <Download />
                                     </button>

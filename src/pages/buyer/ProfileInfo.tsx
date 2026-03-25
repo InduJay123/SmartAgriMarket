@@ -41,6 +41,7 @@ function ProfileInfo() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<"success" | "error" | "">("");
 
   const normalizeProfile = (data: any) => ({
     user_id: data.id ?? '',
@@ -68,7 +69,8 @@ function ProfileInfo() {
     if (data) {
       setProfile(normalizeProfile(data));
     } else {
-      setMessage("Failed to load profile");
+      setMessage(t("Failed to load profile"));
+      setMessageType("error");
       setLoading(false);
     }
 
@@ -86,6 +88,7 @@ function ProfileInfo() {
   const handleSave = async () => {
     setSaving(true);
     setMessage('');
+    setMessageType("");
     try {
       const payload = {
         fullname: profile.fullname,
@@ -103,10 +106,12 @@ function ProfileInfo() {
       };
       const data = await updateBuyerProfile(payload);
       setProfile(normalizeProfile(data));
-      setMessage('Profile updated successfully!');
+      setMessage(t('Profile updated successfully!'));
+      setMessageType("success");
     }catch (error) {
       console.error('Error updating profile:', error);
-      setMessage('Failed to update profile.');
+      setMessage(t('Failed to update profile.'));
+      setMessageType("error");
     }finally {
       setSaving(false);
     }
@@ -116,7 +121,7 @@ function ProfileInfo() {
     return (
       <div className="bg-white rounded-xl shadow-sm p-12 text-center">
         <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-gray-600">Loading profile information...</p>
+        <p className="mt-4 text-gray-600">{t("Loading profile information...")}</p>
       </div>
     );
   }
@@ -152,7 +157,7 @@ function ProfileInfo() {
                   type="text"
                   value={profile.fullname}
                   onChange={(e) => handleChange('fullname', e.target.value)}
-                  placeholder="Enter your full name"
+                  placeholder={t("Enter your full name")}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition box-border"
                 />
               </div>
@@ -167,7 +172,7 @@ function ProfileInfo() {
                     type="email"
                     value={profile.email}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    placeholder="your.email@example.com"
+                    placeholder={t("your.email@example.com")}
                     className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
                   />
                 </div>
@@ -181,7 +186,7 @@ function ProfileInfo() {
                     type="tel"
                     value={profile.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
-                    placeholder="+94 71 2345678"
+                    placeholder={t("+94 71 2345678")}
                     className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
                   />
                 </div>
@@ -202,7 +207,7 @@ function ProfileInfo() {
               type="text"
               value={profile.company_name || ''}
               onChange={(e) => handleChange('company_name', e.target.value)}
-              placeholder="Enter your Market / Company Name"
+              placeholder={t("Enter your Market / Company Name")}
               className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
             />
           </div>
@@ -217,7 +222,7 @@ function ProfileInfo() {
                 type="email"
                 value={profile.company_email || ''}
                 onChange={(e) => handleChange('company_email', e.target.value)}
-                placeholder="company.email@example.com"
+                placeholder={t("company.email@example.com")}
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
@@ -231,7 +236,7 @@ function ProfileInfo() {
                 type="tel"
                 value={profile.company_phone || ''}
                 onChange={(e) => handleChange('company_phone', e.target.value)}
-                placeholder="+94 71 2345678"
+                placeholder={t("+94 71 2345678")}
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
@@ -252,7 +257,7 @@ function ProfileInfo() {
             <textarea
               value={profile.address || ''}
               onChange={(e) => handleChange('address', e.target.value)}
-              placeholder="Enter your street address"
+              placeholder={t("Enter your street address")}
               rows={3}
               className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none transition"
             />
@@ -265,7 +270,7 @@ function ProfileInfo() {
                 type="text"
                 value={profile.city || ''}
                 onChange={(e) => handleChange('city', e.target.value)}
-                placeholder="Enter city"
+                placeholder={t("Enter city")}
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
@@ -276,7 +281,7 @@ function ProfileInfo() {
                 type="text"
                 value={profile.postal_code || ''}
                 onChange={(e) => handleChange('postal_code', e.target.value)}
-                placeholder="Enter postal code"
+                placeholder={t("Enter postal code")}
                 className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               />
             </div>
@@ -286,7 +291,7 @@ function ProfileInfo() {
 
       {message && (
         <div className={`p-4 rounded-lg ${
-          message.includes('success')
+          messageType === 'success'
             ? 'bg-green-50 text-green-800 border border-green-200'
             : 'bg-red-50 text-red-800 border border-red-200'
         }`}>
@@ -300,7 +305,7 @@ function ProfileInfo() {
         className="w-fit px-4 bg-black text-white py-2 rounded-xl font-bold text-lg hover:bg-green-900 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center justify-center gap-2"
       >
         <Save size={20} />
-        {saving ? 'Saving...' : 'Save Information'}
+        {saving ? t('Saving...') : t('Save Information')}
       </button>
     </div>
   );

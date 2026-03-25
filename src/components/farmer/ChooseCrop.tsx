@@ -54,8 +54,8 @@ const ChooseCrop:React.FC<ChooseCropProps> = ({ formData,setFormData }) => {
                     className={`border rounded-md py-2 px-2 mb-2  transition-all duration-300 hover:scale-105 hover:shadow-lg"
                     ${formData.crop === crop.name ? "border-green-800" : ""}`}>                            
                         <div className="text-3xl mb-2 sm:text-xl">{crop.image}</div>
-                          <h3 className="font-bold sm:text-xs">{crop.name}</h3>
-                        <h3 className="text-gray-700 mb-2 sm:text-xs">{crop.nameSinhala}</h3>
+                                                    <h3 className="font-bold sm:text-xs">{t(crop.name)}</h3>
+                                                <h3 className="text-gray-700 mb-2 sm:text-xs">{crop.nameSinhala}</h3>
                     </button>
                 ))}            
             </div>
@@ -65,7 +65,7 @@ const ChooseCrop:React.FC<ChooseCropProps> = ({ formData,setFormData }) => {
                     <span className="w-full border-t border-border"/>
                 </div>
                 <div className="relative flex justify-center text-xs">
-                    <span className="px-2">OR</span>
+                    <span className="px-2">{t("OR")}</span>
                 </div>
             </div>
                 

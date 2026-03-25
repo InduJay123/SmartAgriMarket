@@ -9,6 +9,8 @@ import { deleteCrop, fetchCrops } from "../../api/farmer/marketplace";
 import { predictPrice, predictDemand } from "../../lib/MLService";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { fetchUserAlerts } from "../../api/farmer/alerts";
+import { getChatList } from "../../api/farmer/chat";
 
 interface Crop {
     market_id: number;
@@ -23,20 +25,53 @@ interface Crop {
     updated_at: string;
 }
 
-
-
 const FarmerDashboard: React.FC = () => {
 
     const { t, i18n } = useTranslation();
     const isSinhala = i18n.language === "si";
 
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-    
-    // State for ML predictions
-    const [marketPrice, setMarketPrice] = useState<string>("Loading...");
-    const [demandForecast, setDemandForecast] = useState<string>("Loading...");
+    const [marketPrice, setMarketPrice] = useState<string>(t("Loading..."));
+    const [demandForecast, setDemandForecast] = useState<string>(t("Loading..."));
     const [isLoadingPredictions, setIsLoadingPredictions] = useState<boolean>(true);
+    const [unseenAlerts, setUnseenAlerts] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [unreadMessages, setUnreadMessages] = useState<number>(0);
 
+    const loadAlerts = async () => {
+        try {
+          const res = await fetchUserAlerts();
+          setUnseenAlerts(res.data.unseen_count ?? 0);
+          console.log("Fetched alerts:", res.data);
+        } catch (err) {
+          console.error("Failed to load alerts", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      useEffect(() => {
+        loadAlerts();
+      }, []);
+
+      useEffect(() => {
+    const loadUnreadMessages = async () => {
+        try {
+            const data = await getChatList();
+            // Sum all unread counts
+            const totalUnread = data.reduce(
+                (sum: number, chat: any) => sum + (chat.unread_count || 0),
+                0
+            );
+
+            setUnreadMessages(totalUnread);
+        } catch (error) {
+            console.error("Error fetching unread messages:", error);
+        }
+    };
+
+    loadUnreadMessages();
+}, []);
     // Fetch ML predictions
     useEffect(() => {
         const fetchPredictions = async () => {
@@ -71,15 +106,15 @@ const FarmerDashboard: React.FC = () => {
                 
                 // Determine demand level
                 const demandValue = demandResponse.predicted_demand || 0;
-                if (demandValue > 1000) setDemandForecast("High");
-                else if (demandValue > 500) setDemandForecast("Medium");
-                else setDemandForecast("Low");
+                if (demandValue > 1000) setDemandForecast(t("High"));
+                else if (demandValue > 500) setDemandForecast(t("Medium"));
+                else setDemandForecast(t("Low"));
 
             } catch (error) {
                 console.error("Error fetching predictions:", error);
                 // Fallback values
                 setMarketPrice("Rs. 250/kg");
-                setDemandForecast("High");
+                setDemandForecast(t("High"));
             } finally {
                 setIsLoadingPredictions(false);
             }
@@ -91,32 +126,32 @@ const FarmerDashboard: React.FC = () => {
     const stats = [
         {
             title: t('Market Price'),
-            value: isLoadingPredictions ? "Loading..." : marketPrice,
-            subTitle:"Tomato avg (AI)",
+            value: isLoadingPredictions ? t("Loading...") : marketPrice,
+            subTitle:t("Tomato avg (AI)"),
             icon: DollarSign,
             color:"text-green-300",
             bgColor:"bg-green-50"           
         },
         {
             title: t('Demand Forecast'),
-            value: isLoadingPredictions ? "Loading..." : demandForecast,
-            subTitle:"Next Week (AI)",
+            value: isLoadingPredictions ? t("Loading...") : demandForecast,
+            subTitle:t("Next Week (AI)"),
             icon:TrendingUp,
             color:"text-blue-300" ,
             bgColor:"bg-green-50"           
         },
         {
             title: t('Harvest Alerts'),
-            value:"3 Active",
-            subTitle:"Due this month",
+            value:unseenAlerts > 0 ? `${unseenAlerts} ${t("New")}` : t("No new"),
+            subTitle:t("Due this month"),
             icon: Calendar,
             color:"text-orange-300",
             bgColor:"bg-orange-50"            
         },
         {
             title: t('Messages'),
-            value:"5 New",
-            subTitle:"From buyers",
+            value: unreadMessages > 0 ? `${unreadMessages} ${t("New")}` : t("No new"),
+            subTitle:t("From buyers"),
             icon:MessageSquare,
             color:"text-amber-900" ,
             bgColor:"bg-amber-100"           
@@ -197,7 +232,7 @@ const FarmerDashboard: React.FC = () => {
     };
    
     const handleDeleteCrop = async (marketId: number) => {
-        if (!window.confirm("Are you sure you want to delete this crop?")) return;
+        if (!window.confirm(t("Are you sure you want to delete this crop?"))) return;
 
         try {
             await deleteCrop(marketId);
@@ -209,10 +244,8 @@ const FarmerDashboard: React.FC = () => {
         }
     };
 
-
-
     return(
-        <div className="bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full">
+        <div className={`bg-gray-50 p-4 sm:p-6 lg:p-4 min-h-screen w-full ${isSinhala ? "font-sinhala text-2xl" : "font-sans"}`}>
 
             <Header/>
 
@@ -277,7 +310,7 @@ const FarmerDashboard: React.FC = () => {
 
                     <div className="flex gap-2">
                         <button onClick={() => setSelectedProductId(crop.market_id)}>
-                            Reviews
+                            {t("Reviews")}
                         </button>
                         <button 
                             onClick={() => handleEditCrop(crop)}
@@ -337,7 +370,7 @@ const FarmerDashboard: React.FC = () => {
                                                 : "bg-gray-300"
                                             }`}
                                         >
-                                            {crop.farming_season ?? "Unknown"}
+                                            {crop.farming_season ?? t("Unknown")}
                                         </span>
                                     </td>
 
@@ -346,7 +379,7 @@ const FarmerDashboard: React.FC = () => {
                                       
                                      <div className="flex items-center justify-end space-x-2">
                                         <button onClick={() => setSelectedProductId(crop.market_id)}>
-                                            Reviews
+                                            {t("Reviews")}
                                         </button>
 
                                         <button  

@@ -1,10 +1,13 @@
+import { useTranslation } from "react-i18next";
+
 const ProgressBar:React.FC <{ step: number }>= ({ step }) => {
+    const { t } = useTranslation();
 
     const steps = [
-        "1. Choose Crop",
-        "2. Details",
-        "3. Pricing",
-        "4. Location & Photo"
+        t("1. Choose Crop"),
+        t("2. Details"),
+        t("3. Pricing"),
+        t("4. Location & Photo")
     ];
 
     return(
